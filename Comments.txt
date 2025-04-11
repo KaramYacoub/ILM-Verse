@@ -1,4 +1,8 @@
 Start Writing your Comments Here.
+////////////////////////////
+Abudraiea:Backend Env Ready:
+config.env +  server.js + app.js is ready (The overall structure of backend is ready)
+added npm packages: Express , mongoose , pg , nodemon , morgan , dot-env
 /////////////////////////////////
 feat: Initialize frontend project with React, Vite, and Tailwind CSS
 Added package.json with dependencies and scripts for development, build, and linting.
