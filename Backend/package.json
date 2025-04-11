@@ -1,0 +1,27 @@
+{
+  "name": "ilm-verse",
+  "version": "1.0.0",
+  "description": "Project Graduation",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./Backend/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohamadAbudraiea/ILM-Verse.git"
+  },
+  "author": "ILM-Verse Team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MohamadAbudraiea/ILM-Verse/issues"
+  },
+  "homepage": "https://github.com/MohamadAbudraiea/ILM-Verse#readme",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "mongoose": "^8.13.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.9",
+    "pg": "^8.14.1"
+  }
+}
