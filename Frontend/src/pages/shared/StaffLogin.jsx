@@ -1,9 +1,27 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
 function StudentLogin() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    // Dummy credentials
+    const validEmail = "student@example.com";
+    const validPassword = "123456";
+
+    if (email === validEmail && password === validPassword) {
+      navigate("/general-dashboard");
+    } else {
+      setError("Invalid email or password");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-100 px-4">
@@ -17,7 +35,7 @@ function StudentLogin() {
           <span className="font-bold">staff</span>
         </p>
 
-        <form className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-4">
           {/* Email */}
           <div>
             <label className="label">
@@ -25,6 +43,8 @@ function StudentLogin() {
             </label>
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter email"
               className="input input-bordered w-full bg-primary text-base-100 placeholder-base-100"
             />
@@ -38,6 +58,8 @@ function StudentLogin() {
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
                 className="input input-bordered w-full bg-primary text-base-100 placeholder-base-100 pr-12"
               />
@@ -63,8 +85,14 @@ function StudentLogin() {
             </div>
           </div>
 
+          {/* Error message */}
+          {error && <p className="text-red-500 font-medium">{error}</p>}
+
           {/* Login button */}
-          <button className="btn w-full bg-accent text-base-100 text-2xl font-bold border-none">
+          <button
+            type="submit"
+            className="btn w-full bg-accent text-base-100 text-2xl font-bold border-none"
+          >
             Login
           </button>
         </form>
@@ -72,4 +100,5 @@ function StudentLogin() {
     </div>
   );
 }
+
 export default StudentLogin;
