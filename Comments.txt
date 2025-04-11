@@ -14,3 +14,10 @@ Created StudentLogin and StaffLogin pages with form handling.
 Configured Tailwind CSS with custom theme in tailwind.config.js.
 Set up Vite configuration for React application.
 /////////////////////////////////
+Abdallah's last Updates
+Added the Sketches into the UI Folder inside the folder u can see the Sketches orderd based on 
+the stackHolders each stackHolder has his functional requirments
+note for the Front end devs: the Nav Bar is not consistent between the stack holders so for example 
+when u work on (Teacher) pages copy and paste the same Nav bar in all the teacher's Pages and so on
+for the remaining stackHolders
+////////////////////////////////
