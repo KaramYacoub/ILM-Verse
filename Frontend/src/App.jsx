@@ -12,6 +12,16 @@ import LessonsTab from "./components/shared/LessonsTab";
 import AssignmentsTab from "./components/shared/AssignmentsTab";
 import ResourcesTab from "./components/shared/ResourcesTab";
 
+import ContactUs from "./pages/shared/ContactUs";
+import Events from "./pages/shared/Events";
+import GenralDash from "./pages/general/GeneralDash";
+import Addition from "./pages/general/Addition";
+import Deletion from "./pages/general/Deletition";
+import CourseContent from "./pages/general/CourseContent";
+import Posts from "./pages/general/Posts";
+import ResetPassword from "./pages/general/ResetPassword";
+import DeleteContent from "./pages/general/DeleteContent";
+import Settings from "./pages/general/Settings";
 function App() {
   return (
     <div data-theme="mytheme">
@@ -28,6 +38,16 @@ function App() {
           <Route path="assignments" element={<AssignmentsTab />} />
           <Route path="resources" element={<ResourcesTab />} />
         </Route>
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="/general-dashboard" element={<GenralDash />} />
+        <Route path="/addition" element={<Addition />} />
+        <Route path="/deletion" element={<Deletion />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/posts" element={<Posts />} />
+        <Route path="/delete-content" element={<DeleteContent />} />
+        <Route path="/coursecontent" element={<CourseContent />} />
+        <Route path="/settings" element={<Settings />} />
       </Routes>
 
       {/* Footer */}

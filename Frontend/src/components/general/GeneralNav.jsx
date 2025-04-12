@@ -1,46 +1,46 @@
 import { Link } from "react-router-dom";
 
-function HomeNav() {
+function GeneralNav() {
   return (
     <div className="navbar min-h-28 bg-primary">
-      <div className="flex-1 ">
-        <Link to="/">
-          <img
-            src="/Logo-without-bg.png"
-            className="btn btn-ghost h-fit text-xl"
-          />
-        </Link>
+      {/* Avatar & Admin Label */}
+      <div className="flex-1 flex items-center gap-4">
+        <div className="flex flex-col items-center">
+          <div className="avatar placeholder">
+            <div className="bg-secondary text-neutral rounded-full w-12 h-12">
+              <span className="text-xl">GA</span>
+            </div>
+          </div>
+          <span className="text-secondary text-sm mt-1">General Admin</span>
+        </div>
       </div>
 
+      {/* Navigation Links */}
       <div className="flex justify-center flex-1">
         <ul className="menu menu-horizontal gap-2 text-secondary">
           <li>
-            <Link to="/contact">Contact Us</Link>
+            <Link to="/general-dashboard">Dashboard</Link>
+          </li>
+
+          <li>
+            <Link to="/reports">Reports</Link>
           </li>
           <li>
             <Link to="/events">Events</Link>
           </li>
           <li>
-            <Link to="/about us">About Us</Link>
+            <Link to="/settings">Settings</Link>
           </li>
           <li>
-            <details>
-              <summary>Login</summary>
-              <ul className="bg-base-100 z-10 text-neutral">
-                <li>
-                  <Link to="/studentLogin">Login as student/parent</Link>
-                </li>
-                <div className="divider divider-primary m-0"></div>
-                <li>
-                  <Link to="/staffLogin">Login as staff</Link>
-                </li>
-              </ul>
-            </details>
+            <Link to="/chat">Chat</Link>
+          </li>
+          <li>
+            <Link to="/">Logout</Link>
           </li>
         </ul>
       </div>
 
-      {/* Mobile menu button */}
+      {/* Mobile menu button (commented out by default) */}
       {/* <div className="flex-none md:hidden">
         <button className="btn btn-square btn-ghost">
           <svg
@@ -62,4 +62,4 @@ function HomeNav() {
   );
 }
 
-export default HomeNav;
+export default GeneralNav;
