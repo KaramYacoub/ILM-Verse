@@ -3,7 +3,7 @@ import HomeNav from "../../components/shared/HomeNav";
 
 function AboutUs() {
   return (
-    <div className="min-h-screen flex flex-col font-sans text-gray-800">
+    <div className="min-h-screen flex flex-col font-sans bg-base-200 pb-5">
       {/* Header/Navigation */}
       <HomeNav />
 
@@ -12,7 +12,7 @@ function AboutUs() {
 
       <div className="divider divider-primary"></div>
 
-      <div className="bg-gray-200 p-6 rounded-md">
+      <div className="bg-gray-300 p-6 rounded-md">
         {/* General Administrator */}
         <div className="flex flex-col items-center mb-8">
           <div className="bg-primary w-40 h-52 rounded-md flex flex-col items-center p-2">

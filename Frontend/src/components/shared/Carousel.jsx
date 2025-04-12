@@ -39,7 +39,7 @@ const Carousel = () => {
         <div className="flex gap-3 h-full">
           {slides.map((slide, index) => (
             <div key={index} className="flex-[0_0_100%] h-full">
-              <div className="bg-gray-200 rounded-lg h-full flex items-center justify-center text-4xl font-bold">
+              <div className="bg-gray-100 rounded-lg h-full flex items-center justify-center text-4xl font-bold">
                 Slide {slide}
               </div>
             </div>

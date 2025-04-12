@@ -1,0 +1,73 @@
+import {
+  FaHome,
+  FaClipboardList,
+  FaCalendarAlt,
+  FaCog,
+  FaComments,
+  FaSignOutAlt,
+} from "react-icons/fa";
+
+import { Link } from "react-router-dom";
+
+function StudentNavbar() {
+  return (
+    <div className="bg-primary px-4 py-3 shadow-md w-full flex justify-between">
+      {/* Left: Profile */}
+      <div className="flex flex-col items-center">
+        <div className="avatar placeholder">
+          <div className="bg-base-300 rounded-full w-10 h-10">
+            <span className="text-2xl">👤</span>
+          </div>
+        </div>
+        <span className="font-bold text-base-100">Username</span>
+      </div>
+
+      {/* Center: Nav Items */}
+      <div className="flex gap-6 text-accent text-sm items-center">
+        <Link
+          to="#"
+          className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
+        >
+          <FaHome color="#fff"/>
+          <span>Dashboard</span>
+        </Link>
+        <Link
+          to="#"
+          className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
+        >
+          <FaClipboardList color="#fff"/>
+          <span>Quizzes</span>
+        </Link>
+        <Link
+          to="#"
+          className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
+        >
+          <FaCalendarAlt color="#fff"/>
+          <span>Events</span>
+        </Link>
+        <Link
+          to="#"
+          className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
+        >
+          <FaCog color="#fff"/>
+          <span>Settings</span>
+        </Link>
+        <Link
+          to="#"
+          className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
+        >
+          <FaComments color="#fff"/>
+          <span>Chat</span>
+        </Link>
+      </div>
+
+      {/* Right: Logout */}
+      <div className="flex items-center gap-2 text-accent font-bold cursor-pointer hover:text-yellow-500">
+        <FaSignOutAlt color="#fff"/>
+        <span>Logout</span>
+      </div>
+    </div>
+  );
+}
+
+export default StudentNavbar;
