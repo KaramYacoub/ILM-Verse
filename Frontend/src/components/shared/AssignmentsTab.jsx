@@ -1,8 +1,8 @@
 // AssignmentsTab.jsx
-import { useOutletContext } from "react-router-dom";
+// import { useOutletContext } from "react-router-dom";
 
 export default function AssignmentsTab() {
-  const { courseData } = useOutletContext();
+//   const { courseData } = useOutletContext();
 
   // Sample assignments data
   const assignments = [

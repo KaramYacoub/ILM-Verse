@@ -6,7 +6,7 @@ import StaffLogin from "./pages/shared/StaffLogin";
 import AboutUs from "./pages/shared/AboutUs";
 import StudentDashboard from "./pages/student/StudentDashboard";
 
-import CourseContent from "./pages/student/CourseContent";
+import StudentCourseContent from "./pages/student/StudentCourseContent";
 import OverviewTab from "./components/shared/OverviewTab";
 import LessonsTab from "./components/shared/LessonsTab";
 import AssignmentsTab from "./components/shared/AssignmentsTab";
@@ -21,7 +21,7 @@ function App() {
         <Route path="/studentLogin" element={<StudentLogin />} />
         <Route path="/staffLogin" element={<StaffLogin />} />
         <Route path="/studentDashboard" element={<StudentDashboard />} />
-        <Route path="/coursecontent" element={<CourseContent />}>
+        <Route path="/coursecontent" element={<StudentCourseContent />}>
           <Route index element={<OverviewTab />} />
           <Route path="overview" element={<OverviewTab />} />
           <Route path="lessons" element={<LessonsTab />} />
