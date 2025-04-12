@@ -28,18 +28,20 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about us" element={<AboutUs />} />
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/events" element={<Events />} />
         <Route path="/studentLogin" element={<StudentLogin />} />
         <Route path="/staffLogin" element={<StaffLogin />} />
+
         <Route path="/studentDashboard" element={<StudentDashboard />} />
-        <Route path="/coursecontent" element={<StudentCourseContent />}>
+        <Route path="/studentcoursecontent" element={<StudentCourseContent />}>
           <Route index element={<OverviewTab />} />
           <Route path="overview" element={<OverviewTab />} />
           <Route path="lessons" element={<LessonsTab />} />
           <Route path="assignments" element={<AssignmentsTab />} />
           <Route path="resources" element={<ResourcesTab />} />
         </Route>
-        <Route path="/contact" element={<ContactUs />} />
-        <Route path="/events" element={<Events />} />
+
         <Route path="/general-dashboard" element={<GenralDash />} />
         <Route path="/addition" element={<Addition />} />
         <Route path="/deletion" element={<Deletion />} />
