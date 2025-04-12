@@ -4,7 +4,8 @@ Abudraiea:Backend Env Ready:
 config.env +  server.js + app.js is ready (The overall structure of backend is ready)
 added npm packages: Express , mongoose , pg , nodemon , morgan , dot-env
 /////////////////////////////////
-feat: Initialize frontend project with React, Vite, and Tailwind CSS
+Karam last updates:
+Initialize frontend project with React, Vite, and Tailwind CSS
 Added package.json with dependencies and scripts for development, build, and linting.
 Created postcss.config.js for Tailwind CSS and autoprefixer integration.
 Added logo images to the public directory.
@@ -24,4 +25,7 @@ the stackHolders each stackHolder has his functional requirments
 note for the Front end devs: the Nav Bar is not consistent between the stack holders so for example 
 when u work on (Teacher) pages copy and paste the same Nav bar in all the teacher's Pages and so on
 for the remaining stackHolders
+////////////////////////////////
+Karam last updates:
+Add CourseCard, StudentNavBar, and Breadcrumbs components and StudentDashboard, and part of CourseContent pages; include react-icons dependency
 ////////////////////////////////

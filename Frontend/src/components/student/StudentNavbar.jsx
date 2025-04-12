@@ -28,42 +28,42 @@ function StudentNavbar() {
           to="#"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
-          <FaHome />
+          <FaHome color="#fff"/>
           <span>Dashboard</span>
         </Link>
         <Link
           to="#"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
-          <FaClipboardList />
+          <FaClipboardList color="#fff"/>
           <span>Quizzes</span>
         </Link>
         <Link
           to="#"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
-          <FaCalendarAlt />
+          <FaCalendarAlt color="#fff"/>
           <span>Events</span>
         </Link>
         <Link
           to="#"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
-          <FaCog />
+          <FaCog color="#fff"/>
           <span>Settings</span>
         </Link>
         <Link
           to="#"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
-          <FaComments />
+          <FaComments color="#fff"/>
           <span>Chat</span>
         </Link>
       </div>
 
       {/* Right: Logout */}
       <div className="flex items-center gap-2 text-accent font-bold cursor-pointer hover:text-yellow-500">
-        <FaSignOutAlt />
+        <FaSignOutAlt color="#fff"/>
         <span>Logout</span>
       </div>
     </div>

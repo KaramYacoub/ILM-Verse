@@ -4,8 +4,8 @@ import Footer from "./components/shared/Footer";
 import StudentLogin from "./pages/shared/studentLogin";
 import StaffLogin from "./pages/shared/StaffLogin";
 import AboutUs from "./pages/shared/AboutUs";
-import CourseCard from "./components/shared/CourseCard";
 import StudentDashboard from "./pages/student/StudentDashboard";
+import CourseContent from "./pages/student/CourseContent";
 function App() {
   return (
     <div data-theme="mytheme">
@@ -15,7 +15,7 @@ function App() {
         <Route path="/studentLogin" element={<StudentLogin />} />
         <Route path="/staffLogin" element={<StaffLogin />} />
         <Route path="/studentDashboard" element={<StudentDashboard />} />
-        <Route path="/coursecard" element={<CourseCard />} />
+        <Route path="/coursecontent" element={<CourseContent />} />
       </Routes>
 
       {/* Footer */}
