@@ -3,7 +3,7 @@ import HomeNavbar from "../../components/shared/HomeNav";
 
 function Home() {
   return (
-    <div className="min-h-screen flex flex-col font-sans text-gray-800">
+    <div className="min-h-screen flex flex-col font-sans bg-base-200 pb-5">
       {/* Header/Navigation */}
       <HomeNavbar />
 
