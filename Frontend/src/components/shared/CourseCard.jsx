@@ -1,8 +1,14 @@
-function CourseCard() {
+import { Link } from "react-router-dom";
+
+function CourseCard({ to = "/studentcoursecontent" }) {
   return (
     <div className="flex flex-col sm:flex-row items-center bg-base-100 p-4 rounded-lg shadow-sm w-full">
       <div className="w-full sm:w-32 h-32 flex items-center justify-center mb-4 sm:mb-0 sm:mr-4">
-        <img src="/Logo.png" alt="course name" className="w-full h-full rounded-lg" />
+        <img
+          src="/Logo.png"
+          alt="course name"
+          className="w-full h-full rounded-lg"
+        />
       </div>
 
       <div className="flex-1 flex flex-col justify-between">
@@ -11,9 +17,12 @@ function CourseCard() {
           Body text for whatever you'd like to say. Add main takeaway points,
           quotes, anecdotes, or even a very very short story.
         </p>
-        <button className="btn btn-sm bg-primary text-accent hover:bg-base-content rounded-md">
+        <Link
+          to={to}
+          className="btn btn-sm bg-primary text-accent hover:bg-base-content rounded-md"
+        >
           view course
-        </button>
+        </Link>
       </div>
     </div>
   );

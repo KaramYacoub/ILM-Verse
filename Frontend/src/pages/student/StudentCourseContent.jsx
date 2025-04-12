@@ -1,49 +1,131 @@
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Breadcrumbs from "../../components/shared/Breadcrumbs";
 import StudentNavbar from "../../components/student/StudentNavbar";
+import NavigationTabs from "../../components/shared/NavigationTabs";
+
+// sample course data
+const courseData = {
+  name: "Course name",
+  teacher: "teacher name",
+  grade: "Grade 10",
+  semester: "Fall Semester 2025",
+  stats: {
+    units: 3,
+    lessons: 12,
+    assignments: 8,
+    quizzes: 5,
+  },
+  units: [
+    {
+      name: "Unit 1: Introduction to Programming",
+      lessons: [
+        { title: "What is Programming?", duration: 45 },
+        { title: "Programming Languages Overview", duration: 30 },
+        { title: "Writing Your First Program", duration: 50 },
+        { title: "Debugging Basics", duration: 40 },
+      ],
+      assignments: [
+        {
+          title: "Assignment 1.1: Write Hello World",
+          dueDate: "April 1, 2025",
+          status: "Submitted",
+          grade: "90%",
+        },
+        {
+          title: "Assignment 1.2: Debugging Practice",
+          dueDate: "April 3, 2025",
+          status: "Not Submitted",
+          grade: "0%",
+        },
+      ],
+      quizzes: 1,
+      resources: [
+        { title: "Intro to Programming Handbook", type: "PDF" },
+        { title: "Beginner Slides", type: "DOC" },
+      ],
+    },
+    {
+      name: "Unit 2: Variables and Data Types",
+      lessons: [
+        { title: "Variables in Programming", duration: 40 },
+        { title: "Primitive Data Types", duration: 45 },
+        { title: "Type Conversion", duration: 35 },
+        { title: "Strings and Numbers", duration: 50 },
+        { title: "Booleans and Comparisons", duration: 45 },
+      ],
+      assignments: [
+        {
+          title: "Assignment 2.1: Variables Practice",
+          dueDate: "April 7, 2025",
+          status: "Pending",
+          grade: "submit",
+        },
+        {
+          title: "Assignment 2.2: Data Types Quiz",
+          dueDate: "April 9, 2025",
+          status: "Pending",
+          grade: "submit",
+        },
+        {
+          title: "Assignment 2.3: String Challenges",
+          dueDate: "April 11, 2025",
+          status: "Submitted",
+          grade: "85%",
+        },
+      ],
+      quizzes: 1,
+      resources: [
+        { title: "Data Types Guide", type: "PDF" },
+        { title: "Type Conversion Cheatsheet", type: "DOC" },
+      ],
+    },
+    {
+      name: "Unit 3: Control Structures",
+      lessons: [
+        { title: "If Statements", duration: 40 },
+        { title: "Loops: For and While", duration: 45 },
+        { title: "Nested Conditions", duration: 50 },
+      ],
+      assignments: [
+        {
+          title: "Assignment 3.1: Conditions Practice",
+          dueDate: "April 14, 2025",
+          status: "Pending",
+          grade: "submit",
+        },
+        {
+          title: "Assignment 3.2: Looping Tasks",
+          dueDate: "April 16, 2025",
+          status: "Submitted",
+          grade: "100%",
+        },
+        {
+          title: "Assignment 3.3: Control Structure Quiz",
+          dueDate: "April 18, 2025",
+          status: "Not Submitted",
+          grade: "0%",
+        },
+      ],
+      quizzes: 3,
+      resources: [
+        { title: "Control Structures Slides", type: "DOC" },
+        { title: "Loop Examples PDF", type: "PDF" },
+      ],
+    },
+  ],
+};
 
 function CourseContent() {
-  const courseData = {
-    name: "Course name",
-    teacher: "teacher name",
-    grade: "Grade 10",
-    semester: "Fall Semester 2025",
-    stats: {
-      units: 4,
-      lessons: 12,
-      assignments: 8,
-      quizzes: 5,
-    },
-    units: [
-      {
-        name: "Unit 1: Unit name",
-        lessons: 4,
-        assignments: 2,
-        quizzes: 1,
-      },
-      {
-        name: "Unit 2: Unit name",
-        lessons: 5,
-        assignments: 3,
-        quizzes: 1,
-      },
-      {
-        name: "Unit 3: Unit name",
-        lessons: 3,
-        assignments: 3,
-        quizzes: 3,
-      },
-    ],
-  };
-
-  const location = useLocation();
-  const currentTab = location.pathname.split("/").pop();
+  const breadcrumbPages = [
+    { name: "My Courses", path: "/studentDashboard" },
+    { name: courseData.name, path: "/coursecontent" },
+  ];
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col justify-start pb-5">
       <StudentNavbar />
       <Breadcrumbs
-        prevPages={[{ name: "My Courses", path: "/studentDashboard" }]}
+        prevPages={breadcrumbPages.slice(0, -1)}
         currentPage={courseData.name}
       />
 
@@ -64,39 +146,8 @@ function CourseContent() {
           </p>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="tabs tabs-boxed bg-base-100 mb-6">
-          <Link
-            to="overview"
-            className={`tab ${
-              ["overview", "coursecontent"].includes(currentTab)
-                ? "tab-active"
-                : ""
-            }`}
-          >
-            Overview
-          </Link>
-          <Link
-            to="lessons"
-            className={`tab ${currentTab === "lessons" ? "tab-active" : ""}`}
-          >
-            Lessons
-          </Link>
-          <Link
-            to="assignments"
-            className={`tab ${
-              currentTab === "assignments" ? "tab-active" : ""
-            }`}
-          >
-            Assignments
-          </Link>
-          <Link
-            to="resources"
-            className={`tab ${currentTab === "resources" ? "tab-active" : ""}`}
-          >
-            Resources
-          </Link>
-        </div>
+        {/* NavigationTabs */}
+        <NavigationTabs />
 
         {/* Tab Content */}
         <Outlet context={{ courseData }} />
