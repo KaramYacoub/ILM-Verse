@@ -35,7 +35,7 @@ function App() {
         <Route path="/staffLogin" element={<StaffLogin />} />
 
         <Route path="/studentDashboard" element={<StudentDashboard />} />
-        <Route path="/studentcoursecontent/" element={<StudentCourseContent />}>
+        <Route path="/studentcoursecontent" element={<StudentCourseContent />}>
           <Route index element={<OverviewTab />} />
           <Route path="overview" element={<OverviewTab />} />
           <Route path="lessons" element={<LessonsTab />} />

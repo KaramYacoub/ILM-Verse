@@ -26,7 +26,7 @@ function GeneralNav() {
             <Link to="/reports">Reports</Link>
           </li>
           <li>
-            <Link to="/general-event"> events</Link>
+            <Link to="/events">Events</Link>
           </li>
           <li>
             <Link to="/settings">Settings</Link>
