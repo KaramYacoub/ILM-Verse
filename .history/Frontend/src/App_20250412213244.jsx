@@ -22,7 +22,6 @@ import Posts from "./pages/general/Posts";
 import ResetPassword from "./pages/general/ResetPassword";
 import DeleteContent from "./pages/general/DeleteContent";
 import Settings from "./pages/general/Settings";
-import GenralEvents from "./pages/general/GenralEvents";
 function App() {
   return (
     <div data-theme="mytheme">
@@ -51,7 +50,6 @@ function App() {
         <Route path="/delete-content" element={<DeleteContent />} />
         <Route path="/coursecontent" element={<CourseContent />} />
         <Route path="/settings" element={<Settings />} />
-        <Route path="/general-event" element={<GenralEvents />} />
       </Routes>
 
       {/* Footer */}
