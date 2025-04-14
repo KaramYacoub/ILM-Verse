@@ -2,7 +2,6 @@ import {
   FaHome,
   FaClipboardList,
   FaCalendarAlt,
-  FaCog,
   FaComments,
   FaSignOutAlt,
 } from "react-icons/fa";
@@ -42,7 +41,7 @@ function StudentNavbar() {
         </Link>
         {/* Events */}
         <Link
-          to="/events"
+          to="/studentevents"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
           <FaCalendarAlt color="#fff" />

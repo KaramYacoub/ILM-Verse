@@ -13,7 +13,7 @@ function GeneralDash() {
         { id: 1, label: "Addition", path: "/addition" },
         { id: 2, label: "Deletion", path: "/deletion" },
         { id: 3, label: "Reset Password", path: "/reset-password" },
-        { id: 4, label: "Posts", path: "/posts" },
+        { id: 4, label: "Posts", path: "/general-posts" },
         { id: 5, label: "Delete content", path: "/delete-content" },
       ],
     },

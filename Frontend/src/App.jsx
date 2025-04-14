@@ -14,7 +14,7 @@ import ResourcesTab from "./components/shared/ResourcesTab";
 
 import ContactUs from "./pages/shared/ContactUs";
 import Events from "./pages/shared/Events";
-import GenralDash from "./pages/general/GeneralDash";
+import GeneralDash from "./pages/general/GeneralDash";
 import Addition from "./pages/general/Addition";
 import Deletion from "./pages/general/Deletition";
 import CourseContent from "./pages/general/CourseContent";
@@ -49,11 +49,11 @@ function App() {
           <Route path="resources" element={<ResourcesTab />} />
         </Route>
 
-        <Route path="/general-dashboard" element={<GenralDash />} />
+        <Route path="/general-dashboard" element={<GeneralDash />} />
         <Route path="/addition" element={<Addition />} />
         <Route path="/deletion" element={<Deletion />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/posts" element={<Posts />} />
+        <Route path="/general-posts" element={<Posts />} />
         <Route path="/delete-content" element={<DeleteContent />} />
         <Route path="/coursecontent" element={<CourseContent />} />
         <Route path="/settings" element={<Settings />} />

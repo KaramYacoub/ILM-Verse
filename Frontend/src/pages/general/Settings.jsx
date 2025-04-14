@@ -77,12 +77,6 @@ function Settings() {
               </div>
             </div>
           </div>
-
-          {/* Add New Post Section */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-xl font-bold mb-4">Post Management</h3>
-            <button className="btn btn-primary w-full">+ Add a New Post</button>
-          </div>
         </div>
       </div>
     </div>
