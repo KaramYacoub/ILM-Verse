@@ -23,6 +23,7 @@ import ResetPassword from "./pages/general/ResetPassword";
 import DeleteContent from "./pages/general/DeleteContent";
 import Settings from "./pages/general/Settings";
 import GenralEvents from "./pages/general/GenralEvents";
+import StudentViewGrades from "./pages/student/StudentViewGrades";
 function App() {
   return (
     <div data-theme="mytheme">
@@ -35,6 +36,7 @@ function App() {
         <Route path="/staffLogin" element={<StaffLogin />} />
 
         <Route path="/studentDashboard" element={<StudentDashboard />} />
+        <Route path="/studentviewgrades" element={<StudentViewGrades />} />
         <Route path="/studentcoursecontent/" element={<StudentCourseContent />}>
           <Route index element={<OverviewTab />} />
           <Route path="overview" element={<OverviewTab />} />

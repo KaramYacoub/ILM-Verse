@@ -24,48 +24,48 @@ function StudentNavbar() {
 
       {/* Center: Nav Items */}
       <div className="flex gap-6 text-accent text-sm items-center">
+        {/* Dashboard */}
         <Link
-          to="#"
+          to="/studentDashboard"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
-          <FaHome color="#fff"/>
+          <FaHome color="#fff" />
           <span>Dashboard</span>
         </Link>
+        {/* Quizzes */}
         <Link
           to="#"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
-          <FaClipboardList color="#fff"/>
+          <FaClipboardList color="#fff" />
           <span>Quizzes</span>
         </Link>
+        {/* Events */}
         <Link
-          to="#"
+          to="/events"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
-          <FaCalendarAlt color="#fff"/>
+          <FaCalendarAlt color="#fff" />
           <span>Events</span>
         </Link>
+        {/* Chat */}
         <Link
           to="#"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
-          <FaCog color="#fff"/>
-          <span>Settings</span>
-        </Link>
-        <Link
-          to="#"
-          className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
-        >
-          <FaComments color="#fff"/>
+          <FaComments color="#fff" />
           <span>Chat</span>
         </Link>
       </div>
 
       {/* Right: Logout */}
-      <div className="flex items-center gap-2 text-accent font-bold cursor-pointer hover:text-yellow-500">
-        <FaSignOutAlt color="#fff"/>
+      <Link
+        to="/"
+        className="flex items-center gap-2 text-accent font-bold cursor-pointer hover:text-yellow-500"
+      >
+        <FaSignOutAlt color="#fff" />
         <span>Logout</span>
-      </div>
+      </Link>
     </div>
   );
 }

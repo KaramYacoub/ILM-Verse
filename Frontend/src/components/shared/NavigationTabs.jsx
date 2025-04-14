@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function NavigationTabs() {
   const location = useLocation();
@@ -14,27 +14,37 @@ function NavigationTabs() {
     lastSegment === "overview" ||
     lastSegment === "coursecontent";
 
+  const navigate = useNavigate();
+  function handleNavigation(tab) {
+    return () => {
+      navigate(`/studentcoursecontent/${tab}`, {
+        state: { unit: location.state?.unit },
+      });
+    };
+  }
+
   return (
     <div className="tabs tabs-boxed items-center bg-base-100 mb-6 shadow-md">
-      <Link
-        to="overview"
+      <button
+        onClick={handleNavigation("overview")}
         className={`w-full h-14 text-lg tab ${
           isOverviewActive ? "bg-accent text-primary" : "text-gray-600"
         }`}
       >
         Overview
-      </Link>
-      <Link
-        to="lessons"
-        
+      </button>
+      <button
+        onClick={handleNavigation("lessons")}
+        disabled={isOverviewActive || currentTab === "assignments"}
         className={`w-full h-14 text-lg tab ${
           currentTab === "lessons" ? "bg-accent text-primary" : "text-gray-600"
         }`}
       >
         Lessons
-      </Link>
-      <Link
-        to="resources"
+      </button>
+      <button
+        onClick={handleNavigation("resources")}
+        disabled={isOverviewActive || currentTab === "assignments"}
         className={`w-full h-14 text-lg tab ${
           currentTab === "resources"
             ? "bg-accent text-primary"
@@ -42,9 +52,9 @@ function NavigationTabs() {
         }`}
       >
         Resources
-      </Link>
-      <Link
-        to="assignments"
+      </button>
+      <button
+        onClick={handleNavigation("assignments")}
         className={`w-full h-14 text-lg tab ${
           currentTab === "assignments"
             ? "bg-accent text-primary"
@@ -52,7 +62,7 @@ function NavigationTabs() {
         }`}
       >
         Assignments
-      </Link>
+      </button>
     </div>
   );
 }

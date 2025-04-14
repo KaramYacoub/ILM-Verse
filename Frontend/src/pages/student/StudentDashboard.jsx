@@ -1,5 +1,6 @@
 import StudentNavbar from "../../components/student/StudentNavbar";
 import CourseCard from "../../components/shared/CourseCard";
+import { Link } from "react-router-dom";
 
 function StudentDashboard() {
   return (
@@ -7,14 +8,18 @@ function StudentDashboard() {
       <StudentNavbar />
 
       <div className="flex flex-col items-start justify-center mt-10 px-4 md:px-8">
-
         <div className="flex w-full items-center justify-between">
           <div>
             <h1 className="text-6xl font-bold text-primary">My Courses</h1>
             <p className="mt-2 text-3xl text-primary">Course overview</p>
           </div>
           <div>
-            <button className="btn btn-active btn-primary rounded-full h-16 w-48 font-semibold text-xl text-base-100">Show Grades</button>
+            <Link
+              to="/studentviewgrades"
+              className="btn btn-active btn-primary rounded-full h-16 w-48 font-semibold text-xl text-base-100"
+            >
+              Show Grades
+            </Link>
           </div>
         </div>
 
