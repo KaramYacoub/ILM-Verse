@@ -34,7 +34,7 @@ function StudentNavbar() {
         </Link>
         {/* Quizzes */}
         <Link
-          to="#"
+          to="/Studentshowquizzes"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
           <FaClipboardList color="#fff" />

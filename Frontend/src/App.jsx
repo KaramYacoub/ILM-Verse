@@ -24,6 +24,8 @@ import DeleteContent from "./pages/general/DeleteContent";
 import Settings from "./pages/general/Settings";
 import GenralEvents from "./pages/general/GenralEvents";
 import StudentViewGrades from "./pages/student/StudentViewGrades";
+import StudentShowQuizzes from "./pages/student/StudentShowQuizzes";
+import StudentQuizDetails from "./pages/student/StudentQuizDetails";
 function App() {
   return (
     <div data-theme="mytheme">
@@ -37,6 +39,8 @@ function App() {
 
         <Route path="/studentDashboard" element={<StudentDashboard />} />
         <Route path="/studentviewgrades" element={<StudentViewGrades />} />
+        <Route path="/Studentshowquizzes" element={<StudentShowQuizzes />} />
+        <Route path="/StudentQuizDetails" element={<StudentQuizDetails />} />
         <Route path="/studentcoursecontent/" element={<StudentCourseContent />}>
           <Route index element={<OverviewTab />} />
           <Route path="overview" element={<OverviewTab />} />

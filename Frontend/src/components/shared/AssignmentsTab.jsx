@@ -65,7 +65,7 @@ export default function AssignmentsTab() {
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
       <div className="overflow-x-auto rounded-lg shadow-lg">
-        <table className="table table-zebra w-full">
+        <table className="table table-zebra w-full text-center">
           <thead className="bg-primary text-base-100">
             <tr>
               <th>Assignment</th>
