@@ -11,14 +11,14 @@ import OverviewTab from "./components/shared/OverviewTab";
 import LessonsTab from "./components/shared/LessonsTab";
 import AssignmentsTab from "./components/shared/AssignmentsTab";
 import ResourcesTab from "./components/shared/ResourcesTab";
+import StudentEvents from "./pages/student/StudentEvents";
 
 import ContactUs from "./pages/shared/ContactUs";
-import Events from "./pages/shared/Events";
 import GeneralDash from "./pages/general/GeneralDash";
 import Addition from "./pages/general/Addition";
 import Deletion from "./pages/general/Deletition";
 import CourseContent from "./pages/general/CourseContent";
-import Posts from "./pages/general/Posts";
+import GeneralPosts from "./pages/general/GeneralPosts";
 import ResetPassword from "./pages/general/ResetPassword";
 import DeleteContent from "./pages/general/DeleteContent";
 import Settings from "./pages/general/Settings";
@@ -26,6 +26,8 @@ import GenralEvents from "./pages/general/GenralEvents";
 import StudentViewGrades from "./pages/student/StudentViewGrades";
 import StudentShowQuizzes from "./pages/student/StudentShowQuizzes";
 import StudentQuizDetails from "./pages/student/StudentQuizDetails";
+import Posts from "./pages/shared/Posts";
+
 function App() {
   return (
     <div data-theme="mytheme">
@@ -33,7 +35,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about us" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
-        <Route path="/events" element={<Events />} />
+        <Route path="/events" element={<StudentEvents />} />
         <Route path="/studentLogin" element={<StudentLogin />} />
         <Route path="/staffLogin" element={<StaffLogin />} />
 
@@ -41,6 +43,8 @@ function App() {
         <Route path="/studentviewgrades" element={<StudentViewGrades />} />
         <Route path="/Studentshowquizzes" element={<StudentShowQuizzes />} />
         <Route path="/StudentQuizDetails" element={<StudentQuizDetails />} />
+        <Route path="/posts" element={<Posts />} />
+        <Route path="/studentevents" element={<StudentEvents />} />
         <Route path="/studentcoursecontent/" element={<StudentCourseContent />}>
           <Route index element={<OverviewTab />} />
           <Route path="overview" element={<OverviewTab />} />
@@ -53,7 +57,7 @@ function App() {
         <Route path="/addition" element={<Addition />} />
         <Route path="/deletion" element={<Deletion />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/general-posts" element={<Posts />} />
+        <Route path="/general-posts" element={<GeneralPosts />} />
         <Route path="/delete-content" element={<DeleteContent />} />
         <Route path="/coursecontent" element={<CourseContent />} />
         <Route path="/settings" element={<Settings />} />

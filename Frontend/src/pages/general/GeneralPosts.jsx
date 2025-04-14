@@ -3,7 +3,7 @@ import { Plus, X, Pencil } from "lucide-react";
 import GeneralNav from "../../components/general/GeneralNav";
 import Post from "../../components/shared/Post";
 
-function Posts() {
+function GeneralPosts() {
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -160,4 +160,4 @@ function Posts() {
   );
 }
 
-export default Posts;
+export default GeneralPosts;

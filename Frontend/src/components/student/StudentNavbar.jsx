@@ -4,6 +4,7 @@ import {
   FaCalendarAlt,
   FaComments,
   FaSignOutAlt,
+  FaNewspaper,
 } from "react-icons/fa";
 
 import { Link } from "react-router-dom";
@@ -41,11 +42,19 @@ function StudentNavbar() {
         </Link>
         {/* Events */}
         <Link
-          to="/studentevents"
+          to="/events"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
           <FaCalendarAlt color="#fff" />
           <span>Events</span>
+        </Link>
+        {/* Posts */}
+        <Link
+          to="/posts"
+          className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
+        >
+          <FaNewspaper color="#fff" />
+          <span>Posts</span>
         </Link>
         {/* Chat */}
         <Link

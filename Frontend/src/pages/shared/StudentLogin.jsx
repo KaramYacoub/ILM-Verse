@@ -64,9 +64,9 @@ function StudentLogin() {
           </div>
 
           {/* Login button */}
-          <button className="btn w-full bg-accent text-base-100 text-2xl font-bold border-none">
+          <Link to='/studentDashboard' className="btn w-full bg-accent text-base-100 text-2xl font-bold border-none">
             Login
-          </button>
+          </Link>
         </form>
       </div>
     </div>

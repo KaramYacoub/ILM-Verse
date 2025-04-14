@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import HomeNav from "../../components/shared/HomeNav";
+import HomeNav from "../../components/student/StudentNavbar";
 import Carousel from "../../components/shared/Carousel";
+import Breadcrumbs from "../../components/shared/Breadcrumbs";
 
-function Events() {
+function StudentEvents() {
   const [currentYear, setCurrentYear] = useState("2025");
 
   const events = {
@@ -39,11 +40,18 @@ function Events() {
     2024: [], // Add 2024 events if available
     2023: [], // Add 2023 events if available
   };
+  const breadcrumbPages = [
+    { name: "My Courses", path: "/studentDashboard" },
+  ];
 
   return (
-    <div className="min-h-screen flex flex-col font-sans">
+    <div className="min-h-screen bg-base-200 flex flex-col">
       {/* Header/Navigation */}
       <HomeNav />
+      <Breadcrumbs
+        prevPages={breadcrumbPages}
+        currentPage='Events'
+      />
 
       {/* Main Content */}
       <div className="flex-grow p-4 md:p-8">
@@ -70,7 +78,7 @@ function Events() {
         </div>
 
         {/* Events List */}
-        <div className="max-w-4xl mx-auto space-y-12">
+        <div className="max-w-4xl mx-auto space-y-6">
           {events[currentYear].length > 0 ? (
             events[currentYear].map((event) => (
               <div
@@ -126,4 +134,4 @@ function Events() {
   );
 }
 
-export default Events;
+export default StudentEvents;
