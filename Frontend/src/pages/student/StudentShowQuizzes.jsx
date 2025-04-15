@@ -65,7 +65,7 @@ export default function StudentShowQuizzes() {
     }
   };
 
-  const breadcrumbPages = [{ name: "My Courses", path: "/studentDashboard" }];
+  const breadcrumbPages = [{ name: "My Courses", path: "/student-dashboard" }];
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">
       <StudentNavbar />
@@ -107,7 +107,7 @@ export default function StudentShowQuizzes() {
                       <span className="font-bold">{quiz.grad}</span>
                     ) : (
                       <a
-                        href={`/studentquizdetails`}
+                        href={`/student-quiz-details`}
                         className="btn btn-primary btn-sm"
                       >
                         Start

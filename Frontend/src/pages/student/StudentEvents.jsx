@@ -41,7 +41,7 @@ function StudentEvents() {
     2023: [], // Add 2023 events if available
   };
   const breadcrumbPages = [
-    { name: "My Courses", path: "/studentDashboard" },
+    { name: "My Courses", path: "/student-dashboard" },
   ];
 
   return (

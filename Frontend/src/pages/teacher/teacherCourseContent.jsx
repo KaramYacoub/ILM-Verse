@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Breadcrumbs from "../../components/shared/Breadcrumbs";
-import StudentNavbar from "../../components/student/StudentNavbar";
+import TeacherNavbar from "../../components/teacher/TeacherNavbar";
 import NavigationTabs from "../../components/student/StudentNavigationTabs";
 
 // sample course data
@@ -115,18 +115,13 @@ const courseData = {
   ],
 };
 
-function StudentCourseContent() {
-  const breadcrumbPages = [
-    { name: "My Courses", path: "/student-dashboard" },
-  ];
+function TeacherCourseContent() {
+  const breadcrumbPages = [{ name: "My Courses", path: "/teacher-dashboard" }];
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col justify-start pb-5">
-      <StudentNavbar />
-      <Breadcrumbs
-        prevPages={breadcrumbPages}
-        currentPage={courseData.name}
-      />
+      <TeacherNavbar />
+      <Breadcrumbs prevPages={breadcrumbPages} currentPage={courseData.name} />
 
       <div className="container mx-auto px-4">
         {/* Course Header */}
@@ -146,7 +141,7 @@ function StudentCourseContent() {
         </div>
 
         {/* NavigationTabs */}
-        <NavigationTabs />
+        <NavigationTabs to="teacher-course-content" />
 
         {/* Tab Content */}
         <Outlet context={{ courseData }} />
@@ -155,4 +150,4 @@ function StudentCourseContent() {
   );
 }
 
-export default StudentCourseContent;
+export default TeacherCourseContent;

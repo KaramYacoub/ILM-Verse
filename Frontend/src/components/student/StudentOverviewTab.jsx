@@ -1,6 +1,6 @@
 import { useOutletContext, useNavigate } from "react-router-dom";
 
-export default function OverviewTab() {
+function StudentOverviewTab() {
   const { courseData } = useOutletContext();
   const navigate = useNavigate();
 
@@ -24,7 +24,7 @@ export default function OverviewTab() {
                 <button
                   className="btn btn-primary text-lg btn-md"
                   onClick={() =>
-                    navigate("/studentcoursecontent/lessons", {
+                    navigate("/student-course-content/student-lessons", {
                       state: { unit: unit },
                     })
                   }
@@ -39,3 +39,5 @@ export default function OverviewTab() {
     </div>
   );
 }
+
+export default StudentOverviewTab;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Download } from "lucide-react";
 
-export default function AssignmentsTab() {
+function StudentAssignmentsTab() {
   const { courseData } = useOutletContext();
   const [selectedAssignment, setSelectedAssignment] = useState(null);
 
@@ -51,10 +51,10 @@ export default function AssignmentsTab() {
       return (
         <label
           htmlFor="submit-modal"
-          className="btn btn-primary btn-sm"
+          className="btn btn-primary btn-sm w-full h-full"
           onClick={() => setSelectedAssignment(assignment)}
         >
-          Submit
+          View and Submit
         </label>
       );
     } else {
@@ -155,3 +155,5 @@ export default function AssignmentsTab() {
     </div>
   );
 }
+
+export default StudentAssignmentsTab;

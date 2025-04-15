@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 
-function ResourcesTab() {
+function StudentResourcesTab() {
   const location = useLocation();
   const unit = location.state?.unit;
 
@@ -35,4 +35,4 @@ function ResourcesTab() {
   );
 }
 
-export default ResourcesTab;
+export default StudentResourcesTab;

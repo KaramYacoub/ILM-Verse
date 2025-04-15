@@ -53,7 +53,7 @@ function StudentViewGrades() {
       },
     ],
   };
-  const breadcrumbPages = [{ name: "My Courses", path: "/studentDashboard" }];
+  const breadcrumbPages = [{ name: "My Courses", path: "/student-dashboard" }];
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">

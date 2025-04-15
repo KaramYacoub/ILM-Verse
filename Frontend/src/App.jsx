@@ -1,17 +1,24 @@
 import { Routes, Route } from "react-router-dom";
+
 import Home from "./pages/shared/Home";
 import Footer from "./components/shared/Footer";
 import StudentLogin from "./pages/shared/studentLogin";
 import StaffLogin from "./pages/shared/StaffLogin";
 import AboutUs from "./pages/shared/AboutUs";
-import StudentDashboard from "./pages/student/StudentDashboard";
 
-import StudentCourseContent from "./pages/student/StudentCourseContent";
-import OverviewTab from "./components/shared/OverviewTab";
-import LessonsTab from "./components/shared/LessonsTab";
-import AssignmentsTab from "./components/shared/AssignmentsTab";
-import ResourcesTab from "./components/shared/ResourcesTab";
+import StudentDashboard from "./pages/student/StudentDashboard";
+import StudentViewGrades from "./pages/student/StudentViewGrades";
 import StudentEvents from "./pages/student/StudentEvents";
+import StudentShowQuizzes from "./pages/student/StudentShowQuizzes";
+import StudentQuizDetails from "./pages/student/StudentQuizDetails";
+import StudentCourseContent from "./pages/student/StudentCourseContent";
+import StudentOverviewTab from "./components/student/StudentOverviewTab";
+import StudentLessonsTab from "./components/student/StudentLessonsTab";
+import StudentAssignmentsTab from "./components/student/StudentAssignmentsTab";
+import StudentResourcesTab from "./components/student/StudentResourcesTab";
+
+// import TeacherDashboard from "./pages/teacher/TeacherDashboard";
+// import TeacherCourseContent from "./pages/teacher/teacherCourseContent";
 
 import ContactUs from "./pages/shared/ContactUs";
 import GeneralDash from "./pages/general/GeneralDash";
@@ -23,15 +30,14 @@ import ResetPassword from "./pages/general/ResetPassword";
 import DeleteContent from "./pages/general/DeleteContent";
 import Settings from "./pages/general/Settings";
 import GenralEvents from "./pages/general/GenralEvents";
-import StudentViewGrades from "./pages/student/StudentViewGrades";
-import StudentShowQuizzes from "./pages/student/StudentShowQuizzes";
-import StudentQuizDetails from "./pages/student/StudentQuizDetails";
+
 import Posts from "./pages/shared/Posts";
 
 function App() {
   return (
     <div data-theme="mytheme">
       <Routes>
+        {/* Shared Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/about us" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
@@ -39,20 +45,38 @@ function App() {
         <Route path="/studentLogin" element={<StudentLogin />} />
         <Route path="/staffLogin" element={<StaffLogin />} />
 
-        <Route path="/studentDashboard" element={<StudentDashboard />} />
-        <Route path="/studentviewgrades" element={<StudentViewGrades />} />
-        <Route path="/Studentshowquizzes" element={<StudentShowQuizzes />} />
-        <Route path="/StudentQuizDetails" element={<StudentQuizDetails />} />
+        {/* Student Routes*/}
+        <Route path="/student-dashboard" element={<StudentDashboard />} />
+        <Route path="/student-view-grades" element={<StudentViewGrades />} />
+        <Route path="/student-show-quizzes" element={<StudentShowQuizzes />} />
+        <Route path="/Student-Quiz-Details" element={<StudentQuizDetails />} />
         <Route path="/posts" element={<Posts />} />
         <Route path="/studentevents" element={<StudentEvents />} />
-        <Route path="/studentcoursecontent/" element={<StudentCourseContent />}>
-          <Route index element={<OverviewTab />} />
-          <Route path="overview" element={<OverviewTab />} />
-          <Route path="lessons" element={<LessonsTab />} />
-          <Route path="assignments" element={<AssignmentsTab />} />
-          <Route path="resources" element={<ResourcesTab />} />
+        <Route
+          path="/student-course-content/"
+          element={<StudentCourseContent />}
+        >
+          <Route index element={<StudentOverviewTab />} />
+          <Route path="student-overview" element={<StudentOverviewTab />} />
+          <Route path="student-lessons" element={<StudentLessonsTab />} />
+          <Route path="student-resources" element={<StudentResourcesTab />} />
+          <Route path="student-assignments" element={<StudentAssignmentsTab />} />
         </Route>
 
+        {/* Teacher Routes */}
+        {/* <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+        <Route
+          path="/teacher-course-content/"
+          element={<TeacherCourseContent />}
+        >
+          <Route index element={<OverviewTab />} />
+          <Route path="teacher-overview" element={<OverviewTab />} />
+          <Route path="teacher-lessons" element={<LessonsTab />} />
+          <Route path="teacher-assignments" element={<AssignmentsTab />} />
+          <Route path="teacher-resources" element={<ResourcesTab />} />
+        </Route> */}
+
+        {/* General Routes */}
         <Route path="/general-dashboard" element={<GeneralDash />} />
         <Route path="/addition" element={<Addition />} />
         <Route path="/deletion" element={<Deletion />} />

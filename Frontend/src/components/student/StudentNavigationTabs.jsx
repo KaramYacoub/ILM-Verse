@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 
-function NavigationTabs() {
+function StudentNavigationTabs() {
   const location = useLocation();
   const currentTab = location.pathname.split("/").pop(); // Get the last segment of the path
 
@@ -11,13 +11,13 @@ function NavigationTabs() {
   // The Overview tab is active if the last segment is "overview" or if there are no segments
   const isOverviewActive =
     pathSegments.length === 1 ||
-    lastSegment === "overview" ||
-    lastSegment === "coursecontent";
+    lastSegment === "student-overview" ||
+    lastSegment === "student-course-content";
 
   const navigate = useNavigate();
   function handleNavigation(tab) {
     return () => {
-      navigate(`/studentcoursecontent/${tab}`, {
+      navigate(`/student-course-content/${tab}`, {
         state: { unit: location.state?.unit },
       });
     };
@@ -26,7 +26,7 @@ function NavigationTabs() {
   return (
     <div className="tabs tabs-boxed items-center bg-base-100 mb-6 shadow-md">
       <button
-        onClick={handleNavigation("overview")}
+        onClick={handleNavigation("student-overview")}
         className={`w-full h-14 text-lg tab ${
           isOverviewActive ? "bg-accent text-primary" : "text-gray-600"
         }`}
@@ -34,19 +34,19 @@ function NavigationTabs() {
         Overview
       </button>
       <button
-        onClick={handleNavigation("lessons")}
-        disabled={isOverviewActive || currentTab === "assignments"}
+        onClick={handleNavigation("student-lessons")}
+        disabled={isOverviewActive || currentTab === "student-assignments"}
         className={`w-full h-14 text-lg tab ${
-          currentTab === "lessons" ? "bg-accent text-primary" : "text-gray-600"
+          currentTab === "student-lessons" ? "bg-accent text-primary" : "text-gray-600"
         }`}
       >
         Lessons
       </button>
       <button
-        onClick={handleNavigation("resources")}
-        disabled={isOverviewActive || currentTab === "assignments"}
+        onClick={handleNavigation("student-resources")}
+        disabled={isOverviewActive || currentTab === "student-assignments"}
         className={`w-full h-14 text-lg tab ${
-          currentTab === "resources"
+          currentTab === "student-resources"
             ? "bg-accent text-primary"
             : "text-gray-600"
         }`}
@@ -54,9 +54,9 @@ function NavigationTabs() {
         Resources
       </button>
       <button
-        onClick={handleNavigation("assignments")}
+        onClick={handleNavigation("student-assignments")}
         className={`w-full h-14 text-lg tab ${
-          currentTab === "assignments"
+          currentTab === "student-assignments"
             ? "bg-accent text-primary"
             : "text-gray-600"
         }`}
@@ -67,4 +67,4 @@ function NavigationTabs() {
   );
 }
 
-export default NavigationTabs;
+export default StudentNavigationTabs;

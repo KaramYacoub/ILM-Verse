@@ -5,6 +5,7 @@ import {
   FaComments,
   FaSignOutAlt,
   FaNewspaper,
+  FaCog,
 } from "react-icons/fa";
 
 import { Link } from "react-router-dom";
@@ -26,7 +27,7 @@ function StudentNavbar() {
       <div className="flex gap-6 text-accent text-sm items-center">
         {/* Dashboard */}
         <Link
-          to="/student-dashboard"
+          to="/teacher-dashboard"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
           <FaHome color="#fff" />
@@ -34,7 +35,7 @@ function StudentNavbar() {
         </Link>
         {/* Quizzes */}
         <Link
-          to="/student-show-quizzes"
+          to="/teacher-show-quizzes"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
           <FaClipboardList color="#fff" />
@@ -55,6 +56,14 @@ function StudentNavbar() {
         >
           <FaNewspaper color="#fff" />
           <span>Posts</span>
+        </Link>
+        {/* Settings */}
+        <Link
+          to="/settings"
+          className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
+        >
+          <FaCog color="#fff" />
+          <span>Settings</span>
         </Link>
         {/* Chat */}
         <Link

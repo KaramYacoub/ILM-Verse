@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function CourseCard({ to = "/studentcoursecontent" }) {
+function CourseCard({ to = "/student-course-content" }) {
   return (
     <div className="flex flex-col sm:flex-row items-center bg-base-100 p-4 rounded-lg shadow-sm w-full">
       <div className="w-full sm:w-32 h-32 flex items-center justify-center mb-4 sm:mb-0 sm:mr-4">

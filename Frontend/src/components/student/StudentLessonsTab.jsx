@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 
-function LessonsTab() {
+function StudentLessonsTab() {
   const location = useLocation();
   const unit = location.state?.unit;
   const [selectedLesson, setSelectedLesson] = useState(null);
@@ -49,7 +49,7 @@ function LessonsTab() {
                   <button
                     className="btn btn-secondary btn-sm"
                     onClick={() =>
-                      navigate("/studentcoursecontent/resources", {
+                      navigate("/student-course-content/student-resources", {
                         state: { unit: unit },
                       })
                     }
@@ -92,4 +92,4 @@ function LessonsTab() {
   );
 }
 
-export default LessonsTab;
+export default StudentLessonsTab;
