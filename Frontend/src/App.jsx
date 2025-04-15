@@ -12,13 +12,17 @@ import StudentEvents from "./pages/student/StudentEvents";
 import StudentShowQuizzes from "./pages/student/StudentShowQuizzes";
 import StudentQuizDetails from "./pages/student/StudentQuizDetails";
 import StudentCourseContent from "./pages/student/StudentCourseContent";
-import StudentOverviewTab from "./components/student/StudentOverviewTab";
-import StudentLessonsTab from "./components/student/StudentLessonsTab";
-import StudentAssignmentsTab from "./components/student/StudentAssignmentsTab";
-import StudentResourcesTab from "./components/student/StudentResourcesTab";
+import StudentOverviewTab from "./components/student/tabs/StudentOverviewTab";
+import StudentLessonsTab from "./components/student/tabs/StudentLessonsTab";
+import StudentAssignmentsTab from "./components/student/tabs/StudentAssignmentsTab";
+import StudentResourcesTab from "./components/student/tabs/StudentResourcesTab";
 
-// import TeacherDashboard from "./pages/teacher/TeacherDashboard";
-// import TeacherCourseContent from "./pages/teacher/teacherCourseContent";
+import TeacherDashboard from "./pages/teacher/TeacherDashboard";
+import TeacherCourseContent from "./pages/teacher/teacherCourseContent";
+import TeacherOverviewTab from "./components/teacher/tabs/TeacherOverviewTab";
+import TeacherLessonsTab from "./components/teacher/tabs/TeacherLessonsTab";
+import TeacherAssignmentsTab from "./components/teacher/tabs/TeacherAssignmentsTab";
+import TeacherResourcesTab from "./components/teacher/tabs/TeacherResourcesTab";
 
 import ContactUs from "./pages/shared/ContactUs";
 import GeneralDash from "./pages/general/GeneralDash";
@@ -64,17 +68,17 @@ function App() {
         </Route>
 
         {/* Teacher Routes */}
-        {/* <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+        <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
         <Route
           path="/teacher-course-content/"
           element={<TeacherCourseContent />}
         >
-          <Route index element={<OverviewTab />} />
-          <Route path="teacher-overview" element={<OverviewTab />} />
-          <Route path="teacher-lessons" element={<LessonsTab />} />
-          <Route path="teacher-assignments" element={<AssignmentsTab />} />
-          <Route path="teacher-resources" element={<ResourcesTab />} />
-        </Route> */}
+          <Route index element={<TeacherOverviewTab />} />
+          <Route path="teacher-overview" element={<TeacherOverviewTab />} />
+          <Route path="teacher-lessons" element={<TeacherLessonsTab />} />
+          <Route path="teacher-assignments" element={<TeacherAssignmentsTab />} />
+          <Route path="teacher-resources" element={<TeacherResourcesTab />} />
+        </Route>
 
         {/* General Routes */}
         <Route path="/general-dashboard" element={<GeneralDash />} />

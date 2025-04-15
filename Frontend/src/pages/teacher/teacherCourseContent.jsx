@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Breadcrumbs from "../../components/shared/Breadcrumbs";
 import TeacherNavbar from "../../components/teacher/TeacherNavbar";
-import NavigationTabs from "../../components/student/StudentNavigationTabs";
+import TeacherNavigationTabs from "../../components/teacher/TeacherNavigationTabs";
 
 // sample course data
 const courseData = {
@@ -141,7 +141,7 @@ function TeacherCourseContent() {
         </div>
 
         {/* NavigationTabs */}
-        <NavigationTabs to="teacher-course-content" />
+        <TeacherNavigationTabs to="teacher-course-content" />
 
         {/* Tab Content */}
         <Outlet context={{ courseData }} />
