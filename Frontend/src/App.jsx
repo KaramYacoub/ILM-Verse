@@ -20,9 +20,9 @@ import StudentResourcesTab from "./components/student/tabs/StudentResourcesTab";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
 import TeacherCourseContent from "./pages/teacher/teacherCourseContent";
 import TeacherOverviewTab from "./components/teacher/tabs/TeacherOverviewTab";
-import TeacherLessonsTab from "./components/teacher/tabs/TeacherLessonsTab";
+import TeacherUnitContentTab from "./components/teacher/tabs/TeacherUnitContentTab";
 import TeacherAssignmentsTab from "./components/teacher/tabs/TeacherAssignmentsTab";
-import TeacherResourcesTab from "./components/teacher/tabs/TeacherResourcesTab";
+import TeacherCoresStudentab from "./components/teacher/tabs/TeacherCourseStudentsTab";
 
 import ContactUs from "./pages/shared/ContactUs";
 import GeneralDash from "./pages/general/GeneralDash";
@@ -75,9 +75,9 @@ function App() {
         >
           <Route index element={<TeacherOverviewTab />} />
           <Route path="teacher-overview" element={<TeacherOverviewTab />} />
-          <Route path="teacher-lessons" element={<TeacherLessonsTab />} />
+          <Route path="teacher-unit-content" element={<TeacherUnitContentTab />} />
           <Route path="teacher-assignments" element={<TeacherAssignmentsTab />} />
-          <Route path="teacher-resources" element={<TeacherResourcesTab />} />
+          <Route path="teacher-course-students" element={<TeacherCoresStudentab />} />
         </Route>
 
         {/* General Routes */}

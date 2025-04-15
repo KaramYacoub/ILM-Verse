@@ -34,27 +34,26 @@ function TeacherNavigationTabs() {
         Overview
       </button>
       <button
-        onClick={handleNavigation("teacher-lessons")}
-        disabled={isOverviewActive || currentTab === "teacher-assignments"}
+        onClick={handleNavigation("teacher-unit-content")}
+        disabled={isOverviewActive}
         className={`w-full h-14 text-lg tab ${
-          currentTab === "teacher-lessons" ? "bg-accent text-primary" : "text-gray-600"
+          currentTab === "teacher-unit-content" ? "bg-accent text-primary" : "text-gray-600"
         }`}
       >
-        Lessons
+        Content
       </button>
       <button
-        onClick={handleNavigation("teacher-resources")}
-        disabled={isOverviewActive || currentTab === "teacher-assignments"}
+        onClick={handleNavigation("teacher-course-students")}
+        disabled={isOverviewActive}
         className={`w-full h-14 text-lg tab ${
-          currentTab === "teacher-resources"
-            ? "bg-accent text-primary"
-            : "text-gray-600"
+          currentTab === "teacher-course-students" ? "bg-accent text-primary" : "text-gray-600"
         }`}
       >
-        Resources
+        Students
       </button>
       <button
         onClick={handleNavigation("teacher-assignments")}
+        disabled={isOverviewActive}
         className={`w-full h-14 text-lg tab ${
           currentTab === "teacher-assignments"
             ? "bg-accent text-primary"

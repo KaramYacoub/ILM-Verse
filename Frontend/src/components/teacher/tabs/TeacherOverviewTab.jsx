@@ -1,8 +1,9 @@
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 function TeacherOverviewTab() {
   const { courseData } = useOutletContext();
   const navigate = useNavigate();
+
 
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
@@ -24,7 +25,7 @@ function TeacherOverviewTab() {
                 <button
                   className="btn btn-primary text-lg btn-md"
                   onClick={() =>
-                    navigate("/teacher-course-content/teacher-lessons", {
+                    navigate("/teacher-course-content/teacher-unit-content", {
                       state: { unit: unit },
                     })
                   }
@@ -35,6 +36,12 @@ function TeacherOverviewTab() {
             </div>
           </div>
         ))}
+        
+
+      {/* Add New Unit Button */}
+      <div className="mt-6 border-dashed border-2 border-red-400 text-center rounded-md py-4 cursor-pointer hover:bg-red-50 transition">
+        <button className="text-red-600 font-semibold">+ Add New Unit</button>
+      </div>
       </div>
     </div>
   );

@@ -15,14 +15,72 @@ const courseData = {
     assignments: 8,
     quizzes: 5,
   },
+  students: [
+    {
+      name: "John Smith",
+      email: "john.smith@email.com",
+    },
+    {
+      name: "Jane Doe",
+      email: "jane.doe@email.com",
+    },
+    {
+      name: "Alice Johnson",
+      email: "alice.j@email.com",
+    },
+    {
+      name: "Van Whitlock",
+      email: "vwhitlock0@umn.edu",
+    },
+    {
+      name: "Devondra Botham",
+      email: "dbotham1@google.ru",
+    },
+    {
+      name: "Rozalie Buller",
+      email: "rbuller3@simplemachines.org",
+    },
+    {
+      name: "Annamaria Vose",
+      email: "avose4@addtoany.com",
+    },
+    {
+      name: "Leonardo Nelane",
+      email: "lnelane5@shareasale.com",
+    },
+    {
+      name: "Ignacio Cortin",
+      email: "icortin6@prlog.org",
+    },
+    {
+      name: "Leeanne MacTrustie",
+      email: "lmactrustie7@samsung.com",
+    },
+    {
+      name: "Virgie Oleshunin",
+      email: "voleshunin8@fastcompany.com",
+    },
+  ],
   units: [
     {
       name: "Unit 1: Introduction to Programming",
       lessons: [
-        { title: "What is Programming?", duration: 45 },
-        { title: "Programming Languages Overview", duration: 30 },
-        { title: "Writing Your First Program", duration: 50 },
-        { title: "Debugging Basics", duration: 40 },
+        {
+          title: "What is Programming?",
+          duration: 45,
+          uploadedAt: "Apr 5, 2025",
+        },
+        {
+          title: "Programming Languages Overview",
+          duration: 30,
+          uploadedAt: "Apr 5, 2025",
+        },
+        {
+          title: "Writing Your First Program",
+          duration: 50,
+          uploadedAt: "Apr 5, 2025",
+        },
+        { title: "Debugging Basics", duration: 40, uploadedAt: "Apr 5, 2025" },
       ],
       assignments: [
         {
@@ -30,28 +88,61 @@ const courseData = {
           dueDate: "April 1, 2025",
           status: "Submitted",
           grade: "90%",
+          description:
+            "Write a basic Hello World program using your preferred language.",
+          points: 10,
         },
         {
           title: "Assignment 1.2: Debugging Practice",
           dueDate: "April 3, 2025",
           status: "Not Submitted",
           grade: "0%",
+          description:
+            "Fix syntax and logical errors in a provided code snippet.",
+          points: 15,
         },
       ],
+
       quizzes: 1,
-      resources: [
-        { title: "Intro to Programming Handbook", type: "PDF" },
-        { title: "Beginner Slides", type: "DOC" },
+      files: [
+        {
+          title: "Intro to Programming Handbook",
+          type: "PDF",
+          uploadedAt: "Apr 3, 2025",
+          pages: 3,
+        },
+        {
+          title: "Beginner Slides",
+          type: "DOC",
+          uploadedAt: "Apr 3, 2025",
+          pages: 5,
+        },
       ],
     },
     {
       name: "Unit 2: Variables and Data Types",
       lessons: [
-        { title: "Variables in Programming", duration: 40 },
-        { title: "Primitive Data Types", duration: 45 },
-        { title: "Type Conversion", duration: 35 },
-        { title: "Strings and Numbers", duration: 50 },
-        { title: "Booleans and Comparisons", duration: 45 },
+        {
+          title: "Variables in Programming",
+          duration: 40,
+          uploadedAt: "Apr 5, 2025",
+        },
+        {
+          title: "Primitive Data Types",
+          duration: 45,
+          uploadedAt: "Apr 5, 2025",
+        },
+        { title: "Type Conversion", duration: 35, uploadedAt: "Apr 5, 2025" },
+        {
+          title: "Strings and Numbers",
+          duration: 50,
+          uploadedAt: "Apr 5, 2025",
+        },
+        {
+          title: "Booleans and Comparisons",
+          duration: 45,
+          uploadedAt: "Apr 5, 2025",
+        },
       ],
       assignments: [
         {
@@ -59,32 +150,55 @@ const courseData = {
           dueDate: "April 7, 2025",
           status: "Pending",
           grade: "submit",
+          description:
+            "Declare and initialize various types of variables with meaningful data.",
+          points: 10,
         },
         {
           title: "Assignment 2.2: Data Types Quiz",
           dueDate: "April 9, 2025",
           status: "Pending",
           grade: "submit",
+          description:
+            "Answer multiple choice and short answer questions on data types.",
+          points: 20,
         },
         {
           title: "Assignment 2.3: String Challenges",
           dueDate: "April 11, 2025",
           status: "Submitted",
           grade: "85%",
+          description:
+            "Solve string manipulation problems using basic functions.",
+          points: 25,
         },
       ],
       quizzes: 1,
-      resources: [
-        { title: "Data Types Guide", type: "PDF" },
-        { title: "Type Conversion Cheatsheet", type: "DOC" },
+      files: [
+        {
+          title: "Data Types Guide",
+          type: "PDF",
+          uploadedAt: "Apr 4, 2025",
+          pages: 4,
+        },
+        {
+          title: "Type Conversion Cheatsheet",
+          type: "DOC",
+          uploadedAt: "Apr 4, 2025",
+          pages: 2,
+        },
       ],
     },
     {
       name: "Unit 3: Control Structures",
       lessons: [
-        { title: "If Statements", duration: 40 },
-        { title: "Loops: For and While", duration: 45 },
-        { title: "Nested Conditions", duration: 50 },
+        { title: "If Statements", duration: 40, uploadedAt: "Apr 5, 2025" },
+        {
+          title: "Loops: For and While",
+          duration: 45,
+          uploadedAt: "Apr 5, 2025",
+        },
+        { title: "Nested Conditions", duration: 50, uploadedAt: "Apr 5, 2025" },
       ],
       assignments: [
         {
@@ -92,24 +206,41 @@ const courseData = {
           dueDate: "April 14, 2025",
           status: "Pending",
           grade: "submit",
+          description:
+            "Write conditional statements to solve decision-making problems.",
+          points: 15,
         },
         {
           title: "Assignment 3.2: Looping Tasks",
           dueDate: "April 16, 2025",
           status: "Submitted",
           grade: "100%",
+          description: "Use loops to complete repetitive programming tasks.",
+          points: 20,
         },
         {
           title: "Assignment 3.3: Control Structure Quiz",
           dueDate: "April 18, 2025",
           status: "Not Submitted",
           grade: "0%",
+          description: "Quiz covering if-else, loops, and nested structures.",
+          points: 30,
         },
       ],
       quizzes: 3,
-      resources: [
-        { title: "Control Structures Slides", type: "DOC" },
-        { title: "Loop Examples PDF", type: "PDF" },
+      files: [
+        {
+          title: "Control Structures Slides",
+          type: "DOC",
+          uploadedAt: "Apr 4, 2025",
+          pages: 6,
+        },
+        {
+          title: "Loop Examples PDF",
+          type: "PDF",
+          uploadedAt: "Apr 4, 2025",
+          pages: 3,
+        },
       ],
     },
   ],
@@ -130,13 +261,7 @@ function TeacherCourseContent() {
             {courseData.name}
           </h1>
           <p className="text-base-100 mb-4">
-            {courseData.teacher} • {courseData.grade} • {courseData.semester}
-          </p>
-
-          <p className="text-accent">
-            • {courseData.stats.units} Units • {courseData.stats.lessons}{" "}
-            Lessons • {courseData.stats.assignments} Assignments •{" "}
-            {courseData.stats.quizzes} Quizzes
+            {courseData.grade} • {courseData.semester}
           </p>
         </div>
 
