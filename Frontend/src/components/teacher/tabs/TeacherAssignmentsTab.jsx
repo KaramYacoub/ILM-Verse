@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { Calendar, FileText, Trash2, Download, X } from "lucide-react";
+import { Calendar, FileText, Trash2, X } from "lucide-react";
 import { useState } from "react";
 
 export default function TeacherAssignmentsTab() {
@@ -13,11 +13,6 @@ export default function TeacherAssignmentsTab() {
     dueDate: "",
     points: "",
   });
-
-  const handleDownload = (title) => {
-    // Replace with actual file download logic
-    alert(`Downloading: ${title}`);
-  };
 
   const handleDelete = (title) => {
     setAssignments((prev) => prev.filter((a) => a.title !== title));
@@ -74,19 +69,20 @@ export default function TeacherAssignmentsTab() {
         <div className="grid gap-4 mb-6">
           <h2 className="text-3xl text-primary font-semibold">Assignments</h2>
 
-          {assignments.map((assignment, idx) => (
+          {assignments.map((assignment, i) => (
             <div
-              key={idx}
-              className="border border-base-300 p-4 rounded-lg shadow-sm bg-base-100 flex justify-between items-start"
+              key={i}
+              className="border border-base-300 p-4 rounded-lg shadow-sm bg-base-100 flex justify-between items-center"
             >
-              <div
-                className="space-y-1 cursor-pointer"
-                onClick={() => handleDownload(assignment.title)}
-              >
-                <h3 className="text-lg font-bold flex items-center gap-2 text-primary hover:underline">
+              <div className="space-y-1 cursor-pointer">
+                <a
+                  href={`/assignments/${assignment.title}.pdf`}
+                  download={`${assignment.title}.pdf`}
+                  className="text-lg font-bold flex items-center gap-2 text-primary hover:underline"
+                >
                   <FileText className="w-5 h-5" />
                   {assignment.title}
-                </h3>
+                </a>
                 <p className="text-gray-700">
                   {assignment.description || "No description available."}
                 </p>
@@ -99,20 +95,20 @@ export default function TeacherAssignmentsTab() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 mt-1">
-                <button
+              {/* <div className="flex items-center mt-1"> */}
+              {/* <button
                   onClick={() => handleDownload(assignment.title)}
                   className="btn btn-sm btn-outline"
                 >
                   <Download className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleDelete(assignment.title)}
-                  className="btn btn-sm btn-outline btn-error"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
+                </button> */}
+              <button
+                onClick={() => handleDelete(assignment.title)}
+                className="btn btn-sm btn-outline btn-error"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+              {/* </div> */}
             </div>
           ))}
         </div>
@@ -198,10 +194,24 @@ export default function TeacherAssignmentsTab() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Upload Media:
+                <label className="form-control w-full">
+                  <span className="label-text mb-1 font-medium  flex items-center gap-2">
+                    {/* <span>
+                      <File />
+                    </span>{" "} */}
+                    Upload File
+                  </span>
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    className="file-input file-input-bordered w-full"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      console.log("Selected file:", file);
+                      // handle file upload logic here
+                    }}
+                  />
                 </label>
-                <button className="btn btn-outline w-full">Choose File</button>
               </div>
             </div>
 
