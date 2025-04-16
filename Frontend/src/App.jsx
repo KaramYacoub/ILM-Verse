@@ -18,11 +18,15 @@ import StudentAssignmentsTab from "./components/student/tabs/StudentAssignmentsT
 import StudentResourcesTab from "./components/student/tabs/StudentResourcesTab";
 
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
+import TeacherEvents from "./pages/teacher/teacherEvents";
+import TeacherPosts from "./pages/teacher/teacherPosts";
 import TeacherCourseContent from "./pages/teacher/teacherCourseContent";
 import TeacherOverviewTab from "./components/teacher/tabs/TeacherOverviewTab";
 import TeacherUnitContentTab from "./components/teacher/tabs/TeacherUnitContentTab";
 import TeacherAssignmentsTab from "./components/teacher/tabs/TeacherAssignmentsTab";
 import TeacherCoresStudentab from "./components/teacher/tabs/TeacherCourseStudentsTab";
+import TeacherQuizzesTab from "./components/teacher/tabs/TeacherQuizzesTab";
+import TeacherAddQuizzes from "./components/teacher/TeacherAddQuiz";
 
 import ContactUs from "./pages/shared/ContactUs";
 import GeneralDash from "./pages/general/GeneralDash";
@@ -64,21 +68,40 @@ function App() {
           <Route path="student-overview" element={<StudentOverviewTab />} />
           <Route path="student-lessons" element={<StudentLessonsTab />} />
           <Route path="student-resources" element={<StudentResourcesTab />} />
-          <Route path="student-assignments" element={<StudentAssignmentsTab />} />
+          <Route
+            path="student-assignments"
+            element={<StudentAssignmentsTab />}
+          />
         </Route>
 
         {/* Teacher Routes */}
         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+        <Route path="/teacher-events" element={<TeacherEvents />} />
+        <Route path="/teacher-posts" element={<TeacherPosts />} />
         <Route
           path="/teacher-course-content/"
           element={<TeacherCourseContent />}
         >
           <Route index element={<TeacherOverviewTab />} />
           <Route path="teacher-overview" element={<TeacherOverviewTab />} />
-          <Route path="teacher-unit-content" element={<TeacherUnitContentTab />} />
-          <Route path="teacher-assignments" element={<TeacherAssignmentsTab />} />
-          <Route path="teacher-course-students" element={<TeacherCoresStudentab />} />
+          <Route
+            path="teacher-unit-content"
+            element={<TeacherUnitContentTab />}
+          />
+          <Route
+            path="teacher-course-students"
+            element={<TeacherCoresStudentab />}
+          />
+          <Route
+            path="teacher-assignments"
+            element={<TeacherAssignmentsTab />}
+          />
+          <Route path="teacher-quizzes" element={<TeacherQuizzesTab />} />
         </Route>
+        <Route
+          path="/teacher-course-content/teacher-quizzes/teacher-add-quiz"
+          element={<TeacherAddQuizzes />}
+        />
 
         {/* General Routes */}
         <Route path="/general-dashboard" element={<GeneralDash />} />

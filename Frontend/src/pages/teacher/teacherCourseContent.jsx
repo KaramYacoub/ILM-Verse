@@ -5,7 +5,7 @@ import TeacherNavigationTabs from "../../components/teacher/TeacherNavigationTab
 
 // sample course data
 const courseData = {
-  name: "Course name",
+  name: "Introduction to Programming",
   teacher: "teacher name",
   grade: "Grade 10",
   semester: "Fall Semester 2025",
@@ -13,7 +13,7 @@ const courseData = {
     units: 3,
     lessons: 12,
     assignments: 8,
-    quizzes: 5,
+    // numberOfQuizzes: 5,
   },
   students: [
     {
@@ -102,8 +102,16 @@ const courseData = {
           points: 15,
         },
       ],
-
-      quizzes: 1,
+      quizzes: [
+        {
+          title: "Intro to Programming Quiz",
+          description: "Basic concepts of programming and algorithms",
+          dueDate: "April 5, 2025",
+          points: 20,
+          startAt: "09:00 AM",
+          endAt: "11:59 PM",
+        },
+      ],
       files: [
         {
           title: "Intro to Programming Handbook",
@@ -173,7 +181,24 @@ const courseData = {
           points: 25,
         },
       ],
-      quizzes: 1,
+      quizzes: [
+        {
+          title: "Data Types Quiz",
+          description: "Test your knowledge of variables and data types",
+          dueDate: "April 10, 2025",
+          points: 25,
+          startAt: "09:00 AM",
+          endAt: "11:59 PM",
+        },
+        {
+          title: "Strings and Numbers Quiz",
+          description: "Operations with strings and numeric data types",
+          dueDate: "April 15, 2025",
+          points: 30,
+          startAt: "09:00 AM",
+          endAt: "11:59 PM",
+        },
+      ],
       files: [
         {
           title: "Data Types Guide",
@@ -227,7 +252,24 @@ const courseData = {
           points: 30,
         },
       ],
-      quizzes: 3,
+      quizzes: [
+        {
+          title: "Conditionals Quiz",
+          description: "If-else statements and logical operators",
+          dueDate: "April 17, 2025",
+          points: 20,
+          startAt: "09:00 AM",
+          endAt: "11:59 PM",
+        },
+        {
+          title: "Loops Quiz",
+          description: "For and while loops with different scenarios",
+          dueDate: "April 20, 2025",
+          points: 25,
+          startAt: "09:00 AM",
+          endAt: "11:59 PM",
+        },
+      ],
       files: [
         {
           title: "Control Structures Slides",

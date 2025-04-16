@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Carousel from "../../components/shared/Carousel";
 import Breadcrumbs from "../../components/shared/Breadcrumbs";
-import StudentNavbar from "../../components/student/StudentNavbar";
+import TeacherNavbar from "../../components/teacher/TeacherNavbar";
 
-function StudentEvents() {
+function TeacherEvents() {
   const [currentYear, setCurrentYear] = useState("2025");
 
   const events = {
@@ -41,13 +41,13 @@ function StudentEvents() {
     2023: [], // Add 2023 events if available
   };
   const breadcrumbPages = [
-    { name: "My Courses", path: "/student-dashboard" },
+    { name: "My Courses", path: "/teacher-dashboard" },
   ];
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col">
       {/* Header/Navigation */}
-      <StudentNavbar />
+      <TeacherNavbar />
       <Breadcrumbs
         prevPages={breadcrumbPages}
         currentPage='Events'
@@ -134,4 +134,4 @@ function StudentEvents() {
   );
 }
 
-export default StudentEvents;
+export default TeacherEvents;

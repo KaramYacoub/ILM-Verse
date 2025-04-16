@@ -37,7 +37,9 @@ function TeacherNavigationTabs() {
         onClick={handleNavigation("teacher-unit-content")}
         disabled={isOverviewActive}
         className={`w-full h-14 text-lg tab ${
-          currentTab === "teacher-unit-content" ? "bg-accent text-primary" : "text-gray-600"
+          currentTab === "teacher-unit-content"
+            ? "bg-accent text-primary"
+            : "text-gray-600"
         }`}
       >
         Content
@@ -46,7 +48,9 @@ function TeacherNavigationTabs() {
         onClick={handleNavigation("teacher-course-students")}
         disabled={isOverviewActive}
         className={`w-full h-14 text-lg tab ${
-          currentTab === "teacher-course-students" ? "bg-accent text-primary" : "text-gray-600"
+          currentTab === "teacher-course-students"
+            ? "bg-accent text-primary"
+            : "text-gray-600"
         }`}
       >
         Students
@@ -61,6 +65,17 @@ function TeacherNavigationTabs() {
         }`}
       >
         Assignments
+      </button>
+      <button
+        onClick={handleNavigation("teacher-quizzes")}
+        disabled={isOverviewActive}
+        className={`w-full h-14 text-lg tab ${
+          currentTab === "teacher-quizzes"
+            ? "bg-accent text-primary"
+            : "text-gray-600"
+        }`}
+      >
+        Quizzez
       </button>
     </div>
   );

@@ -10,7 +10,7 @@ import {
 
 import { Link } from "react-router-dom";
 
-function StudentNavbar() {
+function TeacherNavbar() {
   return (
     <div className="bg-primary px-4 py-3 shadow-md w-full flex justify-between">
       {/* Left: Profile */}
@@ -20,7 +20,7 @@ function StudentNavbar() {
             <span className="text-2xl">👤</span>
           </div>
         </div>
-        <span className="font-bold text-base-100">Username</span>
+        <span className="font-bold text-base-100">Teacher</span>
       </div>
 
       {/* Center: Nav Items */}
@@ -33,17 +33,9 @@ function StudentNavbar() {
           <FaHome color="#fff" />
           <span>Dashboard</span>
         </Link>
-        {/* Quizzes */}
-        <Link
-          to="/teacher-show-quizzes"
-          className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
-        >
-          <FaClipboardList color="#fff" />
-          <span>Quizzes</span>
-        </Link>
         {/* Events */}
         <Link
-          to="/events"
+          to="/teacher-events"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
           <FaCalendarAlt color="#fff" />
@@ -51,7 +43,7 @@ function StudentNavbar() {
         </Link>
         {/* Posts */}
         <Link
-          to="/posts"
+          to="/teacher-posts"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
           <FaNewspaper color="#fff" />
@@ -59,7 +51,7 @@ function StudentNavbar() {
         </Link>
         {/* Settings */}
         <Link
-          to="/settings"
+          to="/teacher-settings"
           className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
         >
           <FaCog color="#fff" />
@@ -87,4 +79,4 @@ function StudentNavbar() {
   );
 }
 
-export default StudentNavbar;
+export default TeacherNavbar;

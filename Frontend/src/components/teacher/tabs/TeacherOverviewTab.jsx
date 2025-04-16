@@ -18,7 +18,7 @@ function TeacherOverviewTab() {
                   <h3 className="card-title text-xl">{unit.name}</h3>
                   <p className="text-lg text-gray-500">
                     {unit.lessons.length} Lessons • {unit.assignments.length}{" "}
-                    Assignments • {unit.quizzes}{" "}
+                    Assignments • {unit.quizzes.length}{" "}
                     {unit.quizzes > 1 ? "Quizzes" : "Quiz"}
                   </p>
                 </div>

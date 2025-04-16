@@ -1,6 +1,5 @@
 import TeacherNavbar from "../../components/teacher/TeacherNavbar";
 import CourseCard from "../../components/shared/CourseCard";
-// import { Link } from "react-router-dom";
 
 function TeacherDashboard() {
   return (
@@ -13,14 +12,6 @@ function TeacherDashboard() {
             <h1 className="text-6xl font-bold text-primary">My Courses</h1>
             <p className="mt-2 text-3xl text-primary">Course overview</p>
           </div>
-          {/* <div>
-            <Link
-              to="/studentviewgrades"
-              className="btn btn-active btn-primary rounded-full h-16 w-48 font-semibold text-xl text-base-100"
-            >
-              Show Grades
-            </Link>
-          </div> */}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 w-full">
