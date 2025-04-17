@@ -1,20 +1,34 @@
 import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import StudentReportModal from "../ReportModal";
-// import { Search } from "lucide-react";
+import StudentMarksModal from "../StudentMarksModal"; // Import the new component
+import { MoreHorizontal } from "lucide-react";
 
 function TeacherCourseStudentsTab() {
   const { courseData } = useOutletContext(); // gets students from context
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // Modal states
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isMarksModalOpen, setIsMarksModalOpen] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   const course = "Math - Grade 10";
+  
   const handleReportClick = (student) => {
     setSelectedStudent(student);
-    setIsModalOpen(true);
+    setIsReportModalOpen(true);
+  };
+  
+  const handleAddMarks = (student) => {
+    setSelectedStudent(student);
+    setIsMarksModalOpen(true);
+  };
+
+  const handleChat = (student) => {
+    // Your existing chat logic here
+    console.log(`Chatting with ${student}`);
   };
 
   const studentsPerPage = 3;
@@ -47,27 +61,10 @@ function TeacherCourseStudentsTab() {
           }}
         />
       </div>
-      {/* <div className="w-full mb-4">
-        <div className="relative w-full flex items-center">
-          <input
-            type="text"
-            placeholder="Search students..."
-            className="input input-bordered w-full pr-12"
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-          />
-          <button className="absolute right-2 btn btn-sm btn-primary rounded-l-none px-3">
-            <Search size={18} />
-          </button>
-        </div>
-      </div> */}
 
       {/* Table */}
-      <div className="overflow-x-auto rounded border border-base-300">
-        <table className="table table-zebra-zebra w-full text-center">
+      <div className="rounded border border-base-300">
+        <table className="table table-zebra w-full text-center">
           <thead className="bg-base-300">
             <tr>
               <th>Name</th>
@@ -80,23 +77,40 @@ function TeacherCourseStudentsTab() {
               <tr key={index}>
                 <td>{student.name}</td>
                 <td>{student.email}</td>
-                <td className="flex justify-center gap-2">
-                  <button className="btn btn-sm btn-primary">Chat</button>
-                  <button
-                    className="btn btn-sm btn-accent"
-                    onClick={() => handleReportClick(student.name)}
-                  >
-                    Report
-                  </button>
+                <td>
+                  <div className="dropdown dropdown-end">
+                    <button tabIndex={0} className="btn btn-sm">
+                      <MoreHorizontal size={16} />
+                    </button>
+                    <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-40">
+                      <li>
+                        <button onClick={() => handleChat(student.name)}>Chat</button>
+                      </li>
+                      <li>
+                        <button onClick={() => handleReportClick(student.name)}>Report</button>
+                      </li>
+                      <li>
+                        <button onClick={() => handleAddMarks(student.name)}>Add marks</button>
+                      </li>
+                    </ul>
+                  </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
 
+        {/* Modals */}
         <StudentReportModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          isOpen={isReportModalOpen}
+          onClose={() => setIsReportModalOpen(false)}
+          student={selectedStudent}
+          course={course}
+        />
+        
+        <StudentMarksModal
+          isOpen={isMarksModalOpen}
+          onClose={() => setIsMarksModalOpen(false)}
           student={selectedStudent}
           course={course}
         />
