@@ -63,7 +63,7 @@ function TeacherCourseStudentsTab() {
       </div>
 
       {/* Table */}
-      <div className="rounded border border-base-300">
+      <div className="rounded border border-base-300 overflow-x-auto">
         <table className="table table-zebra w-full text-center">
           <thead className="bg-base-300">
             <tr>

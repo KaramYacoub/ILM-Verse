@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Carousel from "../../components/shared/Carousel";
-import StudentNavbar from "../../components/student/StudentNavbar";
+import HomeNav from "../../components/shared/HomeNav";
 
-function StudentEvents() {
+function SharedEvents() {
   const [currentYear, setCurrentYear] = useState("2025");
 
   const events = {
@@ -43,7 +43,7 @@ function StudentEvents() {
   return (
     <div className="min-h-screen bg-base-200 flex flex-col">
       {/* Header/Navigation */}
-      <StudentNavbar />
+      <HomeNav />
 
       {/* Main Content */}
       <div className="flex-grow p-4 md:p-8">
@@ -126,4 +126,4 @@ function StudentEvents() {
   );
 }
 
-export default StudentEvents;
+export default SharedEvents;

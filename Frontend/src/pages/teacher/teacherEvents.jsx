@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Carousel from "../../components/shared/Carousel";
-import Breadcrumbs from "../../components/shared/Breadcrumbs";
 import TeacherNavbar from "../../components/teacher/TeacherNavbar";
 
 function TeacherEvents() {
@@ -40,18 +39,11 @@ function TeacherEvents() {
     2024: [], // Add 2024 events if available
     2023: [], // Add 2023 events if available
   };
-  const breadcrumbPages = [
-    { name: "My Courses", path: "/teacher-dashboard" },
-  ];
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col">
       {/* Header/Navigation */}
       <TeacherNavbar />
-      <Breadcrumbs
-        prevPages={breadcrumbPages}
-        currentPage='Events'
-      />
 
       {/* Main Content */}
       <div className="flex-grow p-4 md:p-8">

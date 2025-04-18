@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import Breadcrumbs from "../../components/shared/Breadcrumbs";
 import StudentNavbar from "../../components/student/StudentNavbar";
 import NavigationTabs from "../../components/student/StudentNavigationTabs";
 
@@ -116,19 +115,12 @@ const courseData = {
 };
 
 function StudentCourseContent() {
-  const breadcrumbPages = [
-    { name: "My Courses", path: "/student-dashboard" },
-  ];
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col justify-start pb-5">
       <StudentNavbar />
-      <Breadcrumbs
-        prevPages={breadcrumbPages}
-        currentPage={courseData.name}
-      />
 
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto p-6 mt-16">
         {/* Course Header */}
         <div className="bg-primary flex flex-col items-center rounded-lg shadow-md p-6 mb-6">
           <h1 className="text-3xl text-accent font-bold mb-2">

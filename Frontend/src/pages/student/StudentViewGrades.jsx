@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
 import StudentNavbar from "../../components/student/StudentNavbar";
-import Breadcrumbs from "../../components/shared/Breadcrumbs";
 
 function StudentViewGrades() {
   const student = {
@@ -12,6 +10,10 @@ function StudentViewGrades() {
       {
         name: "Mathematics (Algebra II)",
         teacher: "Mrs. Rodriguez",
+        term1: 37,
+        term2: 38,
+        term3: 39,
+        final: 76,
         grade: 94,
         classAvg: 85,
         status: "Excellent",
@@ -19,6 +21,10 @@ function StudentViewGrades() {
       {
         name: "Physics",
         teacher: "Mr. Johnson",
+        term1: 36,
+        term2: 37,
+        term3: 38,
+        final: 75,
         grade: 92,
         classAvg: 83,
         status: "Excellent",
@@ -26,6 +32,10 @@ function StudentViewGrades() {
       {
         name: "English Literature",
         teacher: "Ms. Williams",
+        term1: 35,
+        term2: 36,
+        term3: 37,
+        final: 74,
         grade: 90,
         classAvg: 82,
         status: "Excellent",
@@ -33,6 +43,10 @@ function StudentViewGrades() {
       {
         name: "World History",
         teacher: "Mr. Patel",
+        term1: 34,
+        term2: 35,
+        term3: 36,
+        final: 72,
         grade: 88,
         classAvg: 81,
         status: "Good",
@@ -40,6 +54,10 @@ function StudentViewGrades() {
       {
         name: "Computer Science",
         teacher: "Mrs. Kim",
+        term1: 38,
+        term2: 39,
+        term3: 40,
+        final: 78,
         grade: 95,
         classAvg: 79,
         status: "Excellent",
@@ -47,24 +65,21 @@ function StudentViewGrades() {
       {
         name: "Physical Education",
         teacher: "Coach Garcia",
+        term1: 35,
+        term2: 36,
+        term3: 37,
+        final: 71,
         grade: 89,
         classAvg: 86,
         status: "Good",
       },
     ],
   };
-  const breadcrumbPages = [{ name: "My Courses", path: "/student-dashboard" }];
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">
       <StudentNavbar />
-
-      <Breadcrumbs
-        prevPages={breadcrumbPages}
-        currentPage="View Grades"
-        styles="self-start"
-      />
-      <h1 className="text-4xl font-bold text-primary self-start ml-5">
+      <h1 className="text-4xl font-bold text-primary self-start mt-10 ml-5">
         My Grades
       </h1>
 
@@ -90,14 +105,18 @@ function StudentViewGrades() {
         </div>
 
         <div className="overflow-x-auto rounded-md shadow-md bg-base-300">
-          <table className="table w-full">
+          <table className="table w-full text-center">
             <thead className="bg-primary text-base-100 text-base">
               <tr>
                 <th>Course</th>
                 <th>Teacher</th>
+                <th>Term 1</th>
+                <th>Term 2</th>
+                <th>Term 3</th>
+                <th>Final</th>
                 <th>Grade</th>
                 <th>Class Avg</th>
-                <th>Status</th>
+                {/* <th>Status</th> */}
               </tr>
             </thead>
             <tbody>
@@ -105,28 +124,25 @@ function StudentViewGrades() {
                 <tr key={i} className="hover">
                   <td>{course.name}</td>
                   <td>{course.teacher}</td>
-                  <td className="text-primary font-semibold">{course.grade}</td>
+                  <td>{course.term1}/40</td>
+                  <td>{course.term2}/40</td>
+                  <td>{course.term3}/40</td>
+                  <td>{course.final}/80</td>
+                  <td className="text-primary font-bold">{course.grade}</td>
                   <td>{course.classAvg}</td>
-                  <td
-                    className={
-                      course.status === "Excellent"
-                        ? "text-green-600 font-medium"
-                        : "text-blue-600 font-medium"
-                    }
-                  >
-                    {course.status}
-                  </td>
+                  {/* <td>
+                    <span
+                      className={`badge badge-sm ${
+                        course.status === "Excellent" ? "badge-success" : "badge-warning"
+                      }`}
+                    >
+                      {course.status}
+                    </span>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-
-        <div className="flex justify-end flex-wrap gap-4">
-          <Link to="#" className="btn btn-outline btn-primary">
-            Contact Teachers
-          </Link>
-          <button className="btn btn-primary">Download Report Card</button>
         </div>
       </div>
     </div>

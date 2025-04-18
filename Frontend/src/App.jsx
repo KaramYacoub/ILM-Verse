@@ -5,6 +5,7 @@ import Footer from "./components/shared/Footer";
 import StudentLogin from "./pages/shared/studentLogin";
 import StaffLogin from "./pages/shared/StaffLogin";
 import AboutUs from "./pages/shared/AboutUs";
+import SharedEvents from "./pages/shared/SharedEvents";
 
 import StudentDashboard from "./pages/student/StudentDashboard";
 import StudentViewGrades from "./pages/student/StudentViewGrades";
@@ -19,7 +20,6 @@ import StudentResourcesTab from "./components/student/tabs/StudentResourcesTab";
 
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
 import TeacherEvents from "./pages/teacher/teacherEvents";
-import TeacherPosts from "./pages/teacher/teacherPosts";
 import TeacherCourseContent from "./pages/teacher/teacherCourseContent";
 import TeacherOverviewTab from "./components/teacher/tabs/TeacherOverviewTab";
 import TeacherUnitContentTab from "./components/teacher/tabs/TeacherUnitContentTab";
@@ -39,7 +39,6 @@ import DeleteContent from "./pages/general/DeleteContent";
 import Settings from "./pages/general/Settings";
 import GenralEvents from "./pages/general/GenralEvents";
 
-import Posts from "./pages/shared/Posts";
 
 function App() {
   return (
@@ -49,7 +48,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about us" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
-        <Route path="/events" element={<StudentEvents />} />
+        <Route path="/shared-events" element={<SharedEvents />} />
         <Route path="/studentLogin" element={<StudentLogin />} />
         <Route path="/staffLogin" element={<StaffLogin />} />
 
@@ -58,7 +57,6 @@ function App() {
         <Route path="/student-view-grades" element={<StudentViewGrades />} />
         <Route path="/student-show-quizzes" element={<StudentShowQuizzes />} />
         <Route path="/Student-Quiz-Details" element={<StudentQuizDetails />} />
-        <Route path="/posts" element={<Posts />} />
         <Route path="/studentevents" element={<StudentEvents />} />
         <Route
           path="/student-course-content/"
@@ -77,17 +75,16 @@ function App() {
         {/* Teacher Routes */}
         <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
         <Route path="/teacher-events" element={<TeacherEvents />} />
-        <Route path="/teacher-posts" element={<TeacherPosts />} />
         <Route
           path="/teacher-course-content/"
           element={<TeacherCourseContent />}
         >
-          <Route index element={<TeacherOverviewTab />} />
-          <Route path="teacher-overview" element={<TeacherOverviewTab />} />
+          <Route index element={<TeacherCoresStudentab />} />
           <Route
             path="teacher-unit-content"
             element={<TeacherUnitContentTab />}
           />
+          <Route path="teacher-overview" element={<TeacherOverviewTab />} />
           <Route
             path="teacher-course-students"
             element={<TeacherCoresStudentab />}

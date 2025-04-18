@@ -12,7 +12,7 @@ function StudentOverviewTab() {
         {courseData.units.map((unit, index) => (
           <div key={index} className="card bg-base-200 shadow-md">
             <div className="card-body">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center sm:flex-row flex-col">
                 <div>
                   <h3 className="card-title text-xl">{unit.name}</h3>
                   <p className="text-lg text-gray-500">

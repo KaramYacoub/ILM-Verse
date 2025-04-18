@@ -24,7 +24,7 @@ function StudentNavigationTabs() {
   }
 
   return (
-    <div className="tabs tabs-boxed items-center bg-base-100 mb-6 shadow-md">
+    <div className="tabs tabs-boxed items-center bg-base-100 mb-6 shadow-md overflow-x-auto">
       <button
         onClick={handleNavigation("student-overview")}
         className={`w-full h-14 text-lg tab ${

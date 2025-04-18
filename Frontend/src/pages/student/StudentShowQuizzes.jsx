@@ -1,5 +1,4 @@
 import StudentNavbar from "../../components/student/StudentNavbar";
-import Breadcrumbs from "../../components/shared/Breadcrumbs";
 
 export default function StudentShowQuizzes() {
   const quizzes = [
@@ -64,21 +63,16 @@ export default function StudentShowQuizzes() {
         return <span className="badge">{status}</span>;
     }
   };
-
-  const breadcrumbPages = [{ name: "My Courses", path: "/student-dashboard" }];
+  
   return (
-    <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">
+    <div className="min-h-screen bg-base-200 pb-5">
       <StudentNavbar />
-      <Breadcrumbs
-        prevPages={breadcrumbPages}
-        currentPage="My quizzezs"
-        styles="self-start"
-      />
+      
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-6 text-primary">My Quizzes</h1>
 
         <div className="overflow-x-auto bg-base-100 rounded-lg shadow-md">
-          <table className="table table-zebra w-full text-center">
+          <table className="table table-zebra w-full text-center overflow-x-auto">
             <thead className="bg-primary text-base-100">
               <tr>
                 <th>Course</th>

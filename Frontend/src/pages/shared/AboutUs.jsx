@@ -12,7 +12,7 @@ function AboutUs() {
 
       <div className="divider divider-primary"></div>
 
-      <div className="bg-gray-300 p-6 rounded-md">
+      <div className="bg-gray-300 p-6 rounded-md overflow-x-auto flex">
         {/* General Administrator */}
         <div className="flex flex-col items-center mb-8">
           <div className="bg-primary w-40 h-52 rounded-md flex flex-col items-center p-2">

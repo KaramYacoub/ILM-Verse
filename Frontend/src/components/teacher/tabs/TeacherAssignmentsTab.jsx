@@ -86,8 +86,7 @@ export default function TeacherAssignmentsTab() {
                 <p className="text-gray-700">
                   {assignment.description || "No description available."}
                 </p>
-                <div className="text-sm text-gray-500 flex items-center gap-6 mt-1">
-                  <span>Total Marks: {assignment.points} points</span>
+                <div className="text-sm text-gray-500 mt-1">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
                     Due: {assignment.dueDate}
@@ -176,20 +175,6 @@ export default function TeacherAssignmentsTab() {
                   value={newAssignment.dueDate}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Max Points:
-                </label>
-                <input
-                  type="number"
-                  name="points"
-                  value={newAssignment.points}
-                  onChange={handleInputChange}
-                  className="input input-bordered w-full"
-                  placeholder="Enter maximum points"
                 />
               </div>
 
