@@ -9,9 +9,9 @@ function TeacherNavigationTabs() {
 
   // Determine if the Overview tab is active based on the path
   // The Overview tab is active if the last segment is "overview" or if there are no segments
-  const isOverviewActive =
+  const isStudentActive =
     pathSegments.length === 1 ||
-    lastSegment === "teacher-overview" ||
+    lastSegment === "teacher-course-students" ||
     lastSegment === "teacher-course-content";
 
   const navigate = useNavigate();
@@ -24,18 +24,28 @@ function TeacherNavigationTabs() {
   }
 
   return (
-    <div className="tabs tabs-boxed items-center bg-base-100 mb-6 shadow-md">
+    <div className="tabs tabs-boxed items-center bg-base-100 mb-6 shadow-md overflow-x-auto">
+      <button
+        onClick={handleNavigation("teacher-course-students")}
+        className={`w-full h-14 text-lg tab ${
+          isStudentActive ? "bg-accent text-primary" : "text-gray-600"
+        }`}
+      >
+        Students
+      </button>
       <button
         onClick={handleNavigation("teacher-overview")}
         className={`w-full h-14 text-lg tab ${
-          isOverviewActive ? "bg-accent text-primary" : "text-gray-600"
+          currentTab === "teacher-overview"
+            ? "bg-accent text-primary"
+            : "text-gray-600"
         }`}
       >
         Overview
       </button>
       <button
         onClick={handleNavigation("teacher-unit-content")}
-        disabled={isOverviewActive}
+        disabled={isStudentActive || currentTab === "teacher-overview"}
         className={`w-full h-14 text-lg tab ${
           currentTab === "teacher-unit-content"
             ? "bg-accent text-primary"
@@ -45,19 +55,8 @@ function TeacherNavigationTabs() {
         Content
       </button>
       <button
-        onClick={handleNavigation("teacher-course-students")}
-        disabled={isOverviewActive}
-        className={`w-full h-14 text-lg tab ${
-          currentTab === "teacher-course-students"
-            ? "bg-accent text-primary"
-            : "text-gray-600"
-        }`}
-      >
-        Students
-      </button>
-      <button
         onClick={handleNavigation("teacher-assignments")}
-        disabled={isOverviewActive}
+        disabled={isStudentActive || currentTab === "teacher-overview"}
         className={`w-full h-14 text-lg tab ${
           currentTab === "teacher-assignments"
             ? "bg-accent text-primary"
@@ -68,7 +67,7 @@ function TeacherNavigationTabs() {
       </button>
       <button
         onClick={handleNavigation("teacher-quizzes")}
-        disabled={isOverviewActive}
+        disabled={isStudentActive || currentTab === "teacher-overview"}
         className={`w-full h-14 text-lg tab ${
           currentTab === "teacher-quizzes"
             ? "bg-accent text-primary"

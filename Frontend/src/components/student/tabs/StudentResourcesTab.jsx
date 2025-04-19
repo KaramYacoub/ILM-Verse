@@ -20,7 +20,7 @@ function StudentResourcesTab() {
         {unit.resources.map((res, index) => (
           <div key={index} className="card bg-base-200 shadow-sm">
             <div className="card-body">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center sm:flex-row flex-col">
                 <div>
                   <h4 className="card-title text-md">{res.title}</h4>
                   <p className="text-sm text-gray-500">{res.type} File</p>

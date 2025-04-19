@@ -9,7 +9,11 @@ function StudentLessonsTab() {
   const navigate = useNavigate();
 
   if (!unit) {
-    return <div className="text-center text-error text-2xl mt-16 font-bold">No unit selected</div>;
+    return (
+      <div className="text-center text-error text-2xl mt-16 font-bold">
+        No unit selected
+      </div>
+    );
   }
 
   const openModal = (lesson) => {
@@ -24,13 +28,15 @@ function StudentLessonsTab() {
 
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
-      <h2 className="text-2xl text-primary font-bold mb-6">Lessons for {unit.name}</h2>
+      <h2 className="text-2xl text-primary font-bold mb-6">
+        Lessons for {unit.name}
+      </h2>
 
       <div className="space-y-3">
         {unit.lessons.map((lesson, index) => (
           <div key={index} className="card bg-base-200 shadow-sm">
             <div className="card-body">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center sm:flex-row flex-col ">
                 <div>
                   <h4 className="card-title text-md">
                     Lesson {index + 1}: {lesson.title}
@@ -75,7 +81,7 @@ function StudentLessonsTab() {
             {/* Replace this with real video player later */}
             <div className="w-full aspect-video bg-black flex items-center justify-center text-white text-lg">
               <video controls className="w-full rounded">
-                <source src='' type="video/mp4" />
+                <source src="" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>

@@ -46,7 +46,7 @@ function StudentAssignmentsTab() {
     const { grade, status } = assignment;
 
     if (status === "Not Submitted") {
-      return <span className="font-bold">0%</span>;
+      return <span className="font-bold">-</span>;
     } else if (grade === "submit") {
       return (
         <label
@@ -77,7 +77,7 @@ function StudentAssignmentsTab() {
           <tbody>
             {assignments.map((assignment) => (
               <tr key={assignment.id}>
-                <td>
+                <td className="flex flex-col items-start">
                   <div className="font-semibold">{assignment.name}</div>
                   <div className="text-sm text-gray-500">{assignment.unit}</div>
                 </td>
