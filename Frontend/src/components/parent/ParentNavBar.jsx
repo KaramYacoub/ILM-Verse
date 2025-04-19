@@ -42,7 +42,7 @@ import {
           </Link>
           {/* Events */}
           <Link
-            to="/events"
+            to="/parent-events"
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
           >
             <FaCalendarAlt color="#fff" />
