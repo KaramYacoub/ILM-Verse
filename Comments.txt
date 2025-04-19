@@ -26,9 +26,18 @@ note for the Front end devs: the Nav Bar is not consistent between the stack hol
 when u work on (Teacher) pages copy and paste the same Nav bar in all the teacher's Pages and so on
 for the remaining stackHolders
 ////////////////////////////////
-<<<<<<< HEAD
-=======
 Karam last updates:
 Add CourseCard, StudentNavBar, and Breadcrumbs components and StudentDashboard, and part of CourseContent pages; include react-icons dependency
 ////////////////////////////////
->>>>>>> 2718cb68cf12faefc3dca99391c77465a4568a93
+Abdallah last Updates:
+sequence for Pages routing
+General Admin --> Quick Actions choose Courses ---> course search then choose the course --> 
+click on the course the route take him to the course Page and shows the units and there 
+where we can delete content
+
+Student:
+Student Dashboard--> show Grades --> show grades Page
+Student Dashboard--> courses (click on course) ---> course content (Overview) --> clicking on
+view course takes you to lessons ---> from lessons takes u to resources --> assignment must have 
+2 functionalities one for showing the status of the assignment (submited or not) and the other is a 
+button which open a page where u find the assignment submission
