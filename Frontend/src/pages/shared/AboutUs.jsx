@@ -12,10 +12,10 @@ function AboutUs() {
 
       <div className="divider divider-primary"></div>
 
-      <div className="bg-gray-300 p-6 rounded-md overflow-x-auto flex">
-        {/* General Administrator */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="bg-primary w-40 h-52 rounded-md flex flex-col items-center p-2">
+      <div className="bg-gray-300 p-6 rounded-md">
+        <div className="flex flex-col items-center">
+          {/* General Administrator */}
+          <div className="bg-primary w-40 h-52 rounded-md flex flex-col items-center p-2 mb-8">
             <div className="bg-base-100 w-24 h-24 rounded-full mb-2"></div>
             <p className="text-base-100 text-center text-sm mt-2">
               General Administrator of Thinking Flares School
@@ -23,7 +23,7 @@ function AboutUs() {
           </div>
 
           {/* Department Managers */}
-          <div className="flex gap-56 mt-5">
+          <div className="flex flex-wrap justify-center gap-8 md:gap-56">
             {/* Department Manager 1 */}
             <div className="bg-primary w-40 h-52 rounded-md flex flex-col items-center p-2">
               <div className="bg-base-100 w-24 h-24 rounded-full mb-2"></div>
