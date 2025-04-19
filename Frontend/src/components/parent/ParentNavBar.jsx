@@ -34,7 +34,7 @@ import {
           </Link>
           {/* Quizzes */}
           <Link
-            to="/student-show-quizzes"
+            to="/parent-show-quizzes"
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
           >
             <FaClipboardList color="#fff" />
@@ -48,14 +48,7 @@ import {
             <FaCalendarAlt color="#fff" />
             <span>Events</span>
           </Link>
-          {/* Posts */}
-          <Link
-            to="/posts"
-            className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
-          >
-            <FaNewspaper color="#fff" />
-            <span>Posts</span>
-          </Link>
+         
           {/* Chat */}
           <Link
             to="#"

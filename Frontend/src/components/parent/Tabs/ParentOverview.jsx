@@ -24,7 +24,7 @@ function ParentOverview() {
                 <button
                   className="btn btn-primary text-lg btn-md"
                   onClick={() =>
-                    navigate("/student-course-content/student-lessons", {
+                    navigate("/parent-course-content/parent-lessons", {
                       state: { unit: unit },
                     })
                   }

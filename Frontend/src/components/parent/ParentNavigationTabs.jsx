@@ -11,13 +11,13 @@ function ParentNavigationTabs() {
   // The Overview tab is active if the last segment is "overview" or if there are no segments
   const isOverviewActive =
     pathSegments.length === 1 ||
-    lastSegment === "student-overview" ||
-    lastSegment === "student-course-content";
+    lastSegment === "parent-overview" ||
+    lastSegment === "parent-course-content";
 
   const navigate = useNavigate();
   function handleNavigation(tab) {
     return () => {
-      navigate(`/student-course-content/${tab}`, {
+      navigate(`/parent-course-content/${tab}`, {
         state: { unit: location.state?.unit },
       });
     };
@@ -26,7 +26,7 @@ function ParentNavigationTabs() {
   return (
     <div className="tabs tabs-boxed items-center bg-base-100 mb-6 shadow-md">
       <button
-        onClick={handleNavigation("student-overview")}
+        onClick={handleNavigation("parent-overview")}
         className={`w-full h-14 text-lg tab ${
           isOverviewActive ? "bg-accent text-primary" : "text-gray-600"
         }`}
@@ -34,19 +34,19 @@ function ParentNavigationTabs() {
         Overview
       </button>
       <button
-        onClick={handleNavigation("student-lessons")}
-        disabled={isOverviewActive || currentTab === "student-assignments"}
+        onClick={handleNavigation("parent-lessons")}
+        disabled={isOverviewActive || currentTab === "parent-assignments"}
         className={`w-full h-14 text-lg tab ${
-          currentTab === "student-lessons" ? "bg-accent text-primary" : "text-gray-600"
+          currentTab === "parent-lessons" ? "bg-accent text-primary" : "text-gray-600"
         }`}
       >
         Lessons
       </button>
       <button
-        onClick={handleNavigation("student-resources")}
-        disabled={isOverviewActive || currentTab === "student-assignments"}
+        onClick={handleNavigation("parent-resources")}
+        disabled={isOverviewActive || currentTab === "parent-assignments"}
         className={`w-full h-14 text-lg tab ${
-          currentTab === "student-resources"
+          currentTab === "parent-resources"
             ? "bg-accent text-primary"
             : "text-gray-600"
         }`}
@@ -54,9 +54,9 @@ function ParentNavigationTabs() {
         Resources
       </button>
       <button
-        onClick={handleNavigation("student-assignments")}
+        onClick={handleNavigation("parent-assignments")}
         className={`w-full h-14 text-lg tab ${
-          currentTab === "student-assignments"
+          currentTab === "parent-assignments"
             ? "bg-accent text-primary"
             : "text-gray-600"
         }`}

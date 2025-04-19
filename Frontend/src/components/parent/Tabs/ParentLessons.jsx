@@ -49,7 +49,7 @@ function ParentLessons() {
                   <button
                     className="btn btn-secondary btn-sm"
                     onClick={() =>
-                      navigate("/student-course-content/student-resources", {
+                      navigate("/parent-course-content/parent-resources", {
                         state: { unit: unit },
                       })
                     }

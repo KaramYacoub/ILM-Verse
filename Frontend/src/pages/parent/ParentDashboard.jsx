@@ -61,7 +61,7 @@ function ParentDashboard() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 w-full">
           {Array.from({ length: 6 }, (_, index) => (
-            <CourseCard key={index} />
+            <CourseCard key={index} to='/parent-course-content'/>
           ))}
         </div>
       </div>
