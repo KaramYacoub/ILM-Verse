@@ -44,14 +44,6 @@ function GeneralNav() {
           </Link>
 
           <Link
-            to="/general-posts"
-            className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
-          >
-            <FaNewspaper color="#fff" />
-            <span>Posts</span>
-          </Link>
-
-          <Link
             to="/general-event"
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
           >
@@ -60,7 +52,7 @@ function GeneralNav() {
           </Link>
 
           <Link
-            to="/#"
+            to="/reports"
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
           >
             <FaChartBar color="#fff" />
