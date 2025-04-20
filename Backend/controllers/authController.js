@@ -135,12 +135,12 @@ exports.studentLogin = async (req, res) => {
       );
 
       // if the password is wrong
-    //   if (!validPassword) {
-    //     return res.status(401).json({
-    //       status: "failed",
-    //       message: "Invalid credentials",
-    //     });
-    //   }
+      if (!validPassword) {
+        return res.status(401).json({
+          status: "failed",
+          message: "Invalid credentials",
+        });
+      }
 
       // sign jwt
       const token = jwt.sign(
