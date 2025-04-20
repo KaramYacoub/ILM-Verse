@@ -41,11 +41,13 @@ import GeneralDash from "./pages/general/GeneralDash";
 import Addition from "./pages/general/Addition";
 import Deletion from "./pages/general/Deletition";
 import CourseContent from "./pages/general/CourseContent";
-import GeneralPosts from "./pages/general/GeneralPosts";
 import ResetPassword from "./pages/general/ResetPassword";
 import DeleteContent from "./pages/general/DeleteContent";
 import Settings from "./pages/general/Settings";
 import GenralEvents from "./pages/general/GenralEvents";
+import Reports from "./pages/general/Reports";
+import GenerateReport from "./pages/general/GenerateReports";
+import AddCourse from "./pages/general/AddCourse";
 
 function App() {
   return (
@@ -124,11 +126,13 @@ function App() {
         <Route path="/addition" element={<Addition />} />
         <Route path="/deletion" element={<Deletion />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/general-posts" element={<GeneralPosts />} />
-        <Route path="/delete-content" element={<DeleteContent />} />
+        <Route path="/delete-content/:courseId" element={<DeleteContent />} />
         <Route path="/coursecontent" element={<CourseContent />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/general-event" element={<GenralEvents />} />
+        <Route path="/reports" element={<Reports />} />
+        <Route path="/generate-report" element={<GenerateReport />} />
+        <Route path="/addCourse" element={<AddCourse />} />
       </Routes>
 
       {/* Footer */}
