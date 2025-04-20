@@ -1,11 +1,34 @@
 import { useState } from "react";
 import GeneralNav from "../../components/general/GeneralNav";
-import { Link } from "react-router-dom";
+import SearchStudent from "../../components/general/SearchStudent";
+import QuickActions from "../../components/general/QuickActions";
 
 function GeneralDash() {
   const [activeActions, setActiveActions] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
 
+  // Mock student data with split grades
+  const [students, setStudents] = useState([
+    {
+      id: 101,
+      name: "Ahmed Omar",
+      section: "A",
+      teacher: "Mrs. Rodriguez",
+      course: "Mathematics (Algebra II)",
+      grades: { exam1: 20, exam2: 18, exam3: 20, final: 38 },
+      total: 96,
+    },
+    {
+      id: 102,
+      name: "John Smith",
+      section: "B",
+      teacher: "Mr. Johnson",
+      course: "Physics",
+      grades: { exam1: 15, exam2: 20, exam3: 18, final: 35 },
+      total: 88,
+    },
+  ]);
+
+  // Quick Actions and Marks groups
   const actionGroups = [
     {
       title: "Quick Actions",
@@ -13,13 +36,15 @@ function GeneralDash() {
         { id: 1, label: "Addition", path: "/addition" },
         { id: 2, label: "Deletion", path: "/deletion" },
         { id: 3, label: "Reset Password", path: "/reset-password" },
-        { id: 4, label: "Posts", path: "/general-posts" },
-        { id: 5, label: "Delete content", path: "/delete-content" },
       ],
     },
     {
-      title: "Marks",
-      actions: [{ id: 6, label: "Courses", path: "/coursecontent" }],
+      title: "Course Content Actions",
+      actions: [
+        { id: 4, label: "Add Course", path: "/addCourse" },
+        //{ id: 5, label: "Delete content", path: "/delete-content" },
+        { id: 5, label: "Courses", path: "/coursecontent" },
+      ],
     },
   ];
 
@@ -31,61 +56,30 @@ function GeneralDash() {
     );
   };
 
+  const handleEditGrades = (studentId, newGrades, newTotal) => {
+    setStudents((prevStudents) =>
+      prevStudents.map((student) =>
+        student.id === studentId
+          ? { ...student, grades: newGrades, total: newTotal }
+          : student
+      )
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <GeneralNav />
 
-      <div className="p-8 max-w-4xl mx-auto">
-        {/* Search Bar */}
-        <div className="mb-8">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="search for students"
-              className="input input-bordered w-full pl-10"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <svg
-              className="absolute left-3 top-3 h-5 w-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-        </div>
+      <div className="p-8 max-w-6xl mx-auto">
+        {/* Search Student Component */}
+        <SearchStudent students={students} onEditGrades={handleEditGrades} />
 
-        {/* Combined Actions Container */}
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          {actionGroups.map((group) => (
-            <div key={group.title} className="mb-8 last:mb-0">
-              <h2 className="text-xl font-bold mb-4">{group.title}</h2>
-              <div className="flex flex-wrap gap-3">
-                {group.actions.map((action) => (
-                  <Link
-                    to={action.path}
-                    key={action.id}
-                    className={`px-4 py-2 rounded-md transition-colors ${
-                      activeActions.includes(action.id)
-                        ? "bg-primary text-white"
-                        : "bg-gray-100 hover:bg-primary hover:text-white text-gray-800"
-                    }`}
-                    onClick={() => toggleAction(action.id)}
-                  >
-                    {action.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Quick Actions Component */}
+        <QuickActions
+          actionGroups={actionGroups}
+          activeActions={activeActions}
+          toggleAction={toggleAction}
+        />
       </div>
     </div>
   );
