@@ -66,7 +66,7 @@ function App() {
         <Route path="/student-view-grades" element={<StudentViewGrades />} />
         <Route path="/student-show-quizzes" element={<StudentShowQuizzes />} />
         <Route path="/Student-Quiz-Details" element={<StudentQuizDetails />} />
-        <Route path="/studentevents" element={<StudentEvents />} />
+        <Route path="/events" element={<StudentEvents />} />
         <Route
           path="/student-course-content/"
           element={<StudentCourseContent />}
