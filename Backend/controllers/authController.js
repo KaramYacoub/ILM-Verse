@@ -252,16 +252,16 @@ exports.checkLogin = (req, res) => {
 
 // User logout
 exports.logout = (req, res) => {
-  req.session.destroy((err) => {
-    if (err)
-      return res.status(500).json({
-        status: "failed",
-        message: "Logout failed",
-      });
-    res.clearCookie("token", { path: "/" });
+  res.clearCookie("token", { path: "/" });
+  try {
     return res.json({
       status: "success",
       message: "Logged out successfully",
     });
-  });
+  } catch (error) {
+    res.send(500).json({
+      status: "failed",
+      message: "Internal server error",
+    });
+  }
 };

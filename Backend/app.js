@@ -1,7 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
-const session = require("express-session");
 const cors = require("cors");
 //--------------------------------------
 const app = express();
@@ -12,17 +11,6 @@ app.use(express.json());
 app.use(morgan("dev"));
 //--------------------------------------
 app.use(cookieParser());
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60,
-      httpOnly: true,
-    },
-  })
-);
 app.use(
   cors({
     origin: "http://localhost:5173",
