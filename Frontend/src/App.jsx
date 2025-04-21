@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "./pages/shared/Home";
 import Footer from "./components/shared/Footer";
@@ -71,7 +71,7 @@ function App() {
           path="/student-course-content/"
           element={<StudentCourseContent />}
         >
-          <Route index element={<StudentOverviewTab />} />
+          <Route index element={<Navigate replace to="student-overview" />} />
           <Route path="student-overview" element={<StudentOverviewTab />} />
           <Route path="student-lessons" element={<StudentLessonsTab />} />
           <Route path="student-resources" element={<StudentResourcesTab />} />
@@ -88,7 +88,7 @@ function App() {
           path="/teacher-course-content/"
           element={<TeacherCourseContent />}
         >
-          <Route index element={<TeacherCoresStudentab />} />
+          <Route index element={<Navigate replace to="teacher-course-students" />} />
           <Route
             path="teacher-unit-content"
             element={<TeacherUnitContentTab />}
@@ -113,7 +113,7 @@ function App() {
         <Route path="/parent-dashboard" element={<ParentDashboard />} />
         <Route path="/parent-events" element={<ParentEvents />} />
         <Route path="/parent-course-content" element={<ParentCourseContent />}>
-          <Route index element={<ParentOverview />} />
+          <Route index element={<Navigate replace to="parent-overview" />} />
           <Route path="parent-overview" element={<ParentOverview />} />
           <Route path="parent-lessons" element={<ParentLessons />} />
           <Route path="parent-resources" element={<ParentResourcesTab />} />
