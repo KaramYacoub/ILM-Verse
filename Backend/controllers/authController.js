@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 
 // login for the admin and the teacher
 exports.adminTeacherLogin = async (req, res) => {
+  console.log("Admin login route hit");
   const { email, password } = req.body;
   console.log(email, password);
   try {
@@ -238,21 +239,29 @@ exports.parentLogin = async (req, res) => {
 // check login
 exports.checkLogin = (req, res) => {
   try {
-    res.status(200).json({
+    if (!req.user) {
+      return res.status(401).json({
+        status: "failed",
+        message: "Unauthorized",
+      });
+    }
+
+    return res.status(200).json({
       status: "success",
       data: req.user,
+      role: req.role,
     });
   } catch (error) {
-    res.send(500).json({
+    return res.status(500).json({
       status: "failed",
-      message: "Internal server error",
+      error: error.message,
     });
   }
 };
 
 // User logout
 exports.logout = (req, res) => {
-  res.clearCookie("token", { path: "/" });
+  res.clearCookie("token");
   try {
     return res.json({
       status: "success",

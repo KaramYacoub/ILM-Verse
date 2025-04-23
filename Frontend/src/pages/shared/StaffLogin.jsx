@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuthStore } from "../../store/AuthStore";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -6,22 +7,28 @@ function StudentLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("admin");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const { adminLogin, teacherLogin } = useAuthStore();
+
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
 
-    // Dummy credentials
-    const validEmail = "student@example.com";
-    const validPassword = "123456";
-
-    if (email === validEmail && password === validPassword) {
-      navigate("/general-dashboard");
-    } else {
-      setError("Invalid email or password");
+    try {
+      if (role === "admin") {
+        await adminLogin({ email, password });
+        navigate("/general-dashboard");
+      } else {
+        await teacherLogin({ email, password });
+        navigate("/teacher-dashboard");
+      }
+    } catch (err) {
+      setError(err.message);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-100 px-4">
@@ -30,12 +37,27 @@ function StudentLogin() {
         <h2 className="text-xl font-bold mb-1">
           Welcome to Thinking Flares School
         </h2>
-        <p className="mb-6">
-          Enter your details to log in your account as a{" "}
-          <span className="font-bold">staff</span>
+        <p className="mb-2">
+          Enter your details to log in as a{" "}
+          <span className="font-bold capitalize">{role}</span>
         </p>
 
         <form onSubmit={handleLogin} className="space-y-4">
+          {/* Role Selector */}
+          <div>
+            <label className="label">
+              <span className="label-text text-base-100">Login as</span>
+            </label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
+              className="select select-bordered w-full bg-primary text-base-100 focus:border-base-100"
+            >
+              <option value="admin">Admin</option>
+              <option value="teacher">Teacher</option>
+            </select>
+          </div>
+
           {/* Email */}
           <div>
             <label className="label">
@@ -46,7 +68,7 @@ function StudentLogin() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter email"
-              className="input input-bordered w-full bg-primary text-base-100 placeholder-base-100"
+              className="input input-bordered w-full bg-primary text-base-100 placeholder-base-100 focus:border-base-100"
               required
             />
           </div>
@@ -62,7 +84,7 @@ function StudentLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
-                className="input input-bordered w-full bg-primary text-base-100 placeholder-base-100 pr-12"
+                className="input input-bordered w-full bg-primary text-base-100 placeholder-base-100 pr-12 focus:border-base-100"
                 required
               />
               <button
