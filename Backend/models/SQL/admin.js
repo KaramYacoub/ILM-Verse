@@ -12,8 +12,9 @@ module.exports = (sequelize) => {
     {
       gm_id: {
         type: DataTypes.STRING(20),
-        allowNull: false,
+        allowNull: true,
         primaryKey: true,
+        autoIncrement: false,
       },
       first_name: {
         type: DataTypes.STRING(20),
@@ -28,7 +29,7 @@ module.exports = (sequelize) => {
         allowNull: true,
       },
       password: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(90),
         allowNull: true,
       },
     },

@@ -5,8 +5,9 @@ module.exports = function (sequelize, DataTypes) {
     {
       teacher_id: {
         type: DataTypes.STRING(20),
-        allowNull: false,
+        allowNull: true,
         primaryKey: true,
+        autoIncrement: false,
       },
       first_name: {
         type: DataTypes.STRING(50),
@@ -22,7 +23,7 @@ module.exports = function (sequelize, DataTypes) {
         unique: "teacher_email_key",
       },
       password: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(80),
         allowNull: false,
       },
       dept_id: {

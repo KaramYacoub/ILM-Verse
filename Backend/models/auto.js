@@ -1,12 +1,11 @@
-// const SequelizeAuto= require('sequelize-auto');
+// const SequelizeAuto = require("sequelize-auto");
 
-// const auto = new SequelizeAuto('postgres', 'postgres', 'ilm123', {
-//   host: 'db.tzupmrjpnabqqmsqprdv.supabase.co',
+// const auto = new SequelizeAuto("postgres", "postgres", "ilm123", {
+//   host: "db.tzupmrjpnabqqmsqprdv.supabase.co",
 //   port: 5432,
-//   dialect: 'postgres',
-//   directory: './SQL/',
-//   schema: 'public',
-
+//   dialect: "postgres",
+//   directory: "./SQL/",
+//   schema: "public",
 // });
 
 // auto
