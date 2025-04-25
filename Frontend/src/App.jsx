@@ -40,6 +40,11 @@ import ParentOverview from "./components/parent/Tabs/ParentOverview";
 import ParentCourseContent from "./pages/parent/ParentCourseContent";
 import ParentLessons from "./components/parent/Tabs/ParentLessons";
 import ParentResourcesTab from "./components/parent/Tabs/ParentResourcesTap";
+import ParentViewGrades from "./pages/parent/ParentViewGrades";
+import ParentShowReports from "./pages/parent/ParentShowReports";
+import ParentShowQuizzes from "./pages/parent/ParentShowQuizzes";
+import ParentShowAbsences from "./pages/parent/ParentShowAbsences";
+
 
 import GeneralDash from "./pages/general/GeneralDash";
 import Addition from "./pages/general/Addition";
@@ -52,8 +57,7 @@ import GenralEvents from "./pages/general/GenralEvents";
 import Reports from "./pages/general/Reports";
 import GenerateReport from "./pages/general/GenerateReports";
 import AddCourse from "./pages/general/AddCourse";
-import ParentViewGrades from "./pages/parent/ParentViewGrades";
-import ParentShowReports from "./pages/parent/ParentShowReports";
+
 
 function App() {
 	const {
@@ -261,6 +265,14 @@ function App() {
 					element={authParent ? <ParentShowReports /> : <Navigate to='/' />}
 				/>
 				<Route
+					path='/parent-show-absences'
+					element={authParent ? <ParentShowAbsences /> : <Navigate to='/' />}
+				/>
+				<Route
+						path='/parent-quizzes'
+						element={authParent ? <ParentShowQuizzes /> : <Navigate to='/' />}
+					/>
+				<Route
 					path='/parent-course-content'
 					element={authParent ? <ParentCourseContent /> : <Navigate to='/' />}>
 					<Route index element={<Navigate replace to='parent-overview' />} />
@@ -280,10 +292,7 @@ function App() {
 						path='parent-assignments'
 						element={authParent ? <ParentAssignment /> : <Navigate to='/' />}
 					/>
-					<Route
-						path='parent-quizzes'
-						element={authParent ? <TeacherQuizzesTab /> : <Navigate to='/' />}
-					/>
+					
 				</Route>
 
 				{/* General Routes */}

@@ -34,7 +34,7 @@ import {
           </Link>
           {/* Quizzes */}
           <Link
-            to="/parent-show-quizzes"
+            to="/parent-quizzes"
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
           >
             <FaClipboardList color="#fff" />
