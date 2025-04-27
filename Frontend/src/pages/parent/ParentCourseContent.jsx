@@ -39,8 +39,12 @@ const courseData = {
       ],
       quizzes: 1,
       resources: [
-        { title: "Intro to Programming Handbook", type: "PDF" },
-        { title: "Beginner Slides", type: "DOC" },
+        {
+          title: "Intro to Programming Handbook",
+          type: "PDF",
+          path: "intro_to_programming_handbook.pdf",
+        },
+        { title: "Beginner Slides", type: "DOC", path: "beginner_slides.docx" },
       ],
     },
     {
@@ -115,12 +119,9 @@ const courseData = {
 };
 
 function ParentCourseContent() {
- 
-
   return (
     <div className="min-h-screen bg-base-200 flex flex-col justify-start pb-5">
       <ParentNavBar />
-      
 
       <div className="container mx-auto p-6 mt-16">
         {/* Course Header */}
