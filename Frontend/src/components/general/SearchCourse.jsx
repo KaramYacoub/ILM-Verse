@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // add this
+import { useNavigate } from "react-router-dom";
 
 function SearchCourse({ courses }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-  const navigate = useNavigate(); // initialize navigator
+  const navigate = useNavigate();
 
   const categories = [
     "All",
@@ -29,9 +29,40 @@ function SearchCourse({ courses }) {
     currentPage * itemsPerPage
   );
 
+  const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
+
   return (
     <div className="mb-8">
-      {/* ... other UI unchanged */}
+      {/* Search and Filter Bar */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+        {/* Search Input */}
+        <input
+          type="text"
+          placeholder="Search by course ID, name, or grade"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setCurrentPage(1); // reset pagination when typing
+          }}
+          className="input input-bordered w-full md:w-1/2"
+        />
+
+        {/* Category Filter */}
+        <select
+          value={activeCategory}
+          onChange={(e) => {
+            setActiveCategory(e.target.value);
+            setCurrentPage(1); // reset pagination when switching category
+          }}
+          className="select select-bordered w-full md:w-48"
+        >
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* Course Table */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -89,7 +120,28 @@ function SearchCourse({ courses }) {
           </table>
         </div>
 
-        {/* Pagination unchanged */}
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center p-4 space-x-2">
+            <button
+              className="btn btn-sm"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => prev - 1)}
+            >
+              Prev
+            </button>
+            <span className="px-2 py-1 text-sm">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              className="btn btn-sm"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
