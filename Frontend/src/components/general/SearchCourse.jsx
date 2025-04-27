@@ -31,6 +31,17 @@ function SearchCourse({ courses }) {
 
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
 
+  // New function for "Check Course"
+  const handleCheckCourse = (course) => {
+    const confirmCheck = window.confirm(
+      `Do you want to check the course: ${course.name}?`
+    );
+    if (confirmCheck) {
+      console.log(`Checked course: ${course.courseId} - ${course.name}`);
+      // You can add any logic here
+    }
+  };
+
   return (
     <div className="mb-8">
       {/* Search and Filter Bar */}
@@ -97,7 +108,7 @@ function SearchCourse({ courses }) {
                       </span>
                     </td>
                     <td>{course.lastUpdated}</td>
-                    <td>
+                    <td className="flex gap-2">
                       <button
                         className="btn btn-sm btn-ghost"
                         onClick={() =>
@@ -105,6 +116,12 @@ function SearchCourse({ courses }) {
                         }
                       >
                         Show
+                      </button>
+                      <button
+                        className="btn btn-sm btn-primary"
+                        onClick={() => handleCheckCourse(course)}
+                      >
+                        Check Course
                       </button>
                     </td>
                   </tr>

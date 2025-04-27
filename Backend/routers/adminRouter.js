@@ -3,19 +3,20 @@ const router = express.Router();
 const adminController = require("../controllers/adminController");
 const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
+const uploadAnnouncment = require("../controllers/uploadControllers/uploadAnnouncment.js"); // Import the upload middleware
 
 // login
 router.post("/staffLogin", authController.adminTeacherLogin);
 //---------------------------------
 // to get the admin data we should send the Admin ID from front-end as param
-router.route("/:id").get(adminController.getAdmin);
+router.get("/:id", authenticateUser, adminController.getAdmin);
 //---------------------------------
 // The 5 Addition Functionality Routes
 router.post("/addition/admin", authenticateUser, adminController.addAdmin);
 router.post("/addition/teacher", authenticateUser, adminController.addTeacher);
 router.post("/addition/parent", authenticateUser, adminController.addParent);
 router.post("/addition/student", authenticateUser, adminController.addStudent);
-// router.post("/addition/course", adminController.addCourse);
+router.post("/addition/course", adminController.addCourse);
 
 // get all students, teachers, parents , admins and courses
 
@@ -26,4 +27,12 @@ router.post("/addition/student", authenticateUser, adminController.addStudent);
 // router.post("/delete/student", authenticateUser, adminController.deleteStudent);
 // router.post("/delete/course", authenticateUser, adminController.deleteCourse);
 
+//Upload Files
+
+router.post(
+  "/upload",
+  authenticateUser,
+  uploadAnnouncment, // 'data' should be the name of the file input field in the form
+  adminController.uploadFile
+);
 module.exports = router;

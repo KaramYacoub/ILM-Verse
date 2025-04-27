@@ -5,7 +5,7 @@ module.exports = function (sequelize, DataTypes) {
     {
       student_id: {
         type: DataTypes.STRING(20),
-        allowNull: false,
+        allowNull: true,
         primaryKey: true,
       },
       first_name: {
