@@ -17,7 +17,6 @@ function ResetPassword() {
           <button className="btn btn-sm btn-primary">Students</button>
           <button className="btn btn-sm btn-ghost">Teachers</button>
           <button className="btn btn-sm btn-ghost">Parents</button>
-          <button className="btn btn-sm btn-ghost">Dept.Manager</button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -26,7 +25,7 @@ function ResetPassword() {
               <option disabled selected>
                 Select user type
               </option>
-              <option>Department Manager</option>
+
               <option>Student</option>
               <option>Teacher</option>
               <option>Parent</option>

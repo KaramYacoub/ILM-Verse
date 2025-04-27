@@ -41,6 +41,14 @@ function Addition() {
           >
             Teachers
           </button>
+          <button
+            className={`tab ${
+              activeTab === "admins" ? "tab-active bg-primary text-white" : ""
+            }`}
+            onClick={() => setActiveTab("admins")}
+          >
+            Admins
+          </button>
         </div>
 
         {/* Tab Content */}
@@ -66,16 +74,59 @@ function Addition() {
                   />
                 </div>
 
+                {/* Last Name */}
+                <div>
+                  <label className="block font-medium mb-1">Last Name*</label>
+                  <input
+                    type="text"
+                    className="input input-bordered w-full"
+                    placeholder="Enter last name"
+                    required
+                  />
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label className="block font-medium mb-1">Password*</label>
+                  <input
+                    type="password"
+                    className="input input-bordered w-full"
+                    placeholder="Enter password"
+                    required
+                  />
+                </div>
+
                 {/* Grade */}
                 <div>
                   <label className="block font-medium mb-1">Grade*</label>
-                  <select className="select select-bordered w-full">
-                    <option disabled selected>
+                  <select className="select select-bordered w-full" required>
+                    <option disabled selected value="">
                       Select Grade
                     </option>
-                    <option>Grade 1</option>
-                    <option>Grade 2</option>
-                    <option>Grade 3</option>
+                    <option value="1">Grade 1</option>
+                    <option value="2">Grade 2</option>
+                    <option value="3">Grade 3</option>
+                    <option value="4">Grade 4</option>
+                    <option value="5">Grade 5</option>
+                    <option value="6">Grade 6</option>
+                    <option value="7">Grade 7</option>
+                    <option value="8">Grade 8</option>
+                    <option value="9">Grade 9</option>
+                    <option value="10">Grade 10</option>
+                  </select>
+                </div>
+
+                {/* Section */}
+                <div>
+                  <label className="block font-medium mb-1">Section*</label>
+                  <select className="select select-bordered w-full" required>
+                    <option disabled selected value="">
+                      Select Section
+                    </option>
+                    <option value="A">Section A</option>
+                    <option value="B">Section B</option>
+                    <option value="C">Section C</option>
+                    <option value="D">Section D</option>
                   </select>
                 </div>
 
@@ -85,9 +136,9 @@ function Addition() {
                     Date of Birth*
                   </label>
                   <input
-                    type="text"
+                    type="date"
                     className="input input-bordered w-full"
-                    placeholder="MM/DD/YYYY"
+                    required
                   />
                 </div>
 
@@ -115,24 +166,35 @@ function Addition() {
                   <div className="bg-gray-100 p-2 rounded">Auto-generated</div>
                 </div>
 
-                {/* Full Name */}
+                {/* First Name */}
                 <div>
-                  <label className="block font-medium mb-1">Full Name*</label>
+                  <label className="block font-medium mb-1">First Name*</label>
                   <input
                     type="text"
                     className="input input-bordered w-full"
-                    placeholder="Enter full name"
+                    placeholder="Enter first name"
                     required
                   />
                 </div>
 
-                {/* Email */}
+                {/* Last Name */}
                 <div>
-                  <label className="block font-medium mb-1">Email*</label>
+                  <label className="block font-medium mb-1">Last Name*</label>
                   <input
-                    type="email"
+                    type="text"
                     className="input input-bordered w-full"
-                    placeholder="Enter email"
+                    placeholder="Enter last name"
+                    required
+                  />
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label className="block font-medium mb-1">Password*</label>
+                  <input
+                    type="password"
+                    className="input input-bordered w-full"
+                    placeholder="Enter password"
                     required
                   />
                 </div>
@@ -146,6 +208,7 @@ function Addition() {
                     type="tel"
                     className="input input-bordered w-full"
                     placeholder="Enter phone number"
+                    required
                   />
                 </div>
               </div>
@@ -162,28 +225,26 @@ function Addition() {
                   <div className="bg-gray-100 p-2 rounded">Auto-generated</div>
                 </div>
 
-                {/* Full Name */}
+                {/* First Name */}
                 <div>
-                  <label className="block font-medium mb-1">Full Name*</label>
+                  <label className="block font-medium mb-1">First Name*</label>
                   <input
                     type="text"
                     className="input input-bordered w-full"
-                    placeholder="Enter full name"
+                    placeholder="Enter first name"
                     required
                   />
                 </div>
 
-                {/* Subject */}
+                {/* Last Name */}
                 <div>
-                  <label className="block font-medium mb-1">Subject*</label>
-                  <select className="select select-bordered w-full">
-                    <option disabled selected>
-                      Select Subject
-                    </option>
-                    <option>Mathematics</option>
-                    <option>Science</option>
-                    <option>English</option>
-                  </select>
+                  <label className="block font-medium mb-1">Last Name*</label>
+                  <input
+                    type="text"
+                    className="input input-bordered w-full"
+                    placeholder="Enter last name"
+                    required
+                  />
                 </div>
 
                 {/* Email */}
@@ -196,6 +257,103 @@ function Addition() {
                     required
                   />
                 </div>
+
+                {/* Password */}
+                <div>
+                  <label className="block font-medium mb-1">Password*</label>
+                  <input
+                    type="password"
+                    className="input input-bordered w-full"
+                    placeholder="Enter password"
+                    required
+                  />
+                </div>
+
+                {/* Department */}
+                <div>
+                  <label className="block font-medium mb-1">Department*</label>
+                  <select className="select select-bordered w-full" required>
+                    <option disabled selected value="">
+                      Select Department
+                    </option>
+                    <option value="1">Mathematics</option>
+                    <option value="2">Science</option>
+                    <option value="3">English</option>
+                    <option value="4">History</option>
+                  </select>
+                </div>
+
+                {/* Section */}
+                <div>
+                  <label className="block font-medium mb-1">Section*</label>
+                  <select className="select select-bordered w-full" required>
+                    <option disabled selected value="">
+                      Select Section
+                    </option>
+                    <option value="1">Section A</option>
+                    <option value="2">Section B</option>
+                    <option value="3">Section C</option>
+                  </select>
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === "admins" && (
+            <>
+              <h3 className="text-xl font-bold mb-4">Add New Admin</h3>
+              <div className="space-y-4">
+                {/* Admin ID */}
+                <div>
+                  <label className="block font-medium mb-1">Admin ID</label>
+                  <div className="bg-gray-100 p-2 rounded">Auto-generated</div>
+                </div>
+
+                {/* First Name */}
+                <div>
+                  <label className="block font-medium mb-1">First Name*</label>
+                  <input
+                    type="text"
+                    className="input input-bordered w-full"
+                    placeholder="Enter first name"
+                    required
+                  />
+                </div>
+
+                {/* Last Name */}
+                <div>
+                  <label className="block font-medium mb-1">Last Name*</label>
+                  <input
+                    type="text"
+                    className="input input-bordered w-full"
+                    placeholder="Enter last name"
+                    required
+                  />
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label className="block font-medium mb-1">Email*</label>
+                  <input
+                    type="email"
+                    className="input input-bordered w-full"
+                    placeholder="Enter email"
+                    required
+                  />
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label className="block font-medium mb-1">Password*</label>
+                  <input
+                    type="password"
+                    className="input input-bordered w-full"
+                    placeholder="Enter password"
+                    required
+                  />
+                </div>
+
+                {/* Admin Role */}
               </div>
             </>
           )}
@@ -206,14 +364,13 @@ function Addition() {
               {activeTab === "students" && "Add Student"}
               {activeTab === "parents" && "Add Parent"}
               {activeTab === "teachers" && "Add Teacher"}
+              {activeTab === "admins" && "Add Admin"}
             </button>
           </div>
         </div>
 
         {/* Footer */}
-        <footer className="mt-12 text-center text-sm text-gray-500">
-          <p>Copyright © 2025 – All right reserved</p>
-        </footer>
+        <footer className="mt-12 text-center text-sm text-gray-500"></footer>
       </div>
     </div>
   );
