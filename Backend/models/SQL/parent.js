@@ -5,7 +5,7 @@ module.exports = function (sequelize, DataTypes) {
     {
       parent_id: {
         type: DataTypes.STRING(10),
-        allowNull: false,
+        allowNull: true,
         primaryKey: true,
       },
       phone: {
