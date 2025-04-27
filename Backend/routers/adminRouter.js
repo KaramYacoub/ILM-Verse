@@ -16,9 +16,31 @@ router.post("/addition/admin", authenticateUser, adminController.addAdmin);
 router.post("/addition/teacher", authenticateUser, adminController.addTeacher);
 router.post("/addition/parent", authenticateUser, adminController.addParent);
 router.post("/addition/student", authenticateUser, adminController.addStudent);
-router.post("/addition/course", adminController.addCourse);
+router.post("/addition/course", authenticateUser, adminController.addCourse);
 
 // get all students, teachers, parents , admins and courses
+router.get(
+  "/addition/course/grades",
+  authenticateUser,
+  adminController.getGrades
+);
+router.get(
+  "/addition/course/grades/:grade_id",
+  authenticateUser,
+  adminController.getSections
+);
+router.get(
+  "/addition/course/grades/:grade_id/:section_id",
+  authenticateUser,
+  adminController.getTeachersBySection
+);
+
+//Involve all students in specific section inside A course by course Id
+router.post(
+  "/course/involve",
+  authenticateUser,
+  adminController.involveStudents
+);
 
 // // The 5 Delete Functionality Routes
 // router.post("/delete/admin", authenticateUser, adminController.deleteAdmin);

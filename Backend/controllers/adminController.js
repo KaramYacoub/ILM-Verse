@@ -5,7 +5,17 @@ const initModels = require("../models/index"); // path to index.js
 const models = initModels(SQL); // initialize models
 const bcrypt = require("bcryptjs"); // For hashing
 const announcment = require("../models/SQL/announcment");
-const { department, student, parent, section, teacher, admin, course } = models; // extract all the needed models
+const {
+  department,
+  student,
+  parent,
+  section,
+  teacher,
+  admin,
+  course,
+  course_student,
+  grade,
+} = models; // extract all the needed models
 
 // Getting Admin data By his Id
 exports.getAdmin = async (req, res) => {
@@ -137,34 +147,120 @@ exports.addStudent = async (req, res) => {
 
 exports.addCourse = async (req, res) => {
   //console.log(req.body);
-
+  const { subject_name, section_id, teacher_id } = req.body;
+  console.log(section_id);
   try {
-    // const newCourse = course.create({
-    //   subject_name: req.body.subject_name,
-    //   section_id: req.body.section_id,
-    //   teacher_id: req.body.teacher_id,
-    // });
-    course_studentsData = await student.findAll({
-      attributes: ["student_id"],
-      where: {
-        section_id: req.body.section_id,
-      },
+    const newCourse = course.create({
+      subject_name: subject_name,
+      section_id: section_id,
+      teacher_id: teacher_id,
     });
-    console.log(course_studentsData);
+
     res.status(201).json({
       status: "success",
       data: {
-        subject_name: req.body.subject_name,
-        section_id: req.body.section_id,
-        teacher_id: req.body.teacher_id,
+        subject_name: subject_name,
+        section_id: section_id,
+        teacher_id: teacher_id,
       },
-      message: `${req.body.subject_name} added succssesfully`,
+      message: `${subject_name} added succssesfully`,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+exports.getGrades = async (req, res) => {
+  try {
+    allGrades = await grade.findAll();
+    res.status(200).json({
+      status: "success",
+      data: allGrades,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.getSections = async (req, res) => {
+  try {
+    const { grade_id } = req.params;
+    const Sections = await section.findAll({
+      where: {
+        grade_id: req.params.grade_id,
+      },
+    });
+    res.status(200).json({
+      status: "success",
+      data: Sections,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.getTeachersBySection = async (req, res) => {
+  try {
+    const { grade_id } = req.params;
+    const { dept_id } = await grade.findOne({
+      where: {
+        grade_id: grade_id,
+      },
+    });
+    const TeachersFromDepartment = await teacher.findAll({
+      where: {
+        dept_id: dept_id,
+      },
+    });
+    // const Teachers = await teacher.findAll({
+    //   where: {
+    //     section_id: req.params.section_id,
+    //   },
+    // });
+    res.status(200).json({
+      status: "success",
+      data: TeachersFromDepartment,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+exports.involveStudents = async (req, res) => {
+  try {
+    const { course_id } = req.body;
+    const { section_id } = await course.findOne({
+      where: {
+        course_id: course_id,
+      },
+    });
+
+    const students = await student.findAll({
+      where: {
+        section_id: section_id,
+      },
+    });
+
+    const InvolvedStudents = await course_student.bulkCreate(
+      students.map((student) => ({
+        course_id: course_id,
+        student_id: student.student_id,
+      }))
+    );
+    if (InvolvedStudents.length > 0) {
+      res.status(201).json({
+        status: "success",
+        message: `${InvolvedStudents.length} Student Added Successfully`,
+      });
+    } else {
+      res.status(201).json({
+        status: "success",
+        message: `The Course Already Up to Date`,
+      });
+    }
+  } catch (error) {
+    res.status(400).json({ message: "The Course Already Up to Date" });
+  }
+};
 /// Testing the Uploading!
 exports.uploadFile = (req, res, next) => {
   console.log(req.file);
