@@ -17,7 +17,7 @@ import { useAuthStore } from "../../store/AuthStore";
 
 function GeneralNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isCheckingAuth,logout } = useAuthStore();
+  const { isCheckingAuth, logout } = useAuthStore();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);

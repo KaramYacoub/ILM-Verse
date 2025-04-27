@@ -8,14 +8,35 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../store/AuthStore";
 
 function StudentNavbar() {
+  const { isCheckingAuth, logout } = useAuthStore();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  if (isCheckingAuth) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin" size={50} />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-primary px-4 py-3 shadow-md w-full">
@@ -66,6 +87,7 @@ function StudentNavbar() {
         {/* Right: Logout */}
         <Link
           to="/"
+          onClick={handleLogout}
           className="flex items-center gap-2 text-accent font-bold cursor-pointer hover:text-yellow-500"
         >
           <FaSignOutAlt color="#fff" />
@@ -130,7 +152,10 @@ function StudentNavbar() {
             <Link
               to="/"
               className="flex items-center gap-3 py-2 text-accent font-bold cursor-pointer hover:text-yellow-500"
-              onClick={toggleMenu}
+              onClick={() => {
+                toggleMenu();
+                handleLogout();
+              }}
             >
               <FaSignOutAlt color="#fff" />
               <span>Logout</span>
