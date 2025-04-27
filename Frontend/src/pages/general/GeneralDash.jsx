@@ -1,15 +1,17 @@
 import { useState } from "react";
 import GeneralNav from "../../components/general/GeneralNav";
 import SearchStudent from "../../components/general/SearchStudent";
+import SearchParent from "../../components/general/SearchParent";
 import QuickActions from "../../components/general/QuickActions";
 
 function GeneralDash() {
   const [activeActions, setActiveActions] = useState([]);
+  const [activeTab, setActiveTab] = useState("students"); // New state for tab control
 
   // Mock student data with split grades
   const [students, setStudents] = useState([
     {
-      id: 101,
+      id: "STU101",
       name: "Ahmed Omar",
       section: "A",
       teacher: "Mrs. Rodriguez",
@@ -18,13 +20,31 @@ function GeneralDash() {
       total: 96,
     },
     {
-      id: 102,
+      id: "STU102",
       name: "John Smith",
       section: "B",
       teacher: "Mr. Johnson",
       course: "Physics",
       grades: { exam1: 15, exam2: 20, exam3: 18, final: 35 },
       total: 88,
+    },
+  ]);
+
+  // Mock parent data
+  const [parents, setParents] = useState([
+    {
+      id: "PRT201",
+      name: "Omar Ahmed",
+      email: "omar.ahmed@example.com",
+      phone: "+966501234567",
+      studentId: "STU101", // References Ahmed Omar
+    },
+    {
+      id: "PRT202",
+      name: "Sarah Smith",
+      email: "sarah.smith@example.com",
+      phone: "+966501234568",
+      studentId: "STU102", // References John Smith
     },
   ]);
 
@@ -42,7 +62,6 @@ function GeneralDash() {
       title: "Course Content Actions",
       actions: [
         { id: 4, label: "Add Course", path: "/addCourse" },
-        //{ id: 5, label: "Delete content", path: "/delete-content" },
         { id: 5, label: "Courses", path: "/coursecontent" },
       ],
     },
@@ -71,8 +90,32 @@ function GeneralDash() {
       <GeneralNav />
 
       <div className="p-8 max-w-6xl mx-auto">
-        {/* Search Student Component */}
-        <SearchStudent students={students} onEditGrades={handleEditGrades} />
+        {/* Tab Navigation */}
+        <div className="tabs tabs-boxed bg-gray-100 p-1 rounded-lg mb-8">
+          <button
+            className={`tab ${
+              activeTab === "students" ? "tab-active bg-primary text-white" : ""
+            }`}
+            onClick={() => setActiveTab("students")}
+          >
+            Students
+          </button>
+          <button
+            className={`tab ${
+              activeTab === "parents" ? "tab-active bg-primary text-white" : ""
+            }`}
+            onClick={() => setActiveTab("parents")}
+          >
+            Parents
+          </button>
+        </div>
+
+        {/* Content based on active tab */}
+        {activeTab === "students" ? (
+          <SearchStudent students={students} onEditGrades={handleEditGrades} />
+        ) : (
+          <SearchParent parents={parents} students={students} />
+        )}
 
         {/* Quick Actions Component */}
         <QuickActions

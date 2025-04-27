@@ -7,7 +7,7 @@ function ParentDashboard() {
   const [children] = useState([
     { id: 1, name: "Anas Ghnaim" },
     { id: 2, name: "Hamzah Ghnaim" },
-    { id: 3, name: "Omar Ghnaim" },
+    { id: 3, name: "Mohammad Ghnaim" },
   ]);
   const [selectedChild, setSelectedChild] = useState(children[0].id);
 
@@ -16,8 +16,8 @@ function ParentDashboard() {
       <ParentNavBar />
 
       <div className="flex flex-col items-start justify-center mt-10 px-4 md:px-8">
-        {/* Centered Dropdown Container */}
-        <div className="w-full flex justify-center mb-8">
+        {/* Dropdown and Grades Button Container */}
+        <div className="w-full flex justify-center mb-8 gap-4">
           <div className="relative w-full max-w-md">
             <select 
               value={selectedChild}
@@ -28,7 +28,7 @@ function ParentDashboard() {
                        bg-no-repeat bg-[right_1rem_center] cursor-pointer transition-all duration-200"
             >
               <option disabled value="" className="text-gray-400">
-                Choose a student
+                Choose a Student
               </option>
               {children.map(child => (
                 <option 
@@ -41,24 +41,23 @@ function ParentDashboard() {
               ))}
             </select>
           </div>
+          <Link
+            to={`/parent-view-grades`}
+            className="btn btn-active btn-primary rounded-full h-16 w-48 font-semibold text-xl text-base-100"
+          >
+            Show Grades
+          </Link>
         </div>
 
-        {/* Rest of the existing content unchanged */}
-        <div className="flex w-full items-center justify-between">
+        {/* Course Header Section */}
+        <div className="w-full">
           <div>
             <h1 className="text-6xl font-bold text-primary">My Courses</h1>
             <p className="mt-2 text-3xl text-primary">Course overview</p>
           </div>
-          <div className="flex gap-4 items-center">
-            <Link
-              to={`/student-view-grades/${selectedChild}`}
-              className="btn btn-active btn-primary rounded-full h-16 w-48 font-semibold text-xl text-base-100"
-            >
-              Show Grades
-            </Link>
-          </div>
         </div>
 
+        {/* Course Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 w-full">
           {Array.from({ length: 6 }, (_, index) => (
             <CourseCard key={index} to='/parent-course-content'/>

@@ -1,26 +1,25 @@
 import { useState } from "react";
 import GeneralNav from "../../components/general/GeneralNav";
 
-function Deletion() {
+function DeleteUser() {
   const [activeTab, setActiveTab] = useState("students");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Sample data for all user types
   const [students, setStudents] = useState([
     {
-      id: "STU2025-001",
+      id: "STU-001",
       name: "Ahmad Khalid",
       grade: "Grade 10",
       status: "Active",
     },
     {
-      id: "STU2025-002",
+      id: "STU-002",
       name: "Layla Hassan",
       grade: "Grade 11",
       status: "Active",
     },
     {
-      id: "STU2025-003",
+      id: "STU-003",
       name: "Omar Mahmoud",
       grade: "Grade 9",
       status: "Pending",
@@ -29,13 +28,13 @@ function Deletion() {
 
   const [teachers, setTeachers] = useState([
     {
-      id: "TCH2025-001",
+      id: "TCH-001",
       name: "Sarah Johnson",
       subject: "Mathematics",
       status: "Active",
     },
     {
-      id: "TCH2025-002",
+      id: "TCH-002",
       name: "Michael Brown",
       subject: "Science",
       status: "Active",
@@ -44,15 +43,29 @@ function Deletion() {
 
   const [parents, setParents] = useState([
     {
-      id: "PRT2025-001",
+      id: "PRT-001",
       name: "Khalid Al-Farsi",
       student: "Ahmad Khalid",
       status: "Active",
     },
     {
-      id: "PRT2025-002",
+      id: "PRT-002",
       name: "Hassan Family",
       student: "Layla Hassan",
+      status: "Active",
+    },
+  ]);
+
+  const [admins, setAdmins] = useState([
+    {
+      id: "ADM-001",
+      name: "Admin One",
+      role: "System Administrator",
+      status: "Active",
+    },
+    {
+      id: "ADM-002",
+      name: "Admin Two",
       status: "Active",
     },
   ]);
@@ -70,6 +83,12 @@ function Deletion() {
           (parent) =>
             parent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             parent.id.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      case "admins":
+        return admins.filter(
+          (admin) =>
+            admin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            admin.id.toLowerCase().includes(searchTerm.toLowerCase())
         );
       default: // students
         return students.filter(
@@ -92,6 +111,9 @@ function Deletion() {
           break;
         case "parents":
           setParents(parents.filter((parent) => parent.id !== id));
+          break;
+        case "admins":
+          setAdmins(admins.filter((admin) => admin.id !== id));
           break;
         default: // students
           setStudents(students.filter((student) => student.id !== id));
@@ -129,6 +151,9 @@ function Deletion() {
                     Parent of: {item.student}
                   </div>
                 )}
+                {activeTab === "admins" && (
+                  <div className="text-sm text-gray-500">{item.role}</div>
+                )}
               </td>
               <td>
                 <div className="text-red-600">
@@ -158,7 +183,7 @@ function Deletion() {
       <GeneralNav />
 
       <div className="p-8 max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">General Administrator</h1>
+        <h1 className="text-3xl font-bold mb-2">Administrator</h1>
         <h2 className="text-2xl font-semibold mb-6">Delete User</h2>
 
         {/* Search Bar */}
@@ -198,6 +223,14 @@ function Deletion() {
           >
             Parents
           </button>
+          <button
+            className={`tab ${
+              activeTab === "admins" ? "tab-active bg-primary text-white" : ""
+            }`}
+            onClick={() => setActiveTab("admins")}
+          >
+            Admins
+          </button>
         </div>
 
         {/* Data Table */}
@@ -212,11 +245,9 @@ function Deletion() {
             )}
           </div>
         </div>
-
-        {/* Footer */}
       </div>
     </div>
   );
 }
 
-export default Deletion;
+export default DeleteUser;

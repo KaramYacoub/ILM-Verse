@@ -3,20 +3,40 @@ import {
   FaCalendarAlt,
   FaComments,
   FaSignOutAlt,
-  FaNewspaper,
-  FaCog,
   FaBars,
   FaTimes,
 } from "react-icons/fa";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../store/AuthStore";
 
 function TeacherNavbar() {
+  const { isCheckingAuth, logout } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  if (isCheckingAuth) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin" size={50} />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-primary px-4 py-3 shadow-md w-full">
@@ -60,6 +80,7 @@ function TeacherNavbar() {
         {/* Right: Logout */}
         <Link
           to="/"
+          onClick={handleLogout}
           className="flex items-center gap-2 text-accent font-bold cursor-pointer hover:text-yellow-500"
         >
           <FaSignOutAlt color="#fff" />
@@ -81,7 +102,7 @@ function TeacherNavbar() {
 
         {/* Hamburger Button - Right Side */}
         <button onClick={toggleMenu} className="text-white">
-        {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
         </button>
 
         {/* Mobile Menu */}

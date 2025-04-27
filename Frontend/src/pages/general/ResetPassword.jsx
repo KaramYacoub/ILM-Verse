@@ -4,7 +4,7 @@ function ResetPassword() {
     <div className="min-h-screen bg-gray-50">
       <GeneralNav />
       <div className="p-8 max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">General Administrator</h1>
+        <h1 className="text-3xl font-bold mb-2">Administrator</h1>
         <h2 className="text-2xl font-semibold mb-6">Change User Password</h2>
         <div className="mb-8">
           <input
@@ -17,7 +17,6 @@ function ResetPassword() {
           <button className="btn btn-sm btn-primary">Students</button>
           <button className="btn btn-sm btn-ghost">Teachers</button>
           <button className="btn btn-sm btn-ghost">Parents</button>
-          <button className="btn btn-sm btn-ghost">Dept.Manager</button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -26,7 +25,7 @@ function ResetPassword() {
               <option disabled selected>
                 Select user type
               </option>
-              <option>Department Manager</option>
+
               <option>Student</option>
               <option>Teacher</option>
               <option>Parent</option>
