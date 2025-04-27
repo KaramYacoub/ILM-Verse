@@ -183,7 +183,7 @@ function DeleteUser() {
       <GeneralNav />
 
       <div className="p-8 max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-2">General Administrator</h1>
+        <h1 className="text-3xl font-bold mb-2">Administrator</h1>
         <h2 className="text-2xl font-semibold mb-6">Delete User</h2>
 
         {/* Search Bar */}
