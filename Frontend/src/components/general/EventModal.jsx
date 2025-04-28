@@ -86,11 +86,41 @@ function EventModal({ setShowModal, newEvent, setNewEvent, handleAddEvent }) {
             className="file-input file-input-bordered w-full"
             multiple
             accept="image/*"
-            onChange={(e) =>
-              setNewEvent({ ...newEvent, media: e.target.files })
-            }
+            onChange={(e) => {
+              if (e.target.files && e.target.files.length > 0) {
+                setNewEvent({
+                  ...newEvent,
+                  media: [...newEvent.media, ...Array.from(e.target.files)],
+                });
+              }
+            }}
           />
         </div>
+
+        {/* Preview selected images */}
+        {Array.isArray(newEvent.media) && newEvent.media.length > 0 && (
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            {newEvent.media.map((file, idx) => (
+              <div key={idx} className="relative group">
+                <img
+                  src={URL.createObjectURL(file)}
+                  alt={`Preview ${idx + 1}`}
+                  className="w-full h-32 object-cover rounded-lg"
+                />
+                <button
+                  onClick={() => {
+                    const updatedMedia = [...newEvent.media];
+                    updatedMedia.splice(idx, 1);
+                    setNewEvent({ ...newEvent, media: updatedMedia });
+                  }}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="divider my-8"></div>
 
