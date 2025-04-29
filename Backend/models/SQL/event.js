@@ -4,9 +4,10 @@ module.exports = function (sequelize, DataTypes) {
     "event",
     {
       eventid: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true,
+        defaultValue: Sequelize.UUIDV4,
       },
       eventdate: {
         type: DataTypes.DATEONLY,

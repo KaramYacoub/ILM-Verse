@@ -3,8 +3,8 @@ const router = express.Router();
 const adminController = require("../controllers/adminController");
 const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
-const uploadAnnouncment = require("../controllers/uploadControllers/uploadAnnouncment.js"); // Import the upload middleware
-
+const uploadFiles = require("../controllers/upload/uploadEvent"); // Import the upload middleware
+const guestController = require("../controllers/GuestController");
 // login
 router.post("/staffLogin", authController.adminTeacherLogin);
 //---------------------------------
@@ -49,12 +49,9 @@ router.post(
 // router.post("/delete/student", authenticateUser, adminController.deleteStudent);
 // router.post("/delete/course", authenticateUser, adminController.deleteCourse);
 
-//Upload Files
+//Event 2 Post Conditions , first one for
 
-router.post(
-  "/upload",
-  authenticateUser,
-  uploadAnnouncment, // 'data' should be the name of the file input field in the form
-  adminController.uploadFile
-);
+router.post("/events", authenticateUser, uploadFiles, adminController.addEvent);
+router.get("/events", authenticateUser, guestController.getAllEvents);
+
 module.exports = router;

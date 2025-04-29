@@ -1,10 +1,9 @@
-const express = require("express");
+const path = require("path");
 const sequelize = require("sequelize");
 const SQL = require("../models/Connections/SQL-Driver"); // your Sequelize instance
 const initModels = require("../models/index"); // path to index.js
 const models = initModels(SQL); // initialize models
 const bcrypt = require("bcryptjs"); // For hashing
-const announcment = require("../models/SQL/announcment");
 const {
   department,
   student,
@@ -15,7 +14,10 @@ const {
   course,
   course_student,
   grade,
+  event,
 } = models; // extract all the needed models
+
+const eventMedia = require("../models/NOSQL/Event");
 
 // Getting Admin data By his Id
 exports.getAdmin = async (req, res) => {
@@ -146,9 +148,7 @@ exports.addStudent = async (req, res) => {
 };
 
 exports.addCourse = async (req, res) => {
-  //console.log(req.body);
   const { subject_name, section_id, teacher_id } = req.body;
-  console.log(section_id);
   try {
     const newCourse = course.create({
       subject_name: subject_name,
@@ -228,47 +228,101 @@ exports.getTeachersBySection = async (req, res) => {
 exports.involveStudents = async (req, res) => {
   try {
     const { course_id } = req.body;
-    const { section_id } = await course.findOne({
+
+    // Step 1: Get section_id of the course
+    const courseData = await course.findOne({
       where: {
         course_id: course_id,
       },
     });
 
+    if (!courseData) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+
+    const section_id = courseData.section_id;
+
+    // Step 2: Get all students in the section
     const students = await student.findAll({
       where: {
         section_id: section_id,
       },
     });
 
-    const InvolvedStudents = await course_student.bulkCreate(
-      students.map((student) => ({
-        course_id: course_id,
-        student_id: student.student_id,
-      }))
-    );
-    if (InvolvedStudents.length > 0) {
+    // Step 3: Filter out students already involved in the course
+    const involvedStudents = [];
+
+    for (const student of students) {
+      const isStudentInvolved = await course_student.findOne({
+        where: {
+          course_id: course_id,
+          student_id: student.student_id,
+        },
+      });
+
+      if (!isStudentInvolved) {
+        involvedStudents.push({
+          course_id: course_id,
+          student_id: student.student_id,
+        });
+      }
+    }
+
+    // Step 4: Bulk create involvement for students not already involved
+    if (involvedStudents.length > 0) {
+      const addedStudents = await course_student.bulkCreate(involvedStudents);
       res.status(201).json({
         status: "success",
-        message: `${InvolvedStudents.length} Student Added Successfully`,
+        message: `${addedStudents.length} Student(s) Added Successfully`,
       });
     } else {
-      res.status(201).json({
+      res.status(200).json({
         status: "success",
-        message: `The Course Already Up to Date`,
+        message: "All students are already involved in this course.",
       });
     }
   } catch (error) {
-    res.status(400).json({ message: "The Course Already Up to Date" });
+    console.error(error);
+    res.status(400).json({ error: error.message });
   }
 };
 /// Testing the Uploading!
-exports.uploadFile = (req, res, next) => {
-  console.log(req.file);
-  console.log(req.body.id);
-  res.status(201).json({
-    status: "success",
-    message: "Logged in successfully",
-    announcment: `${req.body.id}`,
-  });
-  next();
+exports.addEvent = async (req, res, next) => {
+  try {
+    //Getting all the Data required for SQL insert(Event)
+    const gm_id = req.user.gm_id;
+    const { description, title, location } = req.body;
+    const current_date = new Date().toISOString().split("T")[0];
+
+    // Map the media into Array named file paths to send it for noSQL
+    const fileDetails = req.files.map((file) => {
+      const filePath = path.join("./Data/Events", file.filename);
+      const fileType = file.mimetype;
+      return { path: filePath, type: fileType };
+    });
+
+    //SQL Insertion
+    const newEvent = await event.create({
+      adminid: gm_id,
+      date: current_date,
+
+      location: location,
+    });
+    //Getting event ID to insert it into NOSQL record
+    const event_id = newEvent.eventid;
+
+    const noSqlEvent = await new eventMedia({
+      event_id: event_id,
+      title: title,
+      description: description,
+      media: fileDetails,
+    }).save();
+    res.status(201).json({
+      status: "success",
+      message: "Event with Media Added Succesfully",
+      announcment: `${req.body.id}`,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
