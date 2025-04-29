@@ -37,20 +37,33 @@ exports.getAdmin = async (req, res) => {
 // Admin Addition Functionalites:
 exports.addAdmin = async (req, res) => {
   try {
-    // Here Will be the SQL insertion for admin
-    // Don't Forget the Image into Mongo :)
-    // Geting the Password from the Request -->Hash it --> insert it into DB
-    const { password } = req.body;
+    const { password, first_name, last_name, email } = req.body;
+
+    // Validation
+    if (!first_name || !last_name || !email || !password) {
+      return res.status(400).json({
+        status: "failed",
+        error: "All fields are required",
+      });
+    }
+
+    // Check if admin already exists
+    const existingAdmin = await admin.findOne({ where: { email } });
+    if (existingAdmin) {
+      return res.status(400).json({
+        status: "failed",
+        error: "Admin with this email already exists",
+      });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 3);
-    newAdmin = await admin.create({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      email: req.body.email,
+
+    const newAdmin = await admin.create({
+      first_name,
+      last_name,
+      email,
       password: hashedPassword,
     });
-    // newAdmin  will return the Admin data that inserted in the DB (Containing the Hashed Password)
-    // the result musn't have the password value therfore we just send the Attributes from the Array without the Password:
-    // The Same for all the functionalites
 
     res.status(201).json({
       status: "success",
@@ -59,24 +72,54 @@ exports.addAdmin = async (req, res) => {
         last_name: newAdmin.last_name,
         email: newAdmin.email,
       },
-      message: `${newAdmin.first_name} ${newAdmin.last_name} added`,
+      message: `${newAdmin.first_name} ${newAdmin.last_name} added successfully`,
     });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("Admin creation error:", error);
+    res.status(500).json({
+      status: "failed",
+      error: "Internal server error",
+    });
   }
 };
 
 exports.addTeacher = async (req, res) => {
-  const { password } = req.body;
+  const { password, first_name, last_name, email, section_id, dept_id } =
+    req.body;
+
+  // Validation
+  if (
+    !first_name ||
+    !last_name ||
+    !email ||
+    !password ||
+    !section_id ||
+    !dept_id
+  ) {
+    return res.status(400).json({
+      status: "failed",
+      error: "All fields are required",
+    });
+  }
+
   const hashedPassword = await bcrypt.hash(password, 3);
+
+  // Check if admin already exists
+  const existingTeacher = await admin.findOne({ where: { email } });
+  if (existingTeacher) {
+    return res.status(400).json({
+      status: "failed",
+      error: "Teacher with this email already exists",
+    });
+  }
 
   try {
     const newTeacher = await teacher.create({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      email: req.body.email,
-      section_id: req.body.section_id,
-      dept_id: req.body.department_id,
+      first_name,
+      last_name,
+      email,
+      section_id,
+      dept_id,
       password: hashedPassword,
     });
     res.status(201).json({
@@ -94,15 +137,16 @@ exports.addTeacher = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
 exports.addParent = async (req, res) => {
-  const { password } = req.body;
+  const { password, first_name, last_name, phone } = req.body;
   const hashedPassword = await bcrypt.hash(password, 3);
 
   try {
     const newParent = await parent.create({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      phone: req.body.phone,
+      first_name,
+      last_name,
+      phone,
       password: hashedPassword,
     });
     res.status(201).json({
@@ -115,23 +159,24 @@ exports.addParent = async (req, res) => {
       message: `${newParent.first_name} ${newParent.last_name} added`,
     });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
 exports.addStudent = async (req, res) => {
-  const { password } = req.body;
+  const { password, first_name, last_name, parent_id, section_id } = req.body;
   const hashedPassword = await bcrypt.hash(password, 3);
 
   // Here Will be the SQL insertion for student
   try {
     const newStudent = await student.create({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      parent_id: req.body.parent_id,
-      section_id: req.body.section_id,
+      first_name,
+      last_name,
+      parent_id,
+      section_id,
       password: hashedPassword,
     });
+
     res.status(201).json({
       status: "success",
       data: {
