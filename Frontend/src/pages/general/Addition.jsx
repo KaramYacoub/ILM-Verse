@@ -5,6 +5,7 @@ import AdminForm from "../../components/general/addition/AdminForm";
 import StudentForm from "../../components/general/addition/StudentForm";
 import TeacherForm from "../../components/general/addition/TeacherForm";
 import ParentForm from "../../components/general/addition/ParentForm";
+import TabNavigation from "../../components/general/TabNavigation";
 
 function Addition() {
   const [activeTab, setActiveTab] = useState("students");
@@ -71,24 +72,9 @@ function Addition() {
           <h2 className="text-2xl font-semibold">Add New User</h2>
         </div>
 
-        <div className="tabs tabs-boxed bg-gray-100 p-1 rounded-lg mb-8">
-          {["students", "parents", "teachers", "admins"].map((tab) => (
-            <button
-              key={tab}
-              className={`tab ${
-                activeTab === tab ? "tab-active bg-primary text-white" : ""
-              }`}
-              onClick={() => {
-                setActiveTab(tab);
-                setFormData({});
-                setStatus({ message: "", type: "" });
-              }}
-              type="button"
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
-        </div>
+        
+        {/* Tab Navigation */}
+        <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
         <form
           onSubmit={handleSubmit}

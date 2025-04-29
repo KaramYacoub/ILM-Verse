@@ -10,7 +10,21 @@ function GenralEvents() {
   const [showModal, setShowModal] = useState(false);
   const [formError, setFormError] = useState("");
   const [events, setEvents] = useState({
-    2025: [],
+    2025: [
+      {
+        id: 1,
+        title: "Science Fair 2025",
+        date: "April 15, 2025",
+        location: "School Auditorium",
+        description: [
+          "Join us for our Annual Science Fair where students showcase their innovative research projects and scientific discoveries.",
+          "This year's theme is 'Science for Sustainable Future' highlighting environmental solutions.",
+          "Students from grades 7-12 will present their projects to judges from local universities and technology companies.",
+          "Prizes will be awarded for the most innovative and impactful projects in various categories.",
+        ],
+        media: [],
+      },
+    ],
     2024: [],
     2023: [],
   });

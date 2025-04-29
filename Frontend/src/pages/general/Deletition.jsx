@@ -1,5 +1,10 @@
 import { useState } from "react";
 import GeneralNav from "../../components/general/GeneralNav";
+import StudentDeleteTable from "../../components/general/deletition/StudentDeleteTable";
+import TeacherDeleteTable from "../../components/general/deletition/TeacherDeleteTable";
+import ParentDeleteTable from "../../components/general/deletition/ParentDeleteTable";
+import AdminDeleteTable from "../../components/general/deletition/AdminDeleteTable";
+import TabNavigation from "../../components/general/TabNavigation";
 
 function DeleteUser() {
   const [activeTab, setActiveTab] = useState("students");
@@ -123,59 +128,24 @@ function DeleteUser() {
 
   const renderTable = () => {
     const data = getCurrentData();
+    if (data.length === 0) {
+      return (
+        <div className="p-8 text-center text-gray-500">
+          No {activeTab} found matching your search
+        </div>
+      );
+    }
 
-    return (
-      <table className="table w-full">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="text-left">ID</th>
-            <th className="text-left">Details</th>
-            <th className="text-left">Confirm Deletion</th>
-            <th className="text-left">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item) => (
-            <tr key={item.id}>
-              <td className="font-medium">{item.id}</td>
-              <td>
-                <div className="font-medium">{item.name}</div>
-                {activeTab === "students" && (
-                  <div className="text-sm text-gray-500">{item.grade}</div>
-                )}
-                {activeTab === "teachers" && (
-                  <div className="text-sm text-gray-500">{item.subject}</div>
-                )}
-                {activeTab === "parents" && (
-                  <div className="text-sm text-gray-500">
-                    Parent of: {item.student}
-                  </div>
-                )}
-                {activeTab === "admins" && (
-                  <div className="text-sm text-gray-500">{item.role}</div>
-                )}
-              </td>
-              <td>
-                <div className="text-red-600">
-                  Are you sure you want to delete?
-                </div>
-                <div className="text-sm text-red-600">
-                  Warning: This action cannot be undone.
-                </div>
-              </td>
-              <td>
-                <button
-                  onClick={() => handleDelete(item.id)}
-                  className="btn btn-error btn-sm text-white"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
+    switch (activeTab) {
+      case "teachers":
+        return <TeacherDeleteTable data={data} onDelete={handleDelete} />;
+      case "parents":
+        return <ParentDeleteTable data={data} onDelete={handleDelete} />;
+      case "admins":
+        return <AdminDeleteTable data={data} onDelete={handleDelete} />;
+      default:
+        return <StudentDeleteTable data={data} onDelete={handleDelete} />;
+    }
   };
 
   return (
@@ -198,40 +168,7 @@ function DeleteUser() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="tabs tabs-boxed bg-gray-100 p-1 rounded-lg mb-8">
-          <button
-            className={`tab ${
-              activeTab === "students" ? "tab-active bg-primary text-white" : ""
-            }`}
-            onClick={() => setActiveTab("students")}
-          >
-            Students
-          </button>
-          <button
-            className={`tab ${
-              activeTab === "teachers" ? "tab-active bg-primary text-white" : ""
-            }`}
-            onClick={() => setActiveTab("teachers")}
-          >
-            Teachers
-          </button>
-          <button
-            className={`tab ${
-              activeTab === "parents" ? "tab-active bg-primary text-white" : ""
-            }`}
-            onClick={() => setActiveTab("parents")}
-          >
-            Parents
-          </button>
-          <button
-            className={`tab ${
-              activeTab === "admins" ? "tab-active bg-primary text-white" : ""
-            }`}
-            onClick={() => setActiveTab("admins")}
-          >
-            Admins
-          </button>
-        </div>
+        <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
         {/* Data Table */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
