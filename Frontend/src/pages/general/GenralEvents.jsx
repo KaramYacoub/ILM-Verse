@@ -3,66 +3,66 @@ import GeneralNav from "../../components/general/GeneralNav";
 import EventList from "../../components/shared/EventList";
 import { Plus } from "lucide-react";
 import EventModal from "../../components/general/EventModal";
+import { useAdminStore } from "../../store/AdminStore";
 
 function GenralEvents() {
   const [currentYear, setCurrentYear] = useState("2025");
   const [showModal, setShowModal] = useState(false);
+  const [formError, setFormError] = useState("");
   const [events, setEvents] = useState({
     2025: [],
     2024: [],
     2023: [],
   });
-
   const [newEvent, setNewEvent] = useState({
     title: "",
     date: "",
-    time: "",
     location: "",
     description: "",
     media: [],
   });
 
-  const handleAddEvent = () => {
-    const { title, date, time, location, description, media } = newEvent;
-    if (!title.trim() || !date.trim() || !time.trim() || !location.trim()) {
-      alert("Please fill in all required fields.");
+  const { addEvent } = useAdminStore();
+
+  const handleAddEvent = async (e) => {
+    e.preventDefault();
+
+    const { title, date, location, description, media } = newEvent;
+
+    // Reset previous error
+    setFormError("");
+
+    // Validate fields
+    if (!title.trim() || !date.trim() || !location.trim()) {
+      setFormError(
+        "Please fill in all required fields: Title, Date, Time, and Location."
+      );
       return;
     }
 
-    const newId =
-      events[currentYear].length > 0
-        ? events[currentYear][events[currentYear].length - 1].id + 1
-        : 1;
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("location", location);
+    formData.append("description", description);
+    formData.append("date", date);
 
-    const mediaUrls = Array.from(media).map((file) =>
-      URL.createObjectURL(file)
-    );
-
-    const eventToAdd = {
-      id: newId,
-      title,
-      date,
-      time,
-      location,
-      description: description.split("\n"),
-      media: mediaUrls,
-    };
-
-    setEvents({
-      ...events,
-      [currentYear]: [...events[currentYear], eventToAdd],
+    media.forEach((file) => {
+      formData.append("media", file);
     });
 
-    setNewEvent({
-      title: "",
-      date: "",
-      time: "",
-      location: "",
-      description: "",
-      media: [],
-    });
-
-    setShowModal(false);
+    try {
+      await addEvent(formData);
+      setNewEvent({
+        title: "",
+        date: "",
+        location: "",
+        description: "",
+        media: [],
+      });
+      setShowModal(false);
+    } catch {
+      setFormError("Failed to add event. Please try again.");
+    }
   };
 
   const handleDeleteEvent = (year, id) => {
@@ -97,6 +97,7 @@ function GenralEvents() {
             handleAddEvent={handleAddEvent}
             newEvent={newEvent}
             setNewEvent={setNewEvent}
+            formError={formError}
           />
         )}
 

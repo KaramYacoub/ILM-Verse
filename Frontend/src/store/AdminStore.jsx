@@ -83,4 +83,18 @@ export const useAdminStore = create(() => ({
       throw error;
     }
   },
+
+  addEvent: async (formData) => {
+    try {
+      const response = await axiosInstance.post("/admin/events", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error adding event:", error);
+      throw error;
+    }
+  },
 }));

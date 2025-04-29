@@ -332,12 +332,12 @@ exports.involveStudents = async (req, res) => {
   }
 };
 /// Testing the Uploading!
-exports.addEvent = async (req, res, next) => {
+exports.addEvent = async (req, res) => {
   try {
     //Getting all the Data required for SQL insert(Event)
     const gm_id = req.user.gm_id;
-    const { description, title, location } = req.body;
-    const current_date = new Date().toISOString().split("T")[0];
+    const { description, title, location, date } = req.body;
+    const event_date = new Date(date).toISOString().split("T")[0];
 
     // Map the media into Array named file paths to send it for noSQL
     const fileDetails = req.files.map((file) => {
@@ -349,7 +349,7 @@ exports.addEvent = async (req, res, next) => {
     //SQL Insertion
     const newEvent = await event.create({
       adminid: gm_id,
-      date: current_date,
+      eventdate: event_date,
 
       location: location,
     });
