@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import GeneralNav from "../../components/general/GeneralNav";
 import EventList from "../../components/shared/EventList";
 import { Plus } from "lucide-react";
@@ -9,25 +9,8 @@ function GenralEvents() {
   const [currentYear, setCurrentYear] = useState("2025");
   const [showModal, setShowModal] = useState(false);
   const [formError, setFormError] = useState("");
-  const [events, setEvents] = useState({
-    2025: [
-      {
-        id: 1,
-        title: "Science Fair 2025",
-        date: "April 15, 2025",
-        location: "School Auditorium",
-        description: [
-          "Join us for our Annual Science Fair where students showcase their innovative research projects and scientific discoveries.",
-          "This year's theme is 'Science for Sustainable Future' highlighting environmental solutions.",
-          "Students from grades 7-12 will present their projects to judges from local universities and technology companies.",
-          "Prizes will be awarded for the most innovative and impactful projects in various categories.",
-        ],
-        media: [],
-      },
-    ],
-    2024: [],
-    2023: [],
-  });
+  const [events, setEvents] = useState({});
+
   const [newEvent, setNewEvent] = useState({
     title: "",
     date: "",
@@ -36,20 +19,47 @@ function GenralEvents() {
     media: [],
   });
 
-  const { addEvent } = useAdminStore();
+  const addEvent = useAdminStore((state) => state.addEvent);
+  const getAllEvents = useAdminStore((state) => state.getAllEvents);
 
+  // Fetch events from the store and group by year
+  const fetchEvents = useCallback(async () => {
+    try {
+      const data = await getAllEvents();
+      if (data) {
+        const grouped = data.data.reduce((acc, event) => {
+          const year = new Date(event.eventdate).getFullYear().toString();
+          if (!acc[year]) acc[year] = [];
+          acc[year].push(event);
+          return acc;
+        }, {});
+        setEvents(grouped);
+
+        if (!grouped[currentYear]) {
+          const latestYear = Object.keys(grouped).sort().reverse()[0];
+          setCurrentYear(latestYear);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch events:", err);
+    }
+  }, [getAllEvents, currentYear]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
+
+  // add event
   const handleAddEvent = async (e) => {
     e.preventDefault();
 
     const { title, date, location, description, media } = newEvent;
 
-    // Reset previous error
     setFormError("");
 
-    // Validate fields
     if (!title.trim() || !date.trim() || !location.trim()) {
       setFormError(
-        "Please fill in all required fields: Title, Date, Time, and Location."
+        "Please fill in all required fields: Title, Date, and Location."
       );
       return;
     }
@@ -74,6 +84,7 @@ function GenralEvents() {
         media: [],
       });
       setShowModal(false);
+      await fetchEvents(); // Refresh event list after adding
     } catch {
       setFormError("Failed to add event. Please try again.");
     }
@@ -119,17 +130,19 @@ function GenralEvents() {
         <div className="p-6 rounded-lg shadow-md mb-8 flex flex-col">
           <h2 className="text-2xl font-bold mb-4">Select Year</h2>
           <div className="flex flex-wrap items-center gap-2 mb-8">
-            {Object.keys(events).map((year) => (
-              <button
-                key={year}
-                onClick={() => setCurrentYear(year)}
-                className={`btn btn-sm ${
-                  currentYear === year ? "btn-primary" : "btn-ghost"
-                }`}
-              >
-                {year}
-              </button>
-            ))}
+            {Object.keys(events)
+              .sort((a, b) => b - a)
+              .map((year) => (
+                <button
+                  key={year}
+                  onClick={() => setCurrentYear(year)}
+                  className={`btn btn-sm ${
+                    currentYear === year ? "btn-primary" : "btn-ghost"
+                  }`}
+                >
+                  {year}
+                </button>
+              ))}
           </div>
           <EventList
             events={events}

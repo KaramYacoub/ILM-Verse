@@ -12,6 +12,7 @@ export default function EventList({
         events[currentYear].map((event) => (
           <div
             key={event.id}
+            id={event.id}
             className="bg-white rounded-lg shadow-md overflow-hidden"
           >
             <div className="p-6">
@@ -30,7 +31,7 @@ export default function EventList({
               {/* Event Description */}
               <div className="flex justify-between items-start mb-2">
                 <h2 className="text-2xl font-bold">{event.title}</h2>
-                <span className="text-gray-500">{event.date}</span>
+                <span className="text-gray-500">{event.eventdate}</span>
               </div>
               <div className="mb-4">
                 <p>
@@ -38,27 +39,21 @@ export default function EventList({
                   {event.location}
                 </p>
               </div>
-              <div className="space-y-3">
-                {event.description.map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
-                ))}
-              </div>
+              <div className="space-y-3">{event.description}</div>
             </div>
 
             {/* Event Media Carousel */}
-            <div className="relative">
-              <Carousel
-                customSlides={event.media.map((img, idx) => (
-                  <div key={idx} className="flex-[0_0_100%] h-64 md:h-80">
-                    <img
-                      src={img}
-                      alt={`${event.title} ${idx + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-              />
-            </div>
+            <Carousel
+              customSlides={event.media.map((img, idx) => (
+                <div key={img._id} className="flex-[0_0_100%] h-64 md:h-80">
+                  <img
+                    src={`http://localhost:8001/media/events/${img.filename}`} // Changed from img.path to img.filename
+                    alt={`${event.title}-${idx + 1}`}
+                    className="w-full h-full object-fill"
+                  />
+                </div>
+              ))}
+            />
           </div>
         ))
       ) : (

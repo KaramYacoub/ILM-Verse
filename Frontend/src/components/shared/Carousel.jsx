@@ -2,21 +2,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 
-const Carousel = () => {
+const Carousel = ({ customSlides = [] }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
     Autoplay({ delay: 3000, stopOnInteraction: false }),
   ]);
 
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
-
   const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
+
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -30,35 +25,36 @@ const Carousel = () => {
     onSelect();
   }, [emblaApi, onSelect]);
 
-  const slides = [1, 2, 3, 4, 5]; // Replace with your actual content
+  if (!customSlides.length) return null;
 
   return (
-    <div className="relative max-w-screen h-80 overflow-hidden">
+    <div className="relative w-full h-80 overflow-hidden rounded-lg">
       {/* Viewport */}
       <div className="overflow-hidden h-full" ref={emblaRef}>
-        <div className="flex gap-3 h-full">
-          {slides.map((slide, index) => (
-            <div key={index} className="flex-[0_0_100%] h-full">
-              <div className="bg-gray-100 rounded-lg h-full flex items-center justify-center text-4xl font-bold">
-                Slide {slide}
-              </div>
+        <div className="flex h-full">
+          {customSlides.map((slide, idx) => (
+            <div
+              key={idx}
+              className="flex-[0_0_100%] h-full flex items-center justify-center"
+            >
+              {slide}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Inside Controls */}
+      {/* Navigation Buttons */}
       <button
         onClick={scrollPrev}
         disabled={prevBtnDisabled}
-        className="absolute top-1/2 left-5 -translate-y-1/2 btn btn-circle btn-md bg-base-100 shadow-md hover:scale-110 transition-transform"
+        className="absolute top-1/2 left-4 -translate-y-1/2 btn btn-circle bg-white shadow-md hover:scale-110 transition-transform"
       >
         ❮
       </button>
       <button
         onClick={scrollNext}
         disabled={nextBtnDisabled}
-        className="absolute top-1/2 right-5 -translate-y-1/2 btn btn-circle btn-md bg-base-100 shadow-md hover:scale-110 transition-transform"
+        className="absolute top-1/2 right-4 -translate-y-1/2 btn btn-circle bg-white shadow-md hover:scale-110 transition-transform"
       >
         ❯
       </button>

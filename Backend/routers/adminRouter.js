@@ -4,7 +4,6 @@ const adminController = require("../controllers/adminController");
 const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
 const uploadFiles = require("../controllers/upload/uploadEvent"); // Import the upload middleware
-const guestController = require("../controllers/GuestController");
 // login
 router.post("/staffLogin", authController.adminTeacherLogin);
 //---------------------------------
