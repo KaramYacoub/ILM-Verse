@@ -13,7 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/AuthStore";
 
 function StudentNavbar() {
-  const { isCheckingAuth, logout } = useAuthStore();
+  const { isUserLoggingOut, logout } = useAuthStore();
   const navigate = useNavigate();
   const handleLogout = async () => {
     try {
@@ -30,7 +30,7 @@ function StudentNavbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  if (isCheckingAuth) {
+  if (isUserLoggingOut) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="animate-spin" size={50} />

@@ -45,11 +45,11 @@ export default function EventList({
             {/* Event Media Carousel */}
             <Carousel
               customSlides={event.media.map((img, idx) => (
-                <div key={img._id} className="flex-[0_0_100%] h-64 md:h-80">
+                <div key={img._id} className="flex-[0_0_100%] h-64 p-2 md:h-80">
                   <img
                     src={`http://localhost:8001/media/events/${img.filename}`} // Changed from img.path to img.filename
                     alt={`${event.title}-${idx + 1}`}
-                    className="w-full h-full object-fill"
+                    className="w-full h-full object-fill rounded-lg shadow-md"
                   />
                 </div>
               ))}

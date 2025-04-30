@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuthStore } from "../../store/AuthStore";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 function StudentLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -11,7 +11,7 @@ function StudentLogin() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const { adminLogin, teacherLogin } = useAuthStore();
+  const { isUserLoggingIn, adminLogin, teacherLogin } = useAuthStore();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -29,6 +29,14 @@ function StudentLogin() {
       setError(err.message);
     }
   };
+
+  if (isUserLoggingIn) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin" size={50} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-100 px-4">

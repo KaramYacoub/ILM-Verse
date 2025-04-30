@@ -11,6 +11,6 @@ router.get("/check", authenticateUser, authController.checkLogin);
 router.post("/logout", authenticateUser, authController.logout);
 
 // get all events
-router.get("/events/getEvents", authenticateUser, guestController.getAllEvents);
+router.get("/events/getEvents", guestController.getAllEvents);
 
 module.exports = router;

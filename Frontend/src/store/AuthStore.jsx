@@ -7,45 +7,59 @@ export const useAuthStore = create((set) => ({
   authStudent: null,
   authParent: null,
   isCheckingAuth: false,
+  isUserLoggingIn: false,
+  isUserLoggingOut: false,
 
   adminLogin: async (data) => {
     try {
+      set({ isUserLoggingIn: true });
       const response = await axiosInstance.post("admin/staffLogin", data);
       set({ authAdmin: response.data.data });
       console.log(response.data);
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Login failed");
+      console.log(error.response?.data?.message || "Login failed");
+    } finally {
+      set({ isUserLoggingIn: false });
     }
   },
 
   teacherLogin: async (data) => {
     try {
+      set({ isUserLoggingIn: true });
       const response = await axiosInstance.post("teacher/staffLogin", data);
       set({ authTeacher: response.data.data });
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Login failed");
+      console.log(error.response?.data?.message || "Login failed");
+    } finally {
+      set({ isUserLoggingIn: false });
     }
   },
 
   studentLogin: async (data) => {
     try {
+      set({ isUserLoggingIn: true });
       const response = await axiosInstance.post("student/studentLogin", data);
       set({ authStudent: response.data.data });
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Login failed");
+      console.log(error.response?.data?.message || "Login failed");
+    } finally {
+      set({ isUserLoggingIn: false });
     }
   },
 
   parentLogin: async (data) => {
     try {
+      set({ isUserLoggingIn: true });
       const response = await axiosInstance.post("parent/studentLogin", data);
       set({ authParent: response.data.data });
       return response.data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || "Login failed");
+      console.log(error.response?.data?.message || "Login failed");
+    } finally {
+      set({ isUserLoggingIn: false });
     }
   },
 
@@ -87,7 +101,7 @@ export const useAuthStore = create((set) => ({
 
   logout: async () => {
     try {
-      set({ isCheckingAuth: true });
+      set({ isUserLoggingOut: true });
       const res = await axiosInstance.post("/shared/logout");
       set({
         authAdmin: null,
@@ -100,7 +114,7 @@ export const useAuthStore = create((set) => ({
       console.error("Logout Error:", error.response?.data?.message);
       throw error;
     } finally {
-      set({ isCheckingAuth: false });
+      set({ isUserLoggingOut: false });
     }
   },
 }));

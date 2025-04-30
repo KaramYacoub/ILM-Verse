@@ -14,11 +14,7 @@ exports.getAllEvents = async (req, res) => {
         event_id: oneEvent.eventid,
       });
 
-      // const { title, description, media } = noSqlEvent;
-      // const { location, eventdate } = oneEvent;
-
       if (!noSqlEvent) continue;
-      console.log("Media data:", noSqlEvent.media);
       const mergedEvent = {
         id: oneEvent.eventid,
         title: noSqlEvent.title,

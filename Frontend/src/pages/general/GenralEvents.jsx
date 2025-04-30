@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import GeneralNav from "../../components/general/GeneralNav";
 import EventList from "../../components/shared/EventList";
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import EventModal from "../../components/general/EventModal";
 import { useAdminStore } from "../../store/AdminStore";
+import { useSharedStore } from "../../store/SharedStore";
 
 function GenralEvents() {
   const [currentYear, setCurrentYear] = useState("2025");
@@ -20,7 +21,8 @@ function GenralEvents() {
   });
 
   const addEvent = useAdminStore((state) => state.addEvent);
-  const getAllEvents = useAdminStore((state) => state.getAllEvents);
+  const getAllEvents = useSharedStore((state) => state.getAllEvents);
+  const isFetchingEvents = useSharedStore((state) => state.isFetchingEvents);
 
   // Fetch events from the store and group by year
   const fetchEvents = useCallback(async () => {
@@ -124,6 +126,12 @@ function GenralEvents() {
             setNewEvent={setNewEvent}
             formError={formError}
           />
+        )}
+
+        {isFetchingEvents && (
+          <div className="flex items-center justify-center h-screen">
+            <Loader2 className="animate-spin" size={50} />
+          </div>
         )}
 
         {/* Year Filter & Events List */}

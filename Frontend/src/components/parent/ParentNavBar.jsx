@@ -14,7 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/AuthStore";
 
 function ParentNavBar() {
-  const { isCheckingAuth, logout } = useAuthStore();
+  const { isUserLoggingOut, logout } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -31,7 +31,7 @@ function ParentNavBar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  if (isCheckingAuth) {
+  if (isUserLoggingOut) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="animate-spin" size={50} />

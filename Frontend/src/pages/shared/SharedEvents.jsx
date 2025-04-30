@@ -1,42 +1,42 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import HomeNav from "../../components/shared/HomeNav";
 import EventList from "../../components/shared/EventList";
+import { useSharedStore } from "../../store/SharedStore";
+import { Loader2 } from "lucide-react";
 
 function SharedEvents() {
+  const [events, setEvents] = useState({});
   const [currentYear, setCurrentYear] = useState("2025");
 
-  const events = {
-    2025: [
-      {
-        id: 1,
-        title: "Science Fair 2025",
-        date: "April 15, 2025",
-        location: "School Auditorium",
-        description: [
-          "Join us for our Annual Science Fair where students showcase their innovative research projects and scientific discoveries.",
-          "This year's theme is 'Science for Sustainable Future' highlighting environmental solutions.",
-          "Students from grades 7-12 will present their projects to judges from local universities and technology companies.",
-          "Prizes will be awarded for the most innovative and impactful projects in various categories.",
-        ],
-        media: [],
-      },
-      {
-        id: 2,
-        title: "Cultural Heritage Day",
-        date: "March 20, 2025",
-        location: "School Campus",
-        description: [
-          "Celebrating Jordan's rich cultural heritage! This full day event features traditional performances, art exhibits, and culinary experiences.",
-          "Students will showcase traditional dances, music, costumes, and crafts that highlight our nation's diverse cultural traditions.",
-          "Special exhibitions will present regional customs, historical artifacts, and interactive cultural activities.",
-          "Food stalls will offer traditional delicacies, giving everyone a taste of authentic Jordanian cuisine.",
-        ],
-        media: [],
-      },
-    ],
-    2024: [], // Add 2024 events if available
-    2023: [], // Add 2023 events if available
-  };
+  const getAllEvents = useSharedStore((state) => state.getAllEvents);
+  const isFetchingEvents = useSharedStore((state) => state.isFetchingEvents);
+
+  // Fetch events from the store and group by year
+  const fetchEvents = useCallback(async () => {
+    try {
+      const data = await getAllEvents();
+      if (data) {
+        const grouped = data.data.reduce((acc, event) => {
+          const year = new Date(event.eventdate).getFullYear().toString();
+          if (!acc[year]) acc[year] = [];
+          acc[year].push(event);
+          return acc;
+        }, {});
+        setEvents(grouped);
+
+        if (!grouped[currentYear]) {
+          const latestYear = Object.keys(grouped).sort().reverse()[0];
+          setCurrentYear(latestYear);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch events:", err);
+    }
+  }, [getAllEvents, currentYear]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col">
@@ -63,6 +63,12 @@ function SharedEvents() {
             </button>
           ))}
         </div>
+
+        {isFetchingEvents && (
+          <div className="flex items-center justify-center h-screen">
+            <Loader2 className="animate-spin" size={50} />
+          </div>
+        )}
 
         {/* Events List */}
         <EventList events={events} currentYear={currentYear} />

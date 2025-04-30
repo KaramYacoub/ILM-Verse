@@ -17,7 +17,7 @@ import { useAuthStore } from "../../store/AuthStore";
 
 function GeneralNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isCheckingAuth, logout } = useAuthStore();
+  const { isUserLoggingOut, logout } = useAuthStore();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -33,7 +33,7 @@ function GeneralNav() {
     }
   };
 
-  if (isCheckingAuth) {
+  if (isUserLoggingOut) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="animate-spin" size={50} />
