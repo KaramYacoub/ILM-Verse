@@ -33,7 +33,7 @@ exports.getAdmin = async (req, res) => {
   }
 };
 
-// Admin Addition Functionalites:
+// Add Admin ✅
 exports.addAdmin = async (req, res) => {
   try {
     const { password, first_name, last_name, email } = req.body;
@@ -82,6 +82,7 @@ exports.addAdmin = async (req, res) => {
   }
 };
 
+// Add Teacher ✅
 exports.addTeacher = async (req, res) => {
   const { password, first_name, last_name, email, section_id, dept_id } =
     req.body;
@@ -137,6 +138,7 @@ exports.addTeacher = async (req, res) => {
   }
 };
 
+// Add Parent ✅(need to fix)
 exports.addParent = async (req, res) => {
   const { password, first_name, last_name, phone } = req.body;
   const hashedPassword = await bcrypt.hash(password, 3);
@@ -162,6 +164,7 @@ exports.addParent = async (req, res) => {
   }
 };
 
+// Add Student ✅
 exports.addStudent = async (req, res) => {
   const { password, first_name, last_name, parent_id, section_id } = req.body;
   const hashedPassword = await bcrypt.hash(password, 3);
@@ -191,6 +194,7 @@ exports.addStudent = async (req, res) => {
   }
 };
 
+// Add Course
 exports.addCourse = async (req, res) => {
   const { subject_name, section_id, teacher_id } = req.body;
   try {
@@ -214,6 +218,7 @@ exports.addCourse = async (req, res) => {
   }
 };
 
+// Get all Grades
 exports.getGrades = async (req, res) => {
   try {
     allGrades = await grade.findAll();
@@ -226,6 +231,7 @@ exports.getGrades = async (req, res) => {
   }
 };
 
+// Get all Sections
 exports.getSections = async (req, res) => {
   try {
     const { grade_id } = req.params;
@@ -243,6 +249,7 @@ exports.getSections = async (req, res) => {
   }
 };
 
+// Get Teacher by section
 exports.getTeachersBySection = async (req, res) => {
   try {
     const { grade_id } = req.params;
@@ -269,6 +276,8 @@ exports.getTeachersBySection = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+// Involve students in a course
 exports.involveStudents = async (req, res) => {
   try {
     const { course_id } = req.body;
@@ -330,7 +339,8 @@ exports.involveStudents = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-/// Testing the Uploading!
+
+// Add Event ✅
 exports.addEvent = async (req, res) => {
   try {
     //Getting all the Data required for SQL insert(Event)
@@ -371,6 +381,8 @@ exports.addEvent = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+// Delete Event
 exports.deleteEvent = async (req, res) => {
   try {
     console.log(req.params.event_id);
@@ -379,10 +391,11 @@ exports.deleteEvent = async (req, res) => {
       message: "Event Deleted Successfully",
     });
   } catch (err) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ error: err.message });
   }
 };
 
+// Get all students ✅
 exports.getAllStudents = async (req, res) => {
   try {
     const allStudents = await student.findAll({
@@ -415,6 +428,7 @@ exports.getAllStudents = async (req, res) => {
         },
       ],
     });
+
     // Format the response Array
     const formattedStudents = allStudents.map((student) => {
       const section = student.section;
@@ -427,7 +441,7 @@ exports.getAllStudents = async (req, res) => {
         last_name: student.last_name,
         section_name: section.section_name,
         grade_name: grade.grade_name,
-        dept_name: dept.name, // Adjusted for correct field name
+        dept_name: dept.name,
         parent_id: student.parent_id,
       };
     });
@@ -445,6 +459,8 @@ exports.getAllStudents = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+// Get all parents ✅
 exports.getAllParents = async (req, res) => {
   try {
     const allParents = await parent.findAll({
@@ -458,6 +474,8 @@ exports.getAllParents = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+// Get all Teachers
 exports.getAllTeachers = async (req, res) => {
   try {
     const allTeachers = await teacher.findAll({
@@ -518,6 +536,8 @@ exports.getAllTeachers = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+// Get all Admins
 exports.getAllAdmins = async (req, res) => {
   try {
     const allAdmins = await admin.findAll({
@@ -532,6 +552,7 @@ exports.getAllAdmins = async (req, res) => {
   }
 };
 
+// Delete Student
 exports.deleteStudent = async (req, res) => {
   try {
     const { student_id } = req.params.id;
@@ -556,6 +577,8 @@ exports.deleteStudent = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+// Delete Parent
 exports.deleteParent = async (req, res) => {
   try {
     const parent_id = req.params.id;
@@ -602,5 +625,9 @@ exports.deleteParent = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+// Delete Teacher
 exports.deleteTeacher = async (req, res) => {};
+
+// Delete Admin
 exports.deleteAdmin = async (req, res) => {};

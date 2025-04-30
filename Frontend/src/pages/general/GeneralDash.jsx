@@ -6,47 +6,7 @@ import QuickActions from "../../components/general/QuickActions";
 
 function GeneralDash() {
   const [activeActions, setActiveActions] = useState([]);
-  const [activeTab, setActiveTab] = useState("students"); // New state for tab control
-
-  // Mock student data with split grades
-  const [students, setStudents] = useState([
-    {
-      id: "STU101",
-      name: "Ahmed Omar",
-      section: "A",
-      teacher: "Mrs. Rodriguez",
-      course: "Mathematics (Algebra II)",
-      grades: { exam1: 20, exam2: 18, exam3: 20, final: 38 },
-      total: 96,
-    },
-    {
-      id: "STU102",
-      name: "John Smith",
-      section: "B",
-      teacher: "Mr. Johnson",
-      course: "Physics",
-      grades: { exam1: 15, exam2: 20, exam3: 18, final: 35 },
-      total: 88,
-    },
-  ]);
-
-  // Mock parent data
-  const [parents, setParents] = useState([
-    {
-      id: "PRT201",
-      name: "Omar Ahmed",
-      email: "omar.ahmed@example.com",
-      phone: "+966501234567",
-      studentId: "STU101", // References Ahmed Omar
-    },
-    {
-      id: "PRT202",
-      name: "Sarah Smith",
-      email: "sarah.smith@example.com",
-      phone: "+966501234568",
-      studentId: "STU102", // References John Smith
-    },
-  ]);
+  const [activeTab, setActiveTab] = useState("students");
 
   // Quick Actions and Marks groups
   const actionGroups = [
@@ -72,16 +32,6 @@ function GeneralDash() {
       prev.includes(id)
         ? prev.filter((actionId) => actionId !== id)
         : [...prev, id]
-    );
-  };
-
-  const handleEditGrades = (studentId, newGrades, newTotal) => {
-    setStudents((prevStudents) =>
-      prevStudents.map((student) =>
-        student.id === studentId
-          ? { ...student, grades: newGrades, total: newTotal }
-          : student
-      )
     );
   };
 
@@ -111,11 +61,7 @@ function GeneralDash() {
         </div>
 
         {/* Content based on active tab */}
-        {activeTab === "students" ? (
-          <SearchStudent students={students} onEditGrades={handleEditGrades} />
-        ) : (
-          <SearchParent parents={parents} students={students} />
-        )}
+        {activeTab === "students" ? <SearchStudent /> : <SearchParent />}
 
         {/* Quick Actions Component */}
         <QuickActions

@@ -1,7 +1,12 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 
-export const useAdminStore = create(() => ({
+export const useAdminStore = create((set) => ({
+  isFetchingStudents: false,
+  isFetchingTeachers: false,
+  isFetchingParents: false,
+  isFetchingAdmins: false,
+
   addAdmin: async (admin) => {
     try {
       const formattedAdmin = {
@@ -95,6 +100,30 @@ export const useAdminStore = create(() => ({
     } catch (error) {
       console.error("Error adding event:", error);
       throw error;
+    }
+  },
+
+  getAllStudents: async () => {
+    try {
+      set({ isFetchingStudents: true });
+      const response = await axiosInstance.get("/admin/getStudents");
+      return response.data;
+    } catch (error) {
+      console.log("error fetching students:", error.message);
+    } finally {
+      set({ isFetchingStudents: false });
+    }
+  },
+
+  getAllParents: async () => {
+    try {
+      set({ isFetchingParents: true });
+      const response = await axiosInstance.get("/admin/getParents");
+      return response.data;
+    } catch (error) {
+      console.log("error fetching parents:", error.message);
+    } finally {
+      set({ isFetchingParents: false });
     }
   },
 }));
