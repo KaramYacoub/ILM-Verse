@@ -26,7 +26,7 @@ exports.getAdmin = async (req, res) => {
     });
     res.status(200).json({
       status: "success",
-      data: admins,
+      data: "admins",
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -371,3 +371,236 @@ exports.addEvent = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+exports.deleteEvent = async (req, res) => {
+  try {
+    console.log(req.params.event_id);
+    res.status(204).json({
+      status: "success",
+      message: "Event Deleted Successfully",
+    });
+  } catch (err) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.getAllStudents = async (req, res) => {
+  try {
+    const allStudents = await student.findAll({
+      attributes: [
+        "student_id",
+        "first_name",
+        "last_name",
+        "section_id",
+        "parent_id",
+      ],
+      include: [
+        {
+          model: section,
+          as: "section", // Use the alias specified in the association
+          attributes: ["section_id", "section_name"],
+          include: [
+            {
+              model: grade,
+              as: "grade", // Use the alias specified in the association
+              attributes: ["grade_name"],
+              include: [
+                {
+                  model: department,
+                  as: "dept", // Use the alias specified in the association
+                  attributes: ["name"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    // Format the response Array
+    const formattedStudents = allStudents.map((student) => {
+      const section = student.section;
+      const grade = section.grade;
+      const dept = grade.dept;
+
+      return {
+        student_id: student.student_id,
+        first_name: student.first_name,
+        last_name: student.last_name,
+        section_name: section.section_name,
+        grade_name: grade.grade_name,
+        dept_name: dept.name, // Adjusted for correct field name
+        parent_id: student.parent_id,
+      };
+    });
+
+    res.status(200).json({
+      status: "success",
+      data: formattedStudents,
+    });
+
+    res.status(200).json({
+      status: "success",
+      data: allStudents,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+exports.getAllParents = async (req, res) => {
+  try {
+    const allParents = await parent.findAll({
+      attributes: ["parent_id", "first_name", "last_name", "phone"],
+    });
+    res.status(200).json({
+      status: "success",
+      data: allParents,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+exports.getAllTeachers = async (req, res) => {
+  try {
+    const allTeachers = await teacher.findAll({
+      attributes: [
+        "teacher_id",
+        "first_name",
+        "last_name",
+        "email",
+        "dept_id",
+        "section_id",
+      ],
+      include: [
+        {
+          model: section,
+          as: "section", // Use the alias specified in the association
+          attributes: ["section_id", "section_name"],
+          include: [
+            {
+              model: grade,
+              as: "grade", // Use the alias specified in the association
+              attributes: ["grade_name"],
+              include: [
+                {
+                  model: department,
+                  as: "dept", // Use the alias specified in the association
+                  attributes: ["name"],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: department,
+          as: "dept", // Use the alias specified in the association
+          attributes: ["name"],
+        },
+      ],
+    });
+
+    // Format the response Array
+    const formattedTeachers = allTeachers.map((teacher) => {
+      return {
+        teacher_id: teacher.teacher_id,
+        first_name: teacher.first_name,
+        last_name: teacher.last_name,
+        email: teacher.email,
+        section_name: teacher.section.section_name,
+        grade_name: teacher.section.grade.grade_name,
+        dept_name: teacher.section.grade.dept.name, // Direct access without checks
+      };
+    });
+
+    res.status(200).json({
+      status: "success",
+      data: formattedTeachers,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+exports.getAllAdmins = async (req, res) => {
+  try {
+    const allAdmins = await admin.findAll({
+      attributes: ["gm_id", "first_name", "last_name", "email"],
+    });
+    res.status(200).json({
+      status: "success",
+      data: allAdmins,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.deleteStudent = async (req, res) => {
+  try {
+    const { student_id } = req.params.id;
+    const searchedStudent = await student.findOne({
+      where: {
+        student_id: student_id,
+      },
+    });
+    if (!searchedStudent) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+    await student.destroy({
+      where: {
+        student_id: student_id,
+      },
+    });
+    res.status(204).json({
+      status: "success",
+      message: "Student Deleted Successfully",
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+exports.deleteParent = async (req, res) => {
+  try {
+    const parent_id = req.params.id;
+
+    // Find all students with the matching parent_id
+    const students = await student.findAll({
+      where: {
+        parent_id: parent_id,
+      },
+    });
+
+    // If no students are found, return a message
+    if (students.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "No students found for this parent" });
+    }
+
+    // Delete all students with the given parent_id
+    await student.destroy({
+      where: {
+        parent_id: parent_id,
+      },
+    });
+
+    // Now delete the parent
+    const parent = await parentModel.findOne({
+      where: {
+        parent_id: parent_id,
+      },
+    });
+
+    if (!parent) {
+      return res.status(404).json({ error: "Parent not found" });
+    }
+
+    await parent.destroy();
+
+    res.status(204).json({
+      status: "success",
+      message: "Parent and their students deleted successfully",
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+exports.deleteTeacher = async (req, res) => {};
+exports.deleteAdmin = async (req, res) => {};

@@ -14,9 +14,10 @@ exports.getAllEvents = async (req, res) => {
         event_id: oneEvent.eventid,
       });
 
-      const { title, description, media } = noSqlEvent;
+      const { title, description, media, event_id } = noSqlEvent;
       const { location, eventdate } = oneEvent;
       const mergedEvent = {
+        event_id,
         title,
         description,
         location,

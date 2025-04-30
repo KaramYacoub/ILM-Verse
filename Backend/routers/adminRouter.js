@@ -9,7 +9,7 @@ const guestController = require("../controllers/GuestController");
 router.post("/staffLogin", authController.adminTeacherLogin);
 //---------------------------------
 // to get the admin data we should send the Admin ID from front-end as param
-router.get("/:id", authenticateUser, adminController.getAdmin);
+// router.get("/:id", authenticateUser, adminController.getAdmin);
 //---------------------------------
 // The 5 Addition Functionality Routes
 router.post("/addition/admin", authenticateUser, adminController.addAdmin);
@@ -18,7 +18,7 @@ router.post("/addition/parent", authenticateUser, adminController.addParent);
 router.post("/addition/student", authenticateUser, adminController.addStudent);
 router.post("/addition/course", authenticateUser, adminController.addCourse);
 
-// get all students, teachers, parents , admins and courses
+// get grades then sections then teachers in the department of the section
 router.get(
   "/addition/course/grades",
   authenticateUser,
@@ -42,15 +42,38 @@ router.post(
   adminController.involveStudents
 );
 
-// // The 5 Delete Functionality Routes
-// router.post("/delete/admin", authenticateUser, adminController.deleteAdmin);
-// router.post("/delete/teacher", authenticateUser, adminController.deleteTeacher);
-// router.post("/delete/parent", authenticateUser, adminController.deleteParent);
-// router.post("/delete/student", authenticateUser, adminController.deleteStudent);
-// router.post("/delete/course", authenticateUser, adminController.deleteCourse);
-
 //Event 2 Post Conditions , first one for
-
 router.post("/events", authenticateUser, uploadFiles, adminController.addEvent);
 router.get("/events/getEvents", authenticateUser, guestController.getAllEvents);
+router.delete("/events/:id", authenticateUser, adminController.deleteEvent);
+
+// Get all students,parents,teachers,admins
+
+router.get("/getStudents", authenticateUser, adminController.getAllStudents);
+router.get("/getParents", authenticateUser, adminController.getAllParents);
+router.get("/getTeachers", authenticateUser, adminController.getAllTeachers);
+router.get("/getAdmins", authenticateUser, adminController.getAllAdmins);
+// The 4 Delete Functionalities Routes
+router.delete(
+  "/delete/student/:id",
+  authenticateUser,
+  adminController.deleteStudent
+);
+router.delete(
+  "/delete/parent/:id",
+  authenticateUser,
+  adminController.deleteParent
+);
+router.delete(
+  "/delete/teacher/:id",
+  authenticateUser,
+  adminController.deleteTeacher
+);
+router.delete(
+  "/delete/admin/:id",
+  authenticateUser,
+  adminController.deleteAdmin
+);
+
+// delete
 module.exports = router;
