@@ -348,12 +348,9 @@ exports.addEvent = async (req, res) => {
     //SQL Insertion
     const newEvent = await event.create({
       adminid: gm_id,
-<<<<<<< HEAD
-      date: current_date,
-=======
+
       eventdate: event_date,
 
->>>>>>> a306d145020ebe5d89375c32b245185bcd8548b2
       location: location,
     });
     //Getting event ID to insert it into NOSQL record
