@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Carousel from "../../components/shared/Carousel";
 import StudentNavbar from "../../components/student/StudentNavbar";
+import EventList from "../../components/shared/EventList";
 
 function StudentEvents() {
   const [currentYear, setCurrentYear] = useState("2025");
@@ -11,7 +11,6 @@ function StudentEvents() {
         id: 1,
         title: "Science Fair 2025",
         date: "April 15, 2025",
-        time: "9:00 AM - 5:00 PM",
         location: "School Auditorium",
         description: [
           "Join us for our Annual Science Fair where students showcase their innovative research projects and scientific discoveries.",
@@ -21,11 +20,12 @@ function StudentEvents() {
         ],
         media: [],
       },
+    ],
+    2024: [
       {
         id: 2,
         title: "Cultural Heritage Day",
-        date: "March 20, 2025",
-        time: "10:00 AM - 4:00 PM",
+        date: "March 20, 2024",
         location: "School Campus",
         description: [
           "Celebrating Jordan's rich cultural heritage! This full day event features traditional performances, art exhibits, and culinary experiences.",
@@ -35,8 +35,7 @@ function StudentEvents() {
         ],
         media: [],
       },
-    ],
-    2024: [], // Add 2024 events if available
+    ], // Add 2024 events if available
     2023: [], // Add 2023 events if available
   };
 
@@ -64,63 +63,10 @@ function StudentEvents() {
               {year}
             </button>
           ))}
-          {/*<button className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded transition-colors">
-            View all events
-            </button>*/}
         </div>
 
         {/* Events List */}
-        <div className="max-w-4xl mx-auto space-y-6">
-          {events[currentYear].length > 0 ? (
-            events[currentYear].map((event) => (
-              <div
-                key={event.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
-              >
-                {/* Event Description */}
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-2">
-                    <h2 className="text-2xl font-bold">{event.title}</h2>
-                    <span className="text-gray-500">{event.date}</span>
-                  </div>
-                  <div className="mb-4">
-                    <p>
-                      <span className="font-semibold">Time:</span> {event.time}
-                    </p>
-                    <p>
-                      <span className="font-semibold">Location:</span>{" "}
-                      {event.location}
-                    </p>
-                  </div>
-                  <div className="space-y-3">
-                    {event.description.map((paragraph, index) => (
-                      <p key={index}>{paragraph}</p>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Event Media Carousel */}
-                <div className="relative">
-                  <Carousel
-                    customSlides={event.media.map((img, idx) => (
-                      <div key={idx} className="flex-[0_0_100%] h-64 md:h-80">
-                        <img
-                          src={img}
-                          alt={`${event.title} ${idx + 1}`}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ))}
-                  />
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-lg">No events found for {currentYear}</p>
-            </div>
-          )}
-        </div>
+        <EventList events={events} currentYear={currentYear} />
       </div>
     </div>
   );
