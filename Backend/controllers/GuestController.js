@@ -4,23 +4,32 @@ const initModels = require("../models/index"); // path to index.js
 const models = initModels(SQL); // initialize models
 const eventMedia = require("../models/NOSQL/Event"); // your NoSQL event model
 const { event } = models;
-
 exports.getAllEvents = async (req, res) => {
   try {
-    // 1. Fetch all events from SQL database and save in sqlEvents variable
     const sqlEvents = await event.findAll();
-    console.log("SQL Events:", sqlEvents); // Debug: Log SQL events
+    mergedEvents = [];
 
-    // 2. Fetch all event media from NoSQL database and save in mediaData variable
-    const mediaData = await eventMedia.find();
-    console.log("NoSQL Media Data:", mediaData); // Debug: Log NoSQL media data
+    for (const oneEvent of sqlEvents) {
+      const noSqlEvent = await eventMedia.findOne({
+        event_id: oneEvent.eventid,
+      });
 
-    // 3. Send response with success message
+      const { title, description, media } = noSqlEvent;
+      const { location, eventdate } = oneEvent;
+      const mergedEvent = {
+        title,
+        description,
+        location,
+        eventdate,
+        media,
+      };
+      mergedEvents.push(mergedEvent);
+    }
     res.status(200).json({
-      status: "hi",
+      status: "success",
+      data: mergedEvents,
     });
   } catch (error) {
-    console.log("Error occurred:", error); // Log any errors
-    res.status(500).json({ error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };

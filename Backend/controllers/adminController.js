@@ -16,7 +16,6 @@ const {
   grade,
   event,
 } = models; // extract all the needed models
-
 const eventMedia = require("../models/NOSQL/Event");
 
 // Getting Admin data By his Id
@@ -350,7 +349,6 @@ exports.addEvent = async (req, res, next) => {
     const newEvent = await event.create({
       adminid: gm_id,
       date: current_date,
-
       location: location,
     });
     //Getting event ID to insert it into NOSQL record

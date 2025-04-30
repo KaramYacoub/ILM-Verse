@@ -52,6 +52,5 @@ router.post(
 //Event 2 Post Conditions , first one for
 
 router.post("/events", authenticateUser, uploadFiles, adminController.addEvent);
-router.get("/events", authenticateUser, guestController.getAllEvents);
-
+router.get("/events/getEvents", authenticateUser, guestController.getAllEvents);
 module.exports = router;
