@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const path = require("path");
 //--------------------------------------
 const app = express();
 // All roots Middle Wares => each request before entering the event loop will go through those middle wares
@@ -18,6 +19,16 @@ app.use(
   })
 );
 //--------------------------------------
+// Static Files MiddleWare for the events media files
+app.use(
+  "/media/events",
+  (req, res, next) => {
+    next();
+  },
+  express.static(path.join(__dirname, "data/Events"))
+);
+
+//---------------------------------------
 //Routes Imports
 const adminRouter = require("./routers/adminRouter");
 const teacherRouter = require("./routers/teacherRouter");
@@ -34,8 +45,8 @@ app.use("/shared", sharedRouter);
 
 //--------------------------------------
 // Prevents Data Folder from entry from any user:
-app.use("/Data", (req, res, next) => {
-  res.status(403).send("Access Forbidden");
-});
+// app.use("/Data", (req, res, next) => {
+//   res.status(403).send("Access Forbidden");
+// });
 
 module.exports = app;

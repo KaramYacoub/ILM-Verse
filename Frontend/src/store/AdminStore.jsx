@@ -97,4 +97,13 @@ export const useAdminStore = create(() => ({
       throw error;
     }
   },
+
+  getAllEvents: async () => {
+    try {
+      const response = await axiosInstance.get("/shared/events/getEvents");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  },
 }));

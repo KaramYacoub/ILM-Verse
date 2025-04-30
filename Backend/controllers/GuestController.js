@@ -7,21 +7,28 @@ const { event } = models;
 exports.getAllEvents = async (req, res) => {
   try {
     const sqlEvents = await event.findAll();
-    mergedEvents = [];
+    let mergedEvents = [];
 
     for (const oneEvent of sqlEvents) {
       const noSqlEvent = await eventMedia.findOne({
         event_id: oneEvent.eventid,
       });
 
-      const { title, description, media } = noSqlEvent;
-      const { location, eventdate } = oneEvent;
+      // const { title, description, media } = noSqlEvent;
+      // const { location, eventdate } = oneEvent;
+
+      if (!noSqlEvent) continue;
+      console.log("Media data:", noSqlEvent.media);
       const mergedEvent = {
-        title,
-        description,
-        location,
-        eventdate,
-        media,
+        id: oneEvent.eventid,
+        title: noSqlEvent.title,
+        description: noSqlEvent.description,
+        location: oneEvent.location,
+        eventdate: oneEvent.eventdate,
+        media: noSqlEvent.media.map((img) => ({
+          _id: img._id,
+          filename: img.path.split('\\').pop() // Extract just the filename
+        })),
       };
       mergedEvents.push(mergedEvent);
     }
