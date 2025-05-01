@@ -121,7 +121,7 @@ function SearchCourse({ courses }) {
                         className="btn btn-sm btn-primary"
                         onClick={() => handleCheckCourse(course)}
                       >
-                        Check Course
+                        Involve
                       </button>
                     </td>
                   </tr>

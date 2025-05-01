@@ -22,7 +22,12 @@ function ContactUs() {
               <FaPhone className="text-primary text-2xl" />
               <div>
                 <h2 className="font-bold">Phone Number</h2>
-                <p>07 9678 7084</p>
+                <a
+                  href="tel:0796787084"
+                  className="text-blue-600 hover:underline"
+                >
+                  07 9678 7084
+                </a>
               </div>
             </div>
 
@@ -30,8 +35,13 @@ function ContactUs() {
             <div className="flex items-center space-x-4">
               <FaEnvelope className="text-primary text-2xl" />
               <div>
-                <h2 className="font-bold">E mail</h2>
-                <p>thinkingflares.school@yahoo.com</p>
+                <h2 className="font-bold">Email</h2>
+                <a
+                  href="mailto:thinkingflares.school@yahoo.com"
+                  className="text-blue-600 hover:underline"
+                >
+                  thinkingflares.school@yahoo.com
+                </a>
               </div>
             </div>
 
@@ -40,6 +50,14 @@ function ContactUs() {
               <FaMapMarkerAlt className="text-primary text-2xl" />
               <div>
                 <h2 className="font-bold">Location</h2>
+                <a
+                  href="https://www.google.com/maps?q=السلط+-+البحيرة+-+خلف+الدفاع+المدني+-+دخلة+جامع+العطيات&hl=ar"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  As-Salt - Jordan
+                </a>
               </div>
             </div>
 

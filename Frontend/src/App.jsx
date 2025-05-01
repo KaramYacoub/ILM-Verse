@@ -202,7 +202,6 @@ function App() {
               )
             }
           />
-
           {/* Student Routes */}
           <Route
             path="/student-dashboard"
@@ -256,7 +255,6 @@ function App() {
               }
             />
           </Route>
-
           {/* Teacher Routes */}
           <Route
             path="/teacher-dashboard"
@@ -311,7 +309,6 @@ function App() {
             path="/teacher-course-content/teacher-quizzes/teacher-add-quiz"
             element={authTeacher ? <TeacherAddQuizzes /> : <Navigate to="/" />}
           />
-
           {/* Parent Routes */}
           <Route
             path="/parent-dashboard"
@@ -361,7 +358,6 @@ function App() {
               element={authParent ? <ParentAssignment /> : <Navigate to="/" />}
             />
           </Route>
-
           {/* General Routes */}
           <Route
             path="/general-dashboard"
@@ -380,13 +376,14 @@ function App() {
             element={authAdmin ? <ResetPassword /> : <Navigate to="/" />}
           />
           <Route
-            path="/delete-content/:courseId"
+            path="/delete-content/:courseId/"
             element={authAdmin ? <DeleteContent /> : <Navigate to="/" />}
           />
           <Route
             path="/coursecontent"
             element={authAdmin ? <CourseContent /> : <Navigate to="/" />}
           />
+
           <Route
             path="/settings"
             element={authAdmin ? <Settings /> : <Navigate to="/" />}
