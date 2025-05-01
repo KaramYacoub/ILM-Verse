@@ -23,7 +23,6 @@ export const useAdminStore = create((set) => ({
       return response.data;
     } catch (error) {
       console.error("Error adding admin:", error);
-      throw error;
     }
   },
 
@@ -63,7 +62,6 @@ export const useAdminStore = create((set) => ({
       return response.data;
     } catch (error) {
       console.error("Error adding parent:", error);
-      throw error;
     }
   },
 
@@ -85,21 +83,18 @@ export const useAdminStore = create((set) => ({
       return response.data;
     } catch (error) {
       console.error("Error adding teacher:", error);
-      throw error;
     }
   },
 
-  addEvent: async (formData) => {
+  getAllAdmins: async () => {
     try {
-      const response = await axiosInstance.post("/admin/events", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      set({ isFetchingAdmins: true });
+      const response = await axiosInstance.get("/admin/getAdmins");
       return response.data;
     } catch (error) {
-      console.error("Error adding event:", error);
-      throw error;
+      console.log("error fetching parents:", error.message);
+    } finally {
+      set({ isFetchingAdmins: false });
     }
   },
 
@@ -124,6 +119,53 @@ export const useAdminStore = create((set) => ({
       console.log("error fetching parents:", error.message);
     } finally {
       set({ isFetchingParents: false });
+    }
+  },
+
+  getAllTeachers: async () => {
+    try {
+      set({ isFetchingTeachers: true });
+      const response = await axiosInstance.get("/admin/getTeachers");
+      return response.data;
+    } catch (error) {
+      console.log("error fetching parents:", error.message);
+    } finally {
+      set({ isFetchingTeachers: false });
+    }
+  },
+
+  deleteStudent: async (studentId) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/admin/delete/student/${studentId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting student:", error);
+    }
+  },
+
+  deleteParent: async (parentId) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/admin/delete/parent/${parentId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting parent:", error);
+    }
+  },
+
+  addEvent: async (formData) => {
+    try {
+      const response = await axiosInstance.post("/admin/events", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error adding event:", error);
     }
   },
 }));

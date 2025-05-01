@@ -5,35 +5,7 @@ import SearchParent from "../../components/general/SearchParent";
 import QuickActions from "../../components/general/QuickActions";
 
 function GeneralDash() {
-  const [activeActions, setActiveActions] = useState([]);
   const [activeTab, setActiveTab] = useState("students");
-
-  // Quick Actions and Marks groups
-  const actionGroups = [
-    {
-      title: "Quick Actions",
-      actions: [
-        { id: 1, label: "Addition", path: "/addition" },
-        { id: 2, label: "Deletion", path: "/deletion" },
-        { id: 3, label: "Reset Password", path: "/reset-password" },
-      ],
-    },
-    {
-      title: "Course Content Actions",
-      actions: [
-        { id: 4, label: "Add Course", path: "/addCourse" },
-        { id: 5, label: "Courses", path: "/coursecontent" },
-      ],
-    },
-  ];
-
-  const toggleAction = (id) => {
-    setActiveActions((prev) =>
-      prev.includes(id)
-        ? prev.filter((actionId) => actionId !== id)
-        : [...prev, id]
-    );
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -64,11 +36,7 @@ function GeneralDash() {
         {activeTab === "students" ? <SearchStudent /> : <SearchParent />}
 
         {/* Quick Actions Component */}
-        <QuickActions
-          actionGroups={actionGroups}
-          activeActions={activeActions}
-          toggleAction={toggleAction}
-        />
+        <QuickActions />
       </div>
     </div>
   );

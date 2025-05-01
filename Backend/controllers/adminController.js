@@ -475,7 +475,7 @@ exports.getAllParents = async (req, res) => {
   }
 };
 
-// Get all Teachers
+// Get all Teachers ✅
 exports.getAllTeachers = async (req, res) => {
   try {
     const allTeachers = await teacher.findAll({
@@ -537,7 +537,7 @@ exports.getAllTeachers = async (req, res) => {
   }
 };
 
-// Get all Admins
+// Get all Admins ✅
 exports.getAllAdmins = async (req, res) => {
   try {
     const allAdmins = await admin.findAll({
@@ -552,13 +552,13 @@ exports.getAllAdmins = async (req, res) => {
   }
 };
 
-// Delete Student
+// Delete Student ✅
 exports.deleteStudent = async (req, res) => {
   try {
-    const { student_id } = req.params.id;
+    const { id } = req.params; // Changed from req.params.id to req.params
     const searchedStudent = await student.findOne({
       where: {
-        student_id: student_id,
+        student_id: id,
       },
     });
     if (!searchedStudent) {
@@ -566,7 +566,7 @@ exports.deleteStudent = async (req, res) => {
     }
     await student.destroy({
       where: {
-        student_id: student_id,
+        student_id: id,
       },
     });
     res.status(204).json({
@@ -578,7 +578,7 @@ exports.deleteStudent = async (req, res) => {
   }
 };
 
-// Delete Parent
+// Delete Parent ✅
 exports.deleteParent = async (req, res) => {
   try {
     const parent_id = req.params.id;

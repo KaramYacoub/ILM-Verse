@@ -1,7 +1,61 @@
-function AdminDeleteTable({ data, onDelete }) {
+import { useEffect, useState } from "react";
+import { useAdminStore } from "../../../store/AdminStore";
+import { Loader2 } from "lucide-react";
+
+function AdminDeleteTable({ searchTerm }) {
+  const [admins, setAdmins] = useState([]);
+  const [filteredAdmins, setFilteredAdmins] = useState([]);
+  const { isFetchingAdmins, getAllAdmins } = useAdminStore();
+
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      try {
+        const response = await getAllAdmins();
+        if (response?.data) {
+          setAdmins(response.data);
+          setFilteredAdmins(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching admins:", error);
+      }
+    };
+    fetchAdmins();
+  }, [getAllAdmins]);
+
+  useEffect(() => {
+    if (searchTerm) {
+      const results = admins.filter(
+        (admin) =>
+          `${admin.first_name} ${admin.last_name}`
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          admin.gm_id.toString().includes(searchTerm) ||
+          admin.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredAdmins(results);
+    } else {
+      setFilteredAdmins(admins);
+    }
+  }, [searchTerm, admins]);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this admin?")) return;
+    // Implement actual delete API call here
+    setAdmins(admins.filter((admin) => admin.gm_id !== id));
+    setFilteredAdmins(filteredAdmins.filter((admin) => admin.gm_id !== id));
+  };
+
+  if (isFetchingAdmins) {
+    return (
+      <div className="flex justify-center p-8">
+        <Loader2 className="animate-spin" size={24} />
+      </div>
+    );
+  }
+
   return (
-    <table className="table w-full">
-      <thead className="bg-gray-100">
+    <table className="table w-full text-center">
+      <thead className="bg-primary text-white">
         <tr>
           <th>ID</th>
           <th>Details</th>
@@ -10,26 +64,37 @@ function AdminDeleteTable({ data, onDelete }) {
         </tr>
       </thead>
       <tbody>
-        {data.map((admin) => (
-          <tr key={admin.id}>
-            <td className="font-medium">{admin.id}</td>
-            <td>
-              <div className="font-medium">{admin.name}</div>
-            </td>
-            <td className="text-red-600">
-              Are you sure you want to delete?
-              <div className="text-sm">This action cannot be undone.</div>
-            </td>
-            <td>
-              <button
-                onClick={() => onDelete(admin.id)}
-                className="btn btn-error btn-sm text-white"
-              >
-                Delete
-              </button>
+        {filteredAdmins.length > 0 ? (
+          filteredAdmins.map((admin) => (
+            <tr key={admin.gm_id}>
+              <td className="font-medium">{admin.gm_id}</td>
+              <td>
+                <div className="font-medium">
+                  {admin.first_name} {admin.last_name}
+                </div>
+                <div className="text-sm text-gray-500">{admin.email}</div>
+              </td>
+              <td className="text-red-600">
+                Are you sure you want to delete?
+                <div className="text-sm">This action cannot be undone.</div>
+              </td>
+              <td>
+                <button
+                  onClick={() => handleDelete(admin.gm_id)}
+                  className="btn btn-error btn-sm text-white"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="4" className="text-center p-8 text-gray-500">
+              No admins found{searchTerm ? " matching your search" : ""}
             </td>
           </tr>
-        ))}
+        )}
       </tbody>
     </table>
   );
