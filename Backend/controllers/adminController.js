@@ -219,7 +219,7 @@ exports.addCourse = async (req, res) => {
   }
 };
 
-// Get all Grades
+// Get all Grades ✅ (just for the student addition)
 exports.getGrades = async (req, res) => {
   try {
     allGrades = await grade.findAll();
@@ -232,7 +232,7 @@ exports.getGrades = async (req, res) => {
   }
 };
 
-// Get all Sections
+// Get all Sections ✅ (just for the student addition)
 exports.getSections = async (req, res) => {
   try {
     const { grade_id } = req.params;

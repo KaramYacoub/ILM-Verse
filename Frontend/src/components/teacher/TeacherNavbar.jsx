@@ -13,7 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/AuthStore";
 
 function TeacherNavbar() {
-  const { isUserLoggingOut, logout } = useAuthStore();
+  const { isUserLoggingOut, logout, authTeacher } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -39,17 +39,12 @@ function TeacherNavbar() {
   }
 
   return (
-    <div className="bg-primary px-4 py-3 shadow-md w-full">
+    <div className="bg-primary px-4 py-7 shadow-md w-full">
       {/* Desktop Navbar */}
       <div className="hidden md:flex justify-between items-center">
         {/* Left: Profile */}
-        <div className="flex flex-col items-center">
-          <div className="avatar placeholder">
-            <div className="bg-base-300 rounded-full w-10 h-10">
-              <span className="text-2xl">👤</span>
-            </div>
-          </div>
-          <span className="font-bold text-base-100">Teacher</span>
+        <div className="font-bold text-base-100">
+          {authTeacher.first_name} {authTeacher.last_name}
         </div>
 
         {/* Center: Nav Items */}
@@ -91,13 +86,8 @@ function TeacherNavbar() {
       {/* Mobile Navbar */}
       <div className="md:hidden flex justify-between items-center">
         {/* Profile - Left Side */}
-        <div className="flex flex-col items-center">
-          <div className="avatar placeholder">
-            <div className="bg-base-300 rounded-full w-10 h-10">
-              <span className="text-2xl">👤</span>
-            </div>
-          </div>
-          <span className="font-bold text-base-100">Teacher</span>
+        <div className="font-bold text-base-100">
+          {authTeacher.first_name} {authTeacher.last_name}
         </div>
 
         {/* Hamburger Button - Right Side */}
@@ -107,11 +97,11 @@ function TeacherNavbar() {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="absolute top-20 left-0 right-0 bg-primary z-50 py-4 px-6 shadow-lg">
+          <div className="absolute top-20 left-0 right-0 bg-primary z-50 py-4 shadow-lg">
             <div className="flex flex-col gap-4 text-accent">
               <Link
                 to="/teacher-dashboard"
-                className="flex items-center gap-3 py-2 cursor-pointer hover:text-yellow-500"
+                className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
                 onClick={toggleMenu}
               >
                 <FaHome color="#fff" />
@@ -119,7 +109,7 @@ function TeacherNavbar() {
               </Link>
               <Link
                 to="/teacher-events"
-                className="flex items-center gap-3 py-2 cursor-pointer hover:text-yellow-500"
+                className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
                 onClick={toggleMenu}
               >
                 <FaCalendarAlt color="#fff" />
@@ -127,16 +117,22 @@ function TeacherNavbar() {
               </Link>
               <Link
                 to="#"
-                className="flex items-center gap-3 py-2 cursor-pointer hover:text-yellow-500"
+                className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
                 onClick={toggleMenu}
               >
                 <FaComments color="#fff" />
                 <span>Chat</span>
               </Link>
+
+              <div className="divider divider-accent my-0" />
+
               <Link
                 to="/"
-                className="flex items-center gap-3 py-2 text-accent font-bold cursor-pointer hover:text-yellow-500"
-                onClick={toggleMenu}
+                className="flex items-center gap-3 py-2 text-accent font-bold px-6 cursor-pointer hover:text-yellow-500"
+                onClick={() => {
+                  toggleMenu();
+                  handleLogout();
+                }}
               >
                 <FaSignOutAlt color="#fff" />
                 <span>Logout</span>

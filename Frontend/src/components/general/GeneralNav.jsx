@@ -4,7 +4,6 @@ import { Loader2 } from "lucide-react";
 import {
   FaHome,
   FaCalendarAlt,
-  FaNewspaper,
   FaSignOutAlt,
   FaComments,
   FaChartBar,
@@ -17,7 +16,7 @@ import { useAuthStore } from "../../store/AuthStore";
 
 function GeneralNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isUserLoggingOut, logout } = useAuthStore();
+  const { isUserLoggingOut, logout, authAdmin } = useAuthStore();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -42,17 +41,12 @@ function GeneralNav() {
   }
 
   return (
-    <div className="bg-primary px-4 py-3 shadow-md w-full">
+    <div className="bg-primary px-4 py-7 shadow-md w-full">
       {/* Desktop Navbar */}
       <div className="hidden md:flex justify-between items-center">
         {/* Left: Profile */}
-        <div className="flex flex-col items-center">
-          <div className="avatar placeholder">
-            <div className="bg-base-300 rounded-full w-10 h-10">
-              <span className="text-2xl">🧑‍💼</span>
-            </div>
-          </div>
-          <span className="font-bold text-base-100">Manager</span>
+        <div className="font-bold text-base-100">
+          {authAdmin.first_name} {authAdmin.last_name}
         </div>
 
         {/* Center: Nav Items */}
@@ -112,23 +106,19 @@ function GeneralNav() {
       {/* Mobile Navbar */}
       <div className="md:hidden flex justify-between items-center">
         {/* Profile - Left Side */}
-        <div className="flex flex-col items-center">
-          <div className="avatar placeholder">
-            <div className="bg-base-300 rounded-full w-10 h-10">
-              <span className="text-2xl">🧑‍💼</span>
-            </div>
-          </div>
-          <span className="font-bold text-base-100">Manager</span>
+
+        <div className="font-bold text-base-100">
+          {authAdmin.first_name} {authAdmin.last_name}
         </div>
 
         {/* Hamburger Button - Right Side */}
-        <button onClick={toggleMenu} className="text-white">
+        <button onClick={toggleMenu} className="text-base-100">
           {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
         </button>
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="absolute top-20 left-0 right-0 bg-primary z-50 py-4 shadow-lg">
+          <div className="absolute top-16 left-0 right-0 bg-primary z-50 py-4 shadow-lg">
             <div className="flex flex-col gap-4 text-accent">
               <Link
                 to="/general-dashboard"
@@ -137,15 +127,6 @@ function GeneralNav() {
               >
                 <FaHome color="#fff" />
                 <span>Dashboard</span>
-              </Link>
-
-              <Link
-                to="/general-posts"
-                className="flex items-center gap-3 py-2 cursor-pointer hover:text-yellow-500 px-6"
-                onClick={toggleMenu}
-              >
-                <FaNewspaper color="#fff" />
-                <span>Posts</span>
               </Link>
 
               <Link
