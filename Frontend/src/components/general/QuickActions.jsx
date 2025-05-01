@@ -12,7 +12,7 @@ function QuickActions() {
         { id: 1, label: "Addition", path: "/addition" },
         { id: 2, label: "Deletion", path: "/deletion" },
         { id: 3, label: "Reset Password", path: "/reset-password" },
-        { id: 4, label: "TakeAbsence", path: "/takeAbsence" },
+        { id: 4, label: "Take Absence", path: "/takeAbsence" },
       ],
     },
     {

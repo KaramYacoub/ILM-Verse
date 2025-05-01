@@ -1,16 +1,11 @@
 import { useState } from "react";
-
 import TeacherNavbar from "../../components/teacher/TeacherNavbar";
 
 function TakeAbsence() {
   const [selectedDate, setSelectedDate] = useState("");
-  const [selectedGrade, setSelectedGrade] = useState("");
-  const [selectedSection, setSelectedSection] = useState("");
   const [absentStudents, setAbsentStudents] = useState([]);
 
-  // Dummy data
-  const grades = ["KG", "Primary", "Intermediate Male", "Intermediate Female"];
-  const sections = ["A", "B", "C"];
+  // Example: this data would usually come from API based on logged-in teacher
   const students = [
     { id: 1, name: "Omar Khalid" },
     { id: 2, name: "Lina Ahmed" },
@@ -27,15 +22,13 @@ function TakeAbsence() {
   };
 
   const handleSubmit = () => {
-    if (!selectedDate || !selectedGrade || !selectedSection) {
-      alert("Please select all fields.");
+    if (!selectedDate) {
+      alert("Please select a date.");
       return;
     }
 
     const data = {
       date: selectedDate,
-      grade: selectedGrade,
-      section: selectedSection,
       absentStudents,
     };
 
@@ -50,48 +43,14 @@ function TakeAbsence() {
       <div className="p-8 max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-6 text-primary">Take Absence</h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div>
-            <label className="font-medium mb-1 block">Select Date</label>
-            <input
-              type="date"
-              className="input input-bordered w-full"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label className="font-medium mb-1 block">Select Grade</label>
-            <select
-              className="select select-bordered w-full"
-              value={selectedGrade}
-              onChange={(e) => setSelectedGrade(e.target.value)}
-            >
-              <option value="">-- Choose Grade --</option>
-              {grades.map((grade, index) => (
-                <option key={index} value={grade}>
-                  {grade}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="font-medium mb-1 block">Select Section</label>
-            <select
-              className="select select-bordered w-full"
-              value={selectedSection}
-              onChange={(e) => setSelectedSection(e.target.value)}
-            >
-              <option value="">-- Choose Section --</option>
-              {sections.map((section, index) => (
-                <option key={index} value={section}>
-                  {section}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="mb-6">
+          <label className="font-medium mb-1 block">Select Date</label>
+          <input
+            type="date"
+            className="input input-bordered w-full md:w-1/2"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+          />
         </div>
 
         <div className="bg-base-100 p-4 rounded-md shadow">
