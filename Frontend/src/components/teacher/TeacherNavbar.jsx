@@ -64,6 +64,14 @@ function TeacherNavbar() {
             <span>Events</span>
           </Link>
           <Link
+            to="/teacher-take-absence"
+            className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
+          >
+            <FaCalendarAlt color="#fff" />
+            <span>TakeAbsense</span>
+          </Link>
+
+          <Link
             to="#"
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
           >

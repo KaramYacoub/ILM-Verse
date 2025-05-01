@@ -12,13 +12,14 @@ function QuickActions() {
         { id: 1, label: "Addition", path: "/addition" },
         { id: 2, label: "Deletion", path: "/deletion" },
         { id: 3, label: "Reset Password", path: "/reset-password" },
+        { id: 4, label: "TakeAbsence", path: "/takeAbsence" },
       ],
     },
     {
       title: "Course Content Actions",
       actions: [
-        { id: 4, label: "Add Course", path: "/addCourse" },
-        { id: 5, label: "Courses", path: "/coursecontent" },
+        { id: 5, label: "Add Course", path: "/addCourse" },
+        { id: 6, label: "Courses", path: "/coursecontent" },
       ],
     },
   ];

@@ -60,6 +60,9 @@ const TeacherQuizzesTab = lazy(() =>
 const TeacherAddQuizzes = lazy(() =>
   import("./components/teacher/TeacherAddQuiz")
 );
+const TeacherTakeAbscene = lazy(() =>
+  import("./pages/teacher/TeacherTakeAbscene")
+);
 
 const ParentDashboard = lazy(() => import("./pages/parent/ParentDashboard"));
 const ParentAssignment = lazy(() =>
@@ -105,6 +108,7 @@ const AdminCourseOverview = lazy(() =>
 const AdminUnitContent = lazy(() =>
   import("./components/courseThings/AdminUnitContent")
 );
+const TakeAbsence = lazy(() => import("./pages/general/TakeAbsence"));
 function App() {
   const {
     isCheckingAuth,
@@ -199,10 +203,7 @@ function App() {
                 )
               }
             />
-            <Route
-              path="/events"
-              element={<SharedEvents />}
-            />
+            <Route path="/events" element={<SharedEvents />} />
           </>
 
           {/* Student Routes */}
@@ -321,6 +322,12 @@ function App() {
                 authTeacher ? <TeacherAddQuizzes /> : <Navigate to="/" />
               }
             />
+            <Route
+              path="/teacher-take-absence"
+              element={
+                authTeacher ? <TeacherTakeAbscene /> : <Navigate to="/" />
+              }
+            />
           </>
 
           {/* Parent Routes */}
@@ -434,6 +441,10 @@ function App() {
             <Route
               path="/admin-unit-content/:courseId"
               element={<AdminUnitContent />}
+            />
+            <Route
+              path="/takeAbsence"
+              element={authAdmin ? <TakeAbsence /> : <Navigate to="/" />}
             />
           </>
         </Routes>
