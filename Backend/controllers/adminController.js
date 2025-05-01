@@ -650,7 +650,7 @@ exports.deleteParent = async (req, res) => {
   }
 };
 
-// Delete Teacher
+// Delete Teacher ✅
 exports.deleteTeacher = async (req, res) => {
   try {
     const { id } = req.params; // Changed from req.params.id to req.params
@@ -697,7 +697,7 @@ exports.deleteTeacher = async (req, res) => {
   }
 };
 
-// Delete Admin
+// Delete Admin ✅
 exports.deleteAdmin = async (req, res) => {
   try {
     const { id } = req.params; // Changed from req.params.id to req.params

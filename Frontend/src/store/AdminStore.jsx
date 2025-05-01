@@ -31,8 +31,9 @@ export const useAdminStore = create((set) => ({
       const formattedStudent = {
         first_name: student.firstName,
         last_name: student.lastName,
-        section_id: student.section_id,
         parent_id: student.parent_id,
+        grade_id: student.grade_id,
+        section_id: student.section_id,
         password: student.password,
       };
 
@@ -131,6 +132,26 @@ export const useAdminStore = create((set) => ({
       console.log("error fetching parents:", error.message);
     } finally {
       set({ isFetchingTeachers: false });
+    }
+  },
+
+  getAllGrades: async () => {
+    try {
+      const response = await axiosInstance.get("/admin/addition/course/grades");
+      return response.data;
+    } catch (error) {
+      console.log("error fetching grades:", error.message);
+    }
+  },
+
+  getAllSections: async (gradID) => {
+    try {
+      const response = await axiosInstance.get(
+        `/admin/addition/course/grades/${gradID}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log("error fetching sections:", error.message);
     }
   },
 

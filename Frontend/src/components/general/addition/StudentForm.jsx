@@ -1,4 +1,36 @@
+import { useEffect, useState } from "react";
+import { useAdminStore } from "../../../store/AdminStore";
+
 export default function StudentForm({ formData, handleChange }) {
+  const [grades, setGrades] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [parents, setParents] = useState([]);
+
+  const { getAllGrades, getAllSections, getAllParents } = useAdminStore();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const gradeData = await getAllGrades();
+      const parentData = await getAllParents();
+
+      setGrades(Array.isArray(gradeData.data) ? gradeData.data : []);
+      setParents(Array.isArray(parentData.data) ? parentData.data : []);
+    };
+    fetchData();
+  }, [getAllGrades, getAllParents]);
+
+  useEffect(() => {
+    const fetchSections = async () => {
+      if (formData.grade_id) {
+        const sectionData = await getAllSections(formData.grade_id);
+        setSections(sectionData.data);
+      } else {
+        setSections([]);
+      }
+    };
+    fetchSections();
+  }, [formData.grade_id, getAllSections]);
+
   return (
     <>
       <h3 className="text-xl font-bold mb-4">Add New Student</h3>
@@ -43,6 +75,7 @@ export default function StudentForm({ formData, handleChange }) {
             required
           />
         </div>
+
         <div>
           <label className="block font-medium mb-1">Parent*</label>
           <select
@@ -55,13 +88,34 @@ export default function StudentForm({ formData, handleChange }) {
             <option disabled value="">
               Select Parent
             </option>
-            <option value="Parent-001">Parent 1</option>
-            <option value="Parent-002">Parent 2</option>
-            <option value="Parent-003">Parent 3</option>
-            <option value="Parent-004">Parent 4</option>
-            <option value="Parent-005">Parent 5</option>
+            {parents.map((parent) => (
+              <option key={parent.parent_id} value={parent.parent_id}>
+                {parent.first_name} {parent.last_name}
+              </option>
+            ))}
           </select>
         </div>
+
+        <div>
+          <label className="block font-medium mb-1">Grade*</label>
+          <select
+            name="grade_id"
+            value={formData.grade_id || ""}
+            onChange={handleChange}
+            className="select select-bordered w-full"
+            required
+          >
+            <option disabled value="">
+              Select Grade
+            </option>
+            {grades.map((grade) => (
+              <option key={grade.grade_id} value={grade.grade_id}>
+                {grade.grade_name}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div>
           <label className="block font-medium mb-1">Section*</label>
           <select
@@ -70,12 +124,16 @@ export default function StudentForm({ formData, handleChange }) {
             onChange={handleChange}
             className="select select-bordered w-full"
             required
+            disabled={!formData.grade_id}
           >
             <option disabled value="">
-              Select Section
+              {formData.grade_id ? "Select Section" : "Select Grade First"}
             </option>
-            <option value="Section-001">A</option>
-            <option value="Section-002">B</option>
+            {sections.map((section) => (
+              <option key={section.section_id} value={section.section_id}>
+                {section.section_name}
+              </option>
+            ))}
           </select>
         </div>
       </div>
