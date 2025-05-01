@@ -7,6 +7,8 @@ export const useAdminStore = create((set) => ({
   isFetchingParents: false,
   isFetchingAdmins: false,
 
+  isChangingPassword: false,
+
   addAdmin: async (admin) => {
     try {
       const formattedAdmin = {
@@ -223,6 +225,23 @@ export const useAdminStore = create((set) => ({
       });
     } catch (error) {
       console.log("Error deleting event:", error);
+    }
+  },
+
+  changeUserPassword: async ({ userType, identifier, newPassword }) => {
+    try {
+      const response = await axiosInstance.patch("/admin/update/password", {
+        userType,
+        identifier,
+        newPassword,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error changing password:",
+        error.response?.data?.error || error.message
+      );
+      throw error;
     }
   },
 }));
