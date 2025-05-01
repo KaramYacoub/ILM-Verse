@@ -22,7 +22,7 @@ export const useAdminStore = create((set) => ({
       );
       return response.data;
     } catch (error) {
-      console.error("Error adding admin:", error);
+      console.log("Error adding admin:", error);
     }
   },
 
@@ -61,7 +61,7 @@ export const useAdminStore = create((set) => ({
       );
       return response.data;
     } catch (error) {
-      console.error("Error adding parent:", error);
+      console.log("Error adding parent:", error);
     }
   },
 
@@ -82,7 +82,7 @@ export const useAdminStore = create((set) => ({
       );
       return response.data;
     } catch (error) {
-      console.error("Error adding teacher:", error);
+      console.log("Error adding teacher:", error);
     }
   },
 
@@ -141,7 +141,7 @@ export const useAdminStore = create((set) => ({
       );
       return response.data;
     } catch (error) {
-      console.error("Error deleting student:", error);
+      console.log("Error deleting student:", error);
     }
   },
 
@@ -152,7 +152,7 @@ export const useAdminStore = create((set) => ({
       );
       return response.data;
     } catch (error) {
-      console.error(
+      console.log(
         "Error deleting parent:",
         error.response?.data?.error || error.message
       );
@@ -168,7 +168,18 @@ export const useAdminStore = create((set) => ({
       });
       return response.data;
     } catch (error) {
-      console.error("Error adding event:", error);
+      console.log("Error adding event:", error);
+    }
+  },
+
+  deleteEvent: async (event_id) => {
+    try {
+      console.log("Deleting event with ID:", event_id);
+      await axiosInstance.delete(`/admin/events/${event_id}`, {
+        data: { event_id },
+      });
+    } catch (error) {
+      console.log("Error deleting event:", error);
     }
   },
 }));

@@ -383,10 +383,10 @@ exports.addEvent = async (req, res) => {
   }
 };
 
-// Delete Event
+// Delete Event ✅
 exports.deleteEvent = async (req, res) => {
   try {
-    const { event_id } = req.body;
+    const { event_id } = req.params;
     const sqlEvent = await event.findByPk(event_id);
     const noSqlEvent = await eventMedia.find({ event_id: event_id });
     if (!sqlEvent || !noSqlEvent) {

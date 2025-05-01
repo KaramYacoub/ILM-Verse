@@ -20,9 +20,10 @@ function GenralEvents() {
     media: [],
   });
 
-  const addEvent = useAdminStore((state) => state.addEvent);
   const getAllEvents = useSharedStore((state) => state.getAllEvents);
   const isFetchingEvents = useSharedStore((state) => state.isFetchingEvents);
+  const addEvent = useAdminStore((state) => state.addEvent);
+  const deleteEvent = useAdminStore((state) => state.deleteEvent);
 
   // Fetch events from the store and group by year
   const fetchEvents = useCallback(async () => {
@@ -92,12 +93,18 @@ function GenralEvents() {
     }
   };
 
-  const handleDeleteEvent = (year, id) => {
+  const handleDeleteEvent = async (year, id) => {
     if (window.confirm("Are you sure you want to delete this event?")) {
-      setEvents({
-        ...events,
-        [year]: events[year].filter((event) => event.id !== id),
-      });
+      try {
+        await deleteEvent(id);
+        setEvents({
+          ...events,
+          [year]: events[year].filter((event) => event.id !== id),
+        });
+      } catch (error) {
+        console.error("Failed to delete event:", error);
+        alert("Failed to delete event. Please try again.");
+      }
     }
   };
 
