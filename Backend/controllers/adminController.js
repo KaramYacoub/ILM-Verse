@@ -651,7 +651,92 @@ exports.deleteParent = async (req, res) => {
 };
 
 // Delete Teacher
-exports.deleteTeacher = async (req, res) => {};
+exports.deleteTeacher = async (req, res) => {
+  try {
+    const { id } = req.params; // Changed from req.params.id to req.params
+    const searchedTeacher = await teacher.findOne({
+      where: {
+        teacher_id: id,
+      },
+    });
+    if (!searchedTeacher) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+    // Find all courses associated with the teacher
+    const courses = await course.findAll({
+      where: {
+        teacher_id: id,
+      },
+      attributes: ["course_id"], // Only fetch the course_id
+    });
+    // Extract the course_ids into an array
+    const courseIds = courses.map((course) => course.course_id);
+    for (tid of courseIds) {
+      await course.update(
+        {
+          teacher_id: null,
+        },
+        {
+          where: {
+            course_id: tid,
+          },
+        }
+      );
+    }
+    await teacher.destroy({
+      where: {
+        teacher_id: id,
+      },
+    });
+    res.status(204).json({
+      status: "success",
+      message: "teacher Deleted Successfully",
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
 // Delete Admin
-exports.deleteAdmin = async (req, res) => {};
+exports.deleteAdmin = async (req, res) => {
+  try {
+    const { id } = req.params; // Changed from req.params.id to req.params
+    const searchedAdmin = await admin.findOne({
+      where: {
+        gm_id: id,
+      },
+    });
+    if (!searchedAdmin) {
+      return res.status(404).json({ error: "Admin not found" });
+    }
+    const adminEvents = await event.findAll({
+      where: {
+        adminid: id,
+      },
+    });
+    const eventIds = adminEvents.map((event) => event.eventid);
+    for (eventToDelete of eventIds) {
+      await event.update(
+        {
+          adminid: null,
+        },
+        {
+          where: {
+            adminid: eventToDelete,
+          },
+        }
+      );
+    }
+    await admin.destroy({
+      where: {
+        gm_id: id,
+      },
+    });
+    res.status(204).json({
+      status: "success",
+      message: "Admin Deleted Successfully",
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};

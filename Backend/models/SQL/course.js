@@ -22,7 +22,7 @@ module.exports = function (sequelize, DataTypes) {
       },
       teacher_id: {
         type: DataTypes.STRING(20),
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "teacher",
           key: "teacher_id",
