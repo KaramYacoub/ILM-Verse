@@ -43,7 +43,11 @@ router.post(
 
 //Event 2 Post Conditions , first one for
 router.post("/events", authenticateUser, uploadFiles, adminController.addEvent);
-router.delete("/events/:id", authenticateUser, adminController.deleteEvent);
+router.delete(
+  "/events/:event_id",
+  authenticateUser,
+  adminController.deleteEvent
+);
 
 // Get all students,parents,teachers,admins
 

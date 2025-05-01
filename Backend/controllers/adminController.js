@@ -4,6 +4,7 @@ const SQL = require("../models/Connections/SQL-Driver"); // your Sequelize insta
 const initModels = require("../models/index"); // path to index.js
 const models = initModels(SQL); // initialize models
 const bcrypt = require("bcryptjs"); // For hashing
+const fs = require("fs");
 const {
   department,
   student,
@@ -385,11 +386,39 @@ exports.addEvent = async (req, res) => {
 // Delete Event
 exports.deleteEvent = async (req, res) => {
   try {
-    console.log(req.params.event_id);
-    res.status(204).json({
-      status: "success",
-      message: "Event Deleted Successfully",
-    });
+    const { event_id } = req.body;
+    const sqlEvent = await event.findByPk(event_id);
+    const noSqlEvent = await eventMedia.find({ event_id: event_id });
+    if (!sqlEvent || !noSqlEvent) {
+      res.status(400).json({
+        status: "failed",
+        error: "Event not found",
+      });
+    } else {
+      // Get the media array from the  NoSQL event record
+      const media = noSqlEvent[0]["media"];
+      // Delete files from filesystem
+      for (const mediaIndex of media) {
+        fs.unlink(mediaIndex.path, (err) => {
+          if (err) {
+            console.error("Error deleting file:", err);
+          } else {
+            console.log("File deleted:", mediaIndex.path);
+          }
+        });
+      }
+      // Delete the NoSQL eventMedia record(s) based on event_id
+      await eventMedia.deleteMany({ event_id: event_id });
+      // Delete the SQL event
+      await sqlEvent.destroy();
+
+      res.status(200).json({
+        status: "success",
+        message: "Event deleted successfully",
+      });
+    }
+
+    // });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -449,11 +478,6 @@ exports.getAllStudents = async (req, res) => {
     res.status(200).json({
       status: "success",
       data: formattedStudents,
-    });
-
-    res.status(200).json({
-      status: "success",
-      data: allStudents,
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
