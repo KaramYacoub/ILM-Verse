@@ -18,15 +18,20 @@ function StudentLogin() {
     setError("");
 
     try {
+      let response;
       if (role === "admin") {
-        await adminLogin({ email, password });
-        navigate("/general-dashboard");
+        response = await adminLogin({ email, password });
       } else {
-        await teacherLogin({ email, password });
-        navigate("/teacher-dashboard");
+        response = await teacherLogin({ email, password });
+      }
+
+      if (response?.status === "success") {
+        navigate(
+          role === "admin" ? "/general-dashboard" : "/teacher-dashboard"
+        );
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || "Login failed");
     }
   };
 

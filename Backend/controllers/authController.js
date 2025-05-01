@@ -5,11 +5,9 @@ const { student, parent, admin, teacher } = models; // extract the models
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// login for the admin and the teacher
-exports.adminTeacherLogin = async (req, res) => {
-  console.log("Admin login route hit");
+// login for the admin
+exports.adminLogin = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
   try {
     // check if the user enter the email and the password
     if (!email || !password) {
@@ -28,11 +26,10 @@ exports.adminTeacherLogin = async (req, res) => {
       });
     }
 
-    // Try to find user in students or parents
+    // Try to find an admin
     const admintUser = await admin.findOne({ where: { email } });
-    const teacherUser = await teacher.findOne({ where: { email } });
 
-    // check if either the student or the parent exist
+    // check if admin exist
     if (admintUser) {
       // compare the enterd password with the one in the db
       const validPassword = await bcrypt.compare(password, admintUser.password);
@@ -63,7 +60,47 @@ exports.adminTeacherLogin = async (req, res) => {
         data: admintUser,
         message: "Logged in successfully",
       });
-    } else if (teacherUser) {
+    } else {
+      // If no user was found
+      return res.status(404).json({
+        status: "failed",
+        message: "User not found",
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      status: "failed",
+      error: err.message,
+    });
+  }
+};
+
+// login for the teacher
+exports.TeacherLogin = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    // check if the user enter the email and the password
+    if (!email || !password) {
+      return res.status(400).json({
+        status: "failed",
+        message: "All fields are required",
+      });
+    }
+
+    // check if the email format is correct
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Invalid email format",
+      });
+    }
+
+    // Try to find an admin
+    const teacherUser = await teacher.findOne({ where: { email } });
+
+    // check if admin exist
+    if (teacherUser) {
       // compare the enterd password with the one in the db
       const validPassword = await bcrypt.compare(
         password,

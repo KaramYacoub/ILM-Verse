@@ -51,7 +51,7 @@ function HomeNav() {
           </Link>
 
           <Link
-            to="/shared-events"
+            to="/events"
             className="flex items-center gap-2 hover:text-yellow-500"
           >
             <FaCalendarAlt color="#fff" />
@@ -121,7 +121,7 @@ function HomeNav() {
               </Link>
 
               <Link
-                to="/shared-events"
+                to="/events"
                 className="flex items-center gap-3 py-2 cursor-pointer hover:text-yellow-500 pl-6"
                 onClick={toggleMenu}
               >

@@ -13,12 +13,12 @@ export const useAuthStore = create((set) => ({
   adminLogin: async (data) => {
     try {
       set({ isUserLoggingIn: true });
-      const response = await axiosInstance.post("admin/staffLogin", data);
+      const response = await axiosInstance.post("admin/adminLogin", data);
       set({ authAdmin: response.data.data });
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log(error.response?.data?.message || "Login failed");
+      throw error;
     } finally {
       set({ isUserLoggingIn: false });
     }
@@ -27,11 +27,12 @@ export const useAuthStore = create((set) => ({
   teacherLogin: async (data) => {
     try {
       set({ isUserLoggingIn: true });
-      const response = await axiosInstance.post("teacher/staffLogin", data);
+      const response = await axiosInstance.post("teacher/teacherLogin", data);
       set({ authTeacher: response.data.data });
       return response.data;
     } catch (error) {
       console.log(error.response?.data?.message || "Login failed");
+      throw error;
     } finally {
       set({ isUserLoggingIn: false });
     }
@@ -45,6 +46,7 @@ export const useAuthStore = create((set) => ({
       return response.data;
     } catch (error) {
       console.log(error.response?.data?.message || "Login failed");
+      throw error;
     } finally {
       set({ isUserLoggingIn: false });
     }
@@ -58,6 +60,7 @@ export const useAuthStore = create((set) => ({
       return response.data;
     } catch (error) {
       console.log(error.response?.data?.message || "Login failed");
+      throw error;
     } finally {
       set({ isUserLoggingIn: false });
     }

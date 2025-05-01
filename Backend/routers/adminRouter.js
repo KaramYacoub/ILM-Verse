@@ -5,7 +5,7 @@ const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
 const uploadFiles = require("../controllers/upload/uploadEvent"); // Import the upload middleware
 // login
-router.post("/staffLogin", authController.adminTeacherLogin);
+router.post("/adminLogin", authController.adminLogin);
 //---------------------------------
 // to get the admin data we should send the Admin ID from front-end as param
 // router.get("/:id", authenticateUser, adminController.getAdmin);

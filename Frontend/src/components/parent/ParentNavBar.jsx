@@ -68,7 +68,7 @@ function ParentNavBar() {
           </Link>
           {/* Events */}
           <Link
-            to="/parent-events"
+            to="/events"
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
           >
             <FaCalendarAlt color="#fff" />
@@ -128,7 +128,7 @@ function ParentNavBar() {
                 <span>Quizzes</span>
               </Link>
               <Link
-                to="/parent-events"
+                to="/events"
                 className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
                 onClick={toggleMenu}
               >

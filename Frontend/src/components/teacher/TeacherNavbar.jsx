@@ -57,7 +57,7 @@ function TeacherNavbar() {
             <span>Dashboard</span>
           </Link>
           <Link
-            to="/teacher-events"
+            to="/events"
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
           >
             <FaCalendarAlt color="#fff" />
@@ -108,7 +108,7 @@ function TeacherNavbar() {
                 <span>Dashboard</span>
               </Link>
               <Link
-                to="/teacher-events"
+                to="/events"
                 className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
                 onClick={toggleMenu}
               >

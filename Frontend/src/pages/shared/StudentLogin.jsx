@@ -28,7 +28,7 @@ function StudentLogin() {
         navigate("/parent-dashboard");
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.message || "Login failed");
     }
   };
 

@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
+import StudentNavbar from "../../components/student/StudentNavbar";
+import TeacherNavbar from "../../components/teacher/TeacherNavbar";
+import ParentNavBar from "../../components/parent/ParentNavBar";
 import HomeNav from "../../components/shared/HomeNav";
 import EventList from "../../components/shared/EventList";
+import { useAuthStore } from "../../store/AuthStore";
 import { useSharedStore } from "../../store/SharedStore";
 import { Loader2 } from "lucide-react";
 
@@ -8,8 +12,9 @@ function SharedEvents() {
   const [events, setEvents] = useState({});
   const [currentYear, setCurrentYear] = useState("2025");
 
-  const getAllEvents = useSharedStore((state) => state.getAllEvents);
-  const isFetchingEvents = useSharedStore((state) => state.isFetchingEvents);
+  const { authStudent, authTeacher, authParent } = useAuthStore();
+
+  const { isFetchingEvents, getAllEvents } = useSharedStore();
 
   // Fetch events from the store and group by year
   const fetchEvents = useCallback(async () => {
@@ -41,7 +46,10 @@ function SharedEvents() {
   return (
     <div className="min-h-screen bg-base-200 flex flex-col">
       {/* Header/Navigation */}
-      <HomeNav />
+      {authStudent && <StudentNavbar />}
+      {authTeacher && <TeacherNavbar />}
+      {authParent && <ParentNavBar />}
+      {!authStudent && !authTeacher && !authParent && <HomeNav />}
 
       {/* Main Content */}
       <div className="flex-grow p-4 md:p-8">

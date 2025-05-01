@@ -16,7 +16,6 @@ const StudentDashboard = lazy(() => import("./pages/student/StudentDashboard"));
 const StudentViewGrades = lazy(() =>
   import("./pages/student/StudentViewGrades")
 );
-const StudentEvents = lazy(() => import("./pages/student/StudentEvents"));
 const StudentShowQuizzes = lazy(() =>
   import("./pages/student/StudentShowQuizzes")
 );
@@ -40,7 +39,6 @@ const StudentResourcesTab = lazy(() =>
 );
 
 const TeacherDashboard = lazy(() => import("./pages/teacher/TeacherDashboard"));
-const TeacherEvents = lazy(() => import("./pages/teacher/teacherEvents"));
 const TeacherCourseContent = lazy(() =>
   import("./pages/teacher/teacherCourseContent")
 );
@@ -64,7 +62,6 @@ const TeacherAddQuizzes = lazy(() =>
 );
 
 const ParentDashboard = lazy(() => import("./pages/parent/ParentDashboard"));
-const ParentEvents = lazy(() => import("./pages/parent/ParentEvents"));
 const ParentAssignment = lazy(() =>
   import("./components/parent/Tabs/ParentAssignment")
 );
@@ -150,273 +147,295 @@ function App() {
       <div data-theme="mytheme">
         <Routes>
           {/* Shared Routes */}
-          <Route path="*" element={<Error />} />
-          <Route
-            path="/"
-            element={
-              !isAuthenticated ? <Home /> : <Navigate to={getRedirectPath()} />
-            }
-          />
-          <Route
-            path="/about us"
-            element={
-              !isAuthenticated ? (
-                <AboutUs />
-              ) : (
-                <Navigate to={getRedirectPath()} />
-              )
-            }
-          />
-          <Route
-            path="/contact"
-            element={
-              !isAuthenticated ? (
-                <ContactUs />
-              ) : (
-                <Navigate to={getRedirectPath()} />
-              )
-            }
-          />
-          <Route
-            path="/shared-events"
-            element={
-              !isAuthenticated ? (
-                <SharedEvents />
-              ) : (
-                <Navigate to={getRedirectPath()} />
-              )
-            }
-          />
-          <Route
-            path="/studentLogin"
-            element={
-              !isAuthenticated ? (
-                <StudentLogin />
-              ) : (
-                <Navigate to={getRedirectPath()} />
-              )
-            }
-          />
-          <Route
-            path="/staffLogin"
-            element={
-              !isAuthenticated ? (
-                <StaffLogin />
-              ) : (
-                <Navigate to={getRedirectPath()} />
-              )
-            }
-          />
-          {/* Student Routes */}
-          <Route
-            path="/student-dashboard"
-            element={authStudent ? <StudentDashboard /> : <Navigate to={"/"} />}
-          />
-          <Route
-            path="/student-view-grades"
-            element={authStudent ? <StudentViewGrades /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/student-show-quizzes"
-            element={authStudent ? <StudentShowQuizzes /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/Student-Quiz-Details"
-            element={authStudent ? <StudentQuizDetails /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/events"
-            element={authStudent ? <StudentEvents /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/student-course-content/"
-            element={
-              authStudent ? <StudentCourseContent /> : <Navigate to="/" />
-            }
-          >
-            <Route index element={<Navigate replace to="student-overview" />} />
+          <>
+            <Route path="*" element={<Error />} />
             <Route
-              path="student-overview"
+              path="/"
               element={
-                authStudent ? <StudentOverviewTab /> : <Navigate to="/" />
+                !isAuthenticated ? (
+                  <Home />
+                ) : (
+                  <Navigate to={getRedirectPath()} />
+                )
               }
             />
             <Route
-              path="student-lessons"
+              path="/about us"
               element={
-                authStudent ? <StudentLessonsTab /> : <Navigate to="/" />
+                !isAuthenticated ? (
+                  <AboutUs />
+                ) : (
+                  <Navigate to={getRedirectPath()} />
+                )
               }
             />
             <Route
-              path="student-resources"
+              path="/contact"
               element={
-                authStudent ? <StudentResourcesTab /> : <Navigate to="/" />
+                !isAuthenticated ? (
+                  <ContactUs />
+                ) : (
+                  <Navigate to={getRedirectPath()} />
+                )
               }
             />
             <Route
-              path="student-assignments"
+              path="/studentLogin"
               element={
-                authStudent ? <StudentAssignmentsTab /> : <Navigate to="/" />
-              }
-            />
-          </Route>
-          {/* Teacher Routes */}
-          <Route
-            path="/teacher-dashboard"
-            element={authTeacher ? <TeacherDashboard /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/teacher-events"
-            element={authTeacher ? <TeacherEvents /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/teacher-course-content/"
-            element={
-              authTeacher ? <TeacherCourseContent /> : <Navigate to="/" />
-            }
-          >
-            <Route
-              index
-              element={<Navigate replace to="teacher-course-students" />}
-            />
-            <Route
-              path="teacher-unit-content"
-              element={
-                authTeacher ? <TeacherUnitContentTab /> : <Navigate to="/" />
+                !isAuthenticated ? (
+                  <StudentLogin />
+                ) : (
+                  <Navigate to={getRedirectPath()} />
+                )
               }
             />
             <Route
-              path="teacher-overview"
+              path="/staffLogin"
               element={
-                authTeacher ? <TeacherOverviewTab /> : <Navigate to="/" />
+                !isAuthenticated ? (
+                  <StaffLogin />
+                ) : (
+                  <Navigate to={getRedirectPath()} />
+                )
               }
             />
             <Route
-              path="teacher-course-students"
-              element={
-                authTeacher ? <TeacherCoresStudentab /> : <Navigate to="/" />
-              }
+              path="/events"
+              element={<SharedEvents />}
             />
-            <Route
-              path="teacher-assignments"
-              element={
-                authTeacher ? <TeacherAssignmentsTab /> : <Navigate to="/" />
-              }
-            />
-            <Route
-              path="teacher-quizzes"
-              element={
-                authTeacher ? <TeacherQuizzesTab /> : <Navigate to="/" />
-              }
-            />
-          </Route>
-          <Route
-            path="/teacher-course-content/teacher-quizzes/teacher-add-quiz"
-            element={authTeacher ? <TeacherAddQuizzes /> : <Navigate to="/" />}
-          />
-          {/* Parent Routes */}
-          <Route
-            path="/parent-dashboard"
-            element={authParent ? <ParentDashboard /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/parent-events"
-            element={authParent ? <ParentEvents /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/parent-view-grades"
-            element={authParent ? <ParentViewGrades /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/parent-show-reports"
-            element={authParent ? <ParentShowReports /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/parent-show-absences"
-            element={authParent ? <ParentShowAbsences /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/parent-quizzes"
-            element={authParent ? <ParentShowQuizzes /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/parent-course-content"
-            element={authParent ? <ParentCourseContent /> : <Navigate to="/" />}
-          >
-            <Route index element={<Navigate replace to="parent-overview" />} />
-            <Route
-              path="parent-overview"
-              element={authParent ? <ParentOverview /> : <Navigate to="/" />}
-            />
-            <Route
-              path="parent-lessons"
-              element={authParent ? <ParentLessons /> : <Navigate to="/" />}
-            />
-            <Route
-              path="parent-resources"
-              element={
-                authParent ? <ParentResourcesTab /> : <Navigate to="/" />
-              }
-            />
-            <Route
-              path="parent-assignments"
-              element={authParent ? <ParentAssignment /> : <Navigate to="/" />}
-            />
-          </Route>
-          {/* General Routes */}
-          <Route
-            path="/general-dashboard"
-            element={authAdmin ? <GeneralDash /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/addition"
-            element={authAdmin ? <Addition /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/deletion"
-            element={authAdmin ? <Deletion /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/reset-password"
-            element={authAdmin ? <ResetPassword /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/delete-content/:courseId/"
-            element={authAdmin ? <DeleteContent /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/coursecontent"
-            element={authAdmin ? <CourseContent /> : <Navigate to="/" />}
-          />
+          </>
 
-          <Route
-            path="/settings"
-            element={authAdmin ? <Settings /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/general-event"
-            element={authAdmin ? <GenralEvents /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/reports"
-            element={authAdmin ? <Reports /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/generate-report"
-            element={authAdmin ? <GenerateReport /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/addCourse"
-            element={authAdmin ? <AddCourse /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/admin-course-overview/:courseId"
-            element={<AdminCourseOverview />}
-          />
-          <Route
-            path="/admin-unit-content/:courseId"
-            element={<AdminUnitContent />}
-          />
+          {/* Student Routes */}
+          <>
+            <Route
+              path="/student-dashboard"
+              element={
+                authStudent ? <StudentDashboard /> : <Navigate to={"/"} />
+              }
+            />
+            <Route
+              path="/student-view-grades"
+              element={
+                authStudent ? <StudentViewGrades /> : <Navigate to="/" />
+              }
+            />
+            <Route
+              path="/student-show-quizzes"
+              element={
+                authStudent ? <StudentShowQuizzes /> : <Navigate to="/" />
+              }
+            />
+            <Route
+              path="/Student-Quiz-Details"
+              element={
+                authStudent ? <StudentQuizDetails /> : <Navigate to="/" />
+              }
+            />
+            <Route
+              path="/student-course-content/"
+              element={
+                authStudent ? <StudentCourseContent /> : <Navigate to="/" />
+              }
+            >
+              <Route
+                index
+                element={<Navigate replace to="student-overview" />}
+              />
+              <Route
+                path="student-overview"
+                element={
+                  authStudent ? <StudentOverviewTab /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="student-lessons"
+                element={
+                  authStudent ? <StudentLessonsTab /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="student-resources"
+                element={
+                  authStudent ? <StudentResourcesTab /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="student-assignments"
+                element={
+                  authStudent ? <StudentAssignmentsTab /> : <Navigate to="/" />
+                }
+              />
+            </Route>
+          </>
+
+          {/* Teacher Routes */}
+          <>
+            <Route
+              path="/teacher-dashboard"
+              element={authTeacher ? <TeacherDashboard /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/teacher-course-content/"
+              element={
+                authTeacher ? <TeacherCourseContent /> : <Navigate to="/" />
+              }
+            >
+              <Route
+                index
+                element={<Navigate replace to="teacher-course-students" />}
+              />
+              <Route
+                path="teacher-unit-content"
+                element={
+                  authTeacher ? <TeacherUnitContentTab /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="teacher-overview"
+                element={
+                  authTeacher ? <TeacherOverviewTab /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="teacher-course-students"
+                element={
+                  authTeacher ? <TeacherCoresStudentab /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="teacher-assignments"
+                element={
+                  authTeacher ? <TeacherAssignmentsTab /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="teacher-quizzes"
+                element={
+                  authTeacher ? <TeacherQuizzesTab /> : <Navigate to="/" />
+                }
+              />
+            </Route>
+            <Route
+              path="/teacher-course-content/teacher-quizzes/teacher-add-quiz"
+              element={
+                authTeacher ? <TeacherAddQuizzes /> : <Navigate to="/" />
+              }
+            />
+          </>
+
+          {/* Parent Routes */}
+          <>
+            <Route
+              path="/parent-dashboard"
+              element={authParent ? <ParentDashboard /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/parent-view-grades"
+              element={authParent ? <ParentViewGrades /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/parent-show-reports"
+              element={authParent ? <ParentShowReports /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/parent-show-absences"
+              element={
+                authParent ? <ParentShowAbsences /> : <Navigate to="/" />
+              }
+            />
+            <Route
+              path="/parent-quizzes"
+              element={authParent ? <ParentShowQuizzes /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/parent-course-content"
+              element={
+                authParent ? <ParentCourseContent /> : <Navigate to="/" />
+              }
+            >
+              <Route
+                index
+                element={<Navigate replace to="parent-overview" />}
+              />
+              <Route
+                path="parent-overview"
+                element={authParent ? <ParentOverview /> : <Navigate to="/" />}
+              />
+              <Route
+                path="parent-lessons"
+                element={authParent ? <ParentLessons /> : <Navigate to="/" />}
+              />
+              <Route
+                path="parent-resources"
+                element={
+                  authParent ? <ParentResourcesTab /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="parent-assignments"
+                element={
+                  authParent ? <ParentAssignment /> : <Navigate to="/" />
+                }
+              />
+            </Route>
+          </>
+
+          {/* General Routes */}
+          <>
+            <Route
+              path="/general-dashboard"
+              element={authAdmin ? <GeneralDash /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/addition"
+              element={authAdmin ? <Addition /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/deletion"
+              element={authAdmin ? <Deletion /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/reset-password"
+              element={authAdmin ? <ResetPassword /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/delete-content/:courseId/"
+              element={authAdmin ? <DeleteContent /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/coursecontent"
+              element={authAdmin ? <CourseContent /> : <Navigate to="/" />}
+            />
+
+            <Route
+              path="/settings"
+              element={authAdmin ? <Settings /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/general-event"
+              element={authAdmin ? <GenralEvents /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/reports"
+              element={authAdmin ? <Reports /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/generate-report"
+              element={authAdmin ? <GenerateReport /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/addCourse"
+              element={authAdmin ? <AddCourse /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/admin-course-overview/:courseId"
+              element={<AdminCourseOverview />}
+            />
+            <Route
+              path="/admin-unit-content/:courseId"
+              element={<AdminUnitContent />}
+            />
+          </>
         </Routes>
 
         {/* Footer */}
