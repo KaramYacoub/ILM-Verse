@@ -159,6 +159,28 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  deleteTeacher: async (teacherId) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/admin/delete/teacher/${teacherId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Error deleting teacher:", error);
+    }
+  },
+
+  deleteAdmin: async (AdminId) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/admin/delete/admin/${AdminId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Error deleting teacher:", error);
+    }
+  },
+
   addEvent: async (formData) => {
     try {
       const response = await axiosInstance.post("/admin/events", formData, {

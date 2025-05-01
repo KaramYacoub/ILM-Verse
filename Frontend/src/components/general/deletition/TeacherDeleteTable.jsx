@@ -5,7 +5,9 @@ import { Loader2 } from "lucide-react";
 function TeacherDeleteTable({ searchTerm }) {
   const [teachers, setTeachers] = useState([]);
   const [filteredTeachers, setFilteredTeachers] = useState([]);
-  const { isFetchingTeachers, getAllTeachers } = useAdminStore();
+  const { isFetchingTeachers, getAllTeachers, deleteTeacher } = useAdminStore();
+
+  const [deletingIds, setDeletingIds] = useState([]);
 
   useEffect(() => {
     const fetchTeachers = async () => {
@@ -40,11 +42,21 @@ function TeacherDeleteTable({ searchTerm }) {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this teacher?"))
       return;
-    // Implement actual delete API call here
-    setTeachers(teachers.filter((teacher) => teacher.teacher_id !== id));
-    setFilteredTeachers(
-      filteredTeachers.filter((teacher) => teacher.teacher_id !== id)
-    );
+
+    try {
+      setDeletingIds((prev) => [...prev, id]);
+      await deleteTeacher(id);
+
+      setTeachers(teachers.filter((teacher) => teacher.teacher_id !== id));
+      setFilteredTeachers(
+        filteredTeachers.filter((teacher) => teacher.teacher_id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting teacher:", error);
+      alert("Failed to delete teacher");
+    } finally {
+      setDeletingIds((prev) => prev.filter((deletingId) => deletingId !== id));
+    }
   };
 
   if (isFetchingTeachers) {
@@ -84,8 +96,13 @@ function TeacherDeleteTable({ searchTerm }) {
                 <button
                   onClick={() => handleDelete(teacher.teacher_id)}
                   className="btn btn-error btn-sm text-white"
+                  disabled={deletingIds.includes(teacher.teacher_id)}
                 >
-                  Delete
+                  {deletingIds.includes(teacher.teacher_id) ? (
+                    <Loader2 className="animate-spin h-4 w-4 mx-auto" />
+                  ) : (
+                    "Delete"
+                  )}
                 </button>
               </td>
             </tr>

@@ -5,7 +5,9 @@ import { Loader2 } from "lucide-react";
 function AdminDeleteTable({ searchTerm }) {
   const [admins, setAdmins] = useState([]);
   const [filteredAdmins, setFilteredAdmins] = useState([]);
-  const { isFetchingAdmins, getAllAdmins } = useAdminStore();
+  const { isFetchingAdmins, getAllAdmins, deleteAdmin } = useAdminStore();
+
+  const [deletingIds, setDeletingIds] = useState([]);
 
   useEffect(() => {
     const fetchAdmins = async () => {
@@ -40,9 +42,21 @@ function AdminDeleteTable({ searchTerm }) {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this admin?")) return;
-    // Implement actual delete API call here
-    setAdmins(admins.filter((admin) => admin.gm_id !== id));
-    setFilteredAdmins(filteredAdmins.filter((admin) => admin.gm_id !== id));
+
+    try {
+      setDeletingIds((prev) => [...prev, id]);
+      await deleteAdmin(id);
+
+      setAdmins(admins.filter((admin) => admin.admin_id !== id));
+      setFilteredAdmins(
+        filteredAdmins.filter((admin) => admin.admin_id !== id)
+      );
+    } catch (error) {
+      console.error("Error deleting admin:", error);
+      alert("Failed to delete admin");
+    } finally {
+      setDeletingIds((prev) => prev.filter((deletingId) => deletingId !== id));
+    }
   };
 
   if (isFetchingAdmins) {
@@ -82,8 +96,13 @@ function AdminDeleteTable({ searchTerm }) {
                 <button
                   onClick={() => handleDelete(admin.gm_id)}
                   className="btn btn-error btn-sm text-white"
+                  disabled={deletingIds.includes(admin.gm_id)}
                 >
-                  Delete
+                  {deletingIds.includes(admin.gm_id) ? (
+                    <Loader2 className="animate-spin h-4 w-4 mx-auto" />
+                  ) : (
+                    "Delete"
+                  )}
                 </button>
               </td>
             </tr>
