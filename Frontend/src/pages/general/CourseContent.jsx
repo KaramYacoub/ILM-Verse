@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import GeneralNav from "../../components/general/GeneralNav";
-import SearchCourse from "../../components/general/SearchCourse";
 
 function CourseContent() {
   const [courses] = useState([
@@ -9,55 +9,47 @@ function CourseContent() {
       name: "Mathematics Fundamentals",
       grade: "KG",
       status: "Active",
-      lastUpdated: "Apr 5, 2025",
+      section: "Section A",
+      units: [{ name: "Numbers", lessons: [], assignments: [], quizzes: [] }],
     },
     {
       courseId: "CRS-002",
       name: "Science Explorers",
       grade: "Primary",
       status: "Active",
-      lastUpdated: "Apr 4, 2025",
+      section: "Section B",
+      units: [{ name: "Nature", lessons: [], assignments: [], quizzes: [] }],
     },
     {
       courseId: "CRS-003",
-      name: "Advanced Physics",
-      grade: "Intermediate Male",
-      status: "Pending",
-      lastUpdated: "Apr 3, 2025",
-    },
-    {
-      courseId: "CRS-004",
-      name: "Biology for Girls",
-      grade: "Intermediate Female",
-      status: "Active",
-      lastUpdated: "Apr 2, 2025",
-    },
-    {
-      courseId: "CRS-005",
       name: "English Literature",
       grade: "Primary",
       status: "Active",
-      lastUpdated: "Apr 1, 2025",
+      section: "Section C",
+      units: [],
     },
-    {
-      courseId: "CRS-006",
-      name: "Creative Arts",
-      grade: "KG",
-      status: "Active",
-      lastUpdated: "Mar 30, 2025",
-    },
-    {
-      courseId: "CRS-007",
-      name: "Computer Science",
-      grade: "Intermediate Male",
-      status: "Active",
-      lastUpdated: "Mar 28, 2025",
-    },
+    // Add more courses...
   ]);
 
+  const [sectionFilter, setSectionFilter] = useState("");
+  const [filteredCourses, setFilteredCourses] = useState(courses);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Filter courses based on section filter
+    const filtered = courses.filter((course) => {
+      const matchesSection = sectionFilter
+        ? course.section.toLowerCase().includes(sectionFilter.toLowerCase())
+        : true;
+
+      return matchesSection;
+    });
+    setFilteredCourses(filtered);
+  }, [sectionFilter, courses]);
+
   const handleShowCourse = (courseId) => {
-    // Handle showing course details
-    console.log("Showing course:", courseId);
+    navigate(`/admin-course-overview/${courseId}`);
   };
 
   return (
@@ -68,8 +60,44 @@ function CourseContent() {
         <h1 className="text-3xl font-bold mb-2">Administrator</h1>
         <h2 className="text-2xl font-semibold mb-6">Edit Content</h2>
 
-        {/* Search Course Component */}
-        <SearchCourse courses={courses} onShowCourse={handleShowCourse} />
+        {/* Section Filter */}
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Filter by Section"
+            className="input input-bordered w-full mb-4"
+            value={sectionFilter}
+            onChange={(e) => setSectionFilter(e.target.value)}
+          />
+        </div>
+
+        {/* Display Filtered Courses */}
+        <div className="grid gap-4">
+          {filteredCourses.length > 0 ? (
+            filteredCourses.map((course) => (
+              <div
+                key={course.courseId}
+                className="p-4 bg-white rounded shadow flex justify-between items-center"
+              >
+                <div>
+                  <h3 className="text-xl font-bold">{course.name}</h3>
+                  <p className="text-gray-600">{course.grade}</p>
+                  <p className="text-sm text-gray-400">
+                    Section: {course.section}
+                  </p>
+                </div>
+                <button
+                  onClick={() => handleShowCourse(course.courseId)}
+                  className="btn btn-primary"
+                >
+                  Show
+                </button>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500 text-center">No courses found.</p>
+          )}
+        </div>
       </div>
     </div>
   );

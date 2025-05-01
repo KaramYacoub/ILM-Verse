@@ -102,7 +102,12 @@ const GenralEvents = lazy(() => import("./pages/general/GenralEvents"));
 const Reports = lazy(() => import("./pages/general/Reports"));
 const GenerateReport = lazy(() => import("./pages/general/GenerateReports"));
 const AddCourse = lazy(() => import("./pages/general/AddCourse"));
-
+const AdminCourseOverview = lazy(() =>
+  import("./components/courseThings/AdminCourseOverview")
+);
+const AdminUnitContent = lazy(() =>
+  import("./components/courseThings/AdminUnitContent")
+);
 function App() {
   const {
     isCheckingAuth,
@@ -403,6 +408,14 @@ function App() {
           <Route
             path="/addCourse"
             element={authAdmin ? <AddCourse /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/admin-course-overview/:courseId"
+            element={<AdminCourseOverview />}
+          />
+          <Route
+            path="/admin-unit-content/:courseId"
+            element={<AdminUnitContent />}
           />
         </Routes>
 

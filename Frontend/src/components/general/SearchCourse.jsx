@@ -112,7 +112,7 @@ function SearchCourse({ courses }) {
                       <button
                         className="btn btn-sm btn-ghost"
                         onClick={() =>
-                          navigate(`/delete-content/${course.courseId}`)
+                          navigate(`/admin-course-overview/${course.courseId}`)
                         }
                       >
                         Show
