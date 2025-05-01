@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/adminController");
+const courseController = require("../controllers/courseController");
 const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
-const uploadFiles = require("../controllers/upload/uploadEvent"); // Import the upload middleware
+const uploadFiles = require("../controllers/upload/uploadEvent"); // Import the upload middleware for events
 // login
 router.post("/adminLogin", authController.adminLogin);
 //---------------------------------
@@ -15,9 +16,8 @@ router.post("/addition/admin", authenticateUser, adminController.addAdmin);
 router.post("/addition/teacher", authenticateUser, adminController.addTeacher);
 router.post("/addition/parent", authenticateUser, adminController.addParent);
 router.post("/addition/student", authenticateUser, adminController.addStudent);
-router.post("/addition/course", authenticateUser, adminController.addCourse);
 
-// get grades then sections then teachers in the department of the section
+// get grades then sections then teachers in the department of the section , then add course
 router.get(
   "/addition/course/grades",
   authenticateUser,
@@ -33,13 +33,7 @@ router.get(
   authenticateUser,
   adminController.getTeachersBySection
 );
-
-//Involve all students in specific section inside A course by course Id
-router.post(
-  "/course/involve",
-  authenticateUser,
-  adminController.involveStudents
-);
+router.post("/addition/course", authenticateUser, adminController.addCourse);
 
 //Event 2 Post Conditions , first one for
 router.post("/events", authenticateUser, uploadFiles, adminController.addEvent);
@@ -76,6 +70,19 @@ router.delete(
   authenticateUser,
   adminController.deleteAdmin
 );
+// update password functionality , (remember to check the body from postman)
+router.patch(
+  "/update/password",
+  authenticateUser,
+  adminController.changePassword
+);
 
-// delete
+//course functionalites: getAllCourses ,involve , changeteacher then details
+//Involve all students in specific section inside A course by course Id
+router.get("/course", authenticateUser, courseController.getAllCourses);
+router.post(
+  "/course/involve",
+  authenticateUser,
+  courseController.involveStudents
+);
 module.exports = router;

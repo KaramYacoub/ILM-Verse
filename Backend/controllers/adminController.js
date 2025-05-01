@@ -277,70 +277,6 @@ exports.getTeachersBySection = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-
-// Involve students in a course
-exports.involveStudents = async (req, res) => {
-  try {
-    const { course_id } = req.body;
-
-    // Step 1: Get section_id of the course
-    const courseData = await course.findOne({
-      where: {
-        course_id: course_id,
-      },
-    });
-
-    if (!courseData) {
-      return res.status(404).json({ error: "Course not found" });
-    }
-
-    const section_id = courseData.section_id;
-
-    // Step 2: Get all students in the section
-    const students = await student.findAll({
-      where: {
-        section_id: section_id,
-      },
-    });
-
-    // Step 3: Filter out students already involved in the course
-    const involvedStudents = [];
-
-    for (const student of students) {
-      const isStudentInvolved = await course_student.findOne({
-        where: {
-          course_id: course_id,
-          student_id: student.student_id,
-        },
-      });
-
-      if (!isStudentInvolved) {
-        involvedStudents.push({
-          course_id: course_id,
-          student_id: student.student_id,
-        });
-      }
-    }
-
-    // Step 4: Bulk create involvement for students not already involved
-    if (involvedStudents.length > 0) {
-      const addedStudents = await course_student.bulkCreate(involvedStudents);
-      res.status(201).json({
-        status: "success",
-        message: `${addedStudents.length} Student(s) Added Successfully`,
-      });
-    } else {
-      res.status(200).json({
-        status: "success",
-        message: "All students are already involved in this course.",
-      });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(400).json({ error: error.message });
-  }
-};
-
 // Add Event ✅
 exports.addEvent = async (req, res) => {
   try {
@@ -423,7 +359,6 @@ exports.deleteEvent = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
-
 // Get all students ✅
 exports.getAllStudents = async (req, res) => {
   try {
@@ -735,6 +670,56 @@ exports.deleteAdmin = async (req, res) => {
     res.status(204).json({
       status: "success",
       message: "Admin Deleted Successfully",
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+//Change Password Based on userType
+exports.changePassword = async (req, res) => {
+  try {
+    // identifier may be email for teacher , and ID for students and parents
+    const { userType, identifier, newPassword } = req.body;
+    const hashedPassword = await bcrypt.hash(newPassword, 3);
+    if (userType.toLowerCase() === "student") {
+      await student.update(
+        {
+          password: hashedPassword,
+        },
+        {
+          where: {
+            student_id: identifier,
+          },
+        }
+      );
+    } else if (userType.toLowerCase() === "parent") {
+      await parent.update(
+        {
+          password: hashedPassword,
+        },
+        {
+          where: {
+            parent_id: identifier,
+          },
+        }
+      );
+    } else if (userType.toLowerCase() === "teacher") {
+      await teacher.update(
+        {
+          password: hashedPassword,
+        },
+        {
+          where: {
+            teacher_id: identifier,
+          },
+        }
+      );
+    } else {
+      res.status(400).json({ error: "Invalid User Type" });
+    }
+    res.status(200).json({
+      status: "success",
+      message: "Password Changed Successfully",
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
