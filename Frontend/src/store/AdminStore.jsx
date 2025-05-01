@@ -152,7 +152,10 @@ export const useAdminStore = create((set) => ({
       );
       return response.data;
     } catch (error) {
-      console.error("Error deleting parent:", error);
+      console.error(
+        "Error deleting parent:",
+        error.response?.data?.error || error.message
+      );
     }
   },
 

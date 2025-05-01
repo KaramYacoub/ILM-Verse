@@ -41,7 +41,8 @@ function ParentDeleteTable({ searchTerm }) {
   }, [searchTerm, parents]);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this parent?")) return;
+    const parentName = parents.find((p) => p.parent_id === id)?.first_name;
+    if (!window.confirm(`Delete ${parentName} and ALL their students?`)) return;
 
     try {
       setDeletingIds((prev) => [...prev, id]);
@@ -53,7 +54,7 @@ function ParentDeleteTable({ searchTerm }) {
       );
     } catch (error) {
       console.error("Error deleting student:", error);
-      alert("Failed to delete student");
+      alert("Failed to delete parent");
     } finally {
       setDeletingIds((prev) => prev.filter((deletingId) => deletingId !== id));
     }
