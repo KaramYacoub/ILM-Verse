@@ -277,6 +277,7 @@ exports.getTeachersBySection = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
 // Add Event ✅
 exports.addEvent = async (req, res) => {
   try {
@@ -359,6 +360,7 @@ exports.deleteEvent = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
 // Get all students ✅
 exports.getAllStudents = async (req, res) => {
   try {
@@ -631,6 +633,7 @@ exports.deleteTeacher = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
 // Delete Admin ✅
 exports.deleteAdmin = async (req, res) => {
   try {
@@ -674,7 +677,8 @@ exports.deleteAdmin = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-//Change Password Based on userType
+
+//Change Password Based on userType ✅
 exports.changePassword = async (req, res) => {
   try {
     // identifier may be email for teacher , and ID for students and parents

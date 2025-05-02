@@ -91,7 +91,7 @@ router.patch(
   courseController.updateTeacher
 );
 router.get(
-  "/course/getstudents",
+  "/course/getstudents/:course_id",
   authenticateUser,
   courseController.getStudentsInCourse
 );

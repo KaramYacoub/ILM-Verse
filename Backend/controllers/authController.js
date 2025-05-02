@@ -51,7 +51,7 @@ exports.adminLogin = async (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         sameSite: "strict",
-        maxAge: 1000 * 60 * 60, // 60 minutes
+        maxAge: 1000 * 60 * 60 * 2, // 120 minutes
       });
 
       // send the student info
@@ -124,7 +124,7 @@ exports.TeacherLogin = async (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         sameSite: "strict",
-        maxAge: 1000 * 60 * 60, // 60 minutes
+        maxAge: 1000 * 60 * 60 * 2, // 120 minutes
       });
 
       // send the parent info
@@ -189,7 +189,7 @@ exports.studentLogin = async (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         sameSite: "strict",
-        maxAge: 1000 * 60 * 60, // 60 minutes
+        maxAge: 1000 * 60 * 60 * 2, // 120 minutes
       });
 
       // send the student info
@@ -249,7 +249,7 @@ exports.parentLogin = async (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         sameSite: "strict",
-        maxAge: 1000 * 60 * 60, // 60 minutes
+        maxAge: 1000 * 60 * 60 * 2, // 120 minutes
       });
 
       // send the parent info
