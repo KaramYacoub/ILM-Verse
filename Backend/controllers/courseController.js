@@ -7,7 +7,7 @@ const { course, teacher, section, grade, department, course_student, student } =
   models;
 const Report = require("../models/NOSQL/Report");
 
-//get all courses(data is filtered)
+//get all courses(data is filtered) ✅
 exports.getAllCourses = async (req, res) => {
   try {
     const courses = await course.findAll({
@@ -62,7 +62,7 @@ exports.getAllCourses = async (req, res) => {
   }
 };
 
-// Involve students in a course
+// Involve students in a course ✅
 exports.involveStudents = async (req, res) => {
   try {
     const { course_id } = req.body;
@@ -124,10 +124,11 @@ exports.involveStudents = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-//get all teachers from department
+
+//get all teachers from department ✅
 exports.getTeachersByCourse = async (req, res) => {
   try {
-    const { course_id } = req.body;
+    const { course_id } = req.params;
     const courseData = await course.findOne({
       where: {
         course_id: course_id,
@@ -162,10 +163,11 @@ exports.getTeachersByCourse = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-// change teacher for specific course (don't forget to use getTeachersBySection from admin controller)
+
+// change teacher for specific course ✅
 exports.updateTeacher = async (req, res) => {
   try {
-    const { course_id, newtTeacher_id } = req.body;
+    const { course_id, newTeacher_id } = req.body;
     const courseData = await course.findOne({
       where: {
         course_id: course_id,
@@ -176,7 +178,7 @@ exports.updateTeacher = async (req, res) => {
     }
     const updatedCourse = await course.update(
       {
-        teacher_id: newtTeacher_id,
+        teacher_id: newTeacher_id,
       },
       {
         where: {
@@ -193,7 +195,7 @@ exports.updateTeacher = async (req, res) => {
   }
 };
 
-// get students in course
+// get students in course ✅
 exports.getStudentsInCourse = async (req, res) => {
   try {
     const { course_id } = req.params;
@@ -240,9 +242,8 @@ exports.getStudentsInCourse = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-// add a report for a student in (optional)
 
-//
+// add a report for a student in (optional)
 exports.addReport = async (req, res) => {
   const { course_id, student_id, date, description } = req.body;
   const role = req.role;
@@ -264,6 +265,7 @@ exports.addReport = async (req, res) => {
     message: "Report Added Successfully",
   });
 };
+
 // here we should meet at discord ok karam?>
 exports.addMark = async (req, res) => {
   try {
@@ -273,4 +275,6 @@ exports.addMark = async (req, res) => {
     });
   }
 };
+
+// add a unit to a course
 exports.addUnit = async (req, res) => {};

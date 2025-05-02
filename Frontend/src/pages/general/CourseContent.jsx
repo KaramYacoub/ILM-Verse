@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import GeneralNav from "../../components/general/GeneralNav";
 import { useCourseStore } from "../../store/CourseStore";
@@ -9,91 +9,134 @@ function CourseContent() {
   const {
     courses,
     getALlCourses,
-    getTeacherBySection,
-    teachersBySection,
     getStudentsInCourse,
     involveStudents,
+    teachersByDepartment,
+    getTeachersByDepartment,
+    updateTeacher,
   } = useCourseStore();
 
-  const [filteredCourses, setFilteredCourses] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showTeacherModal, setShowTeacherModal] = useState(false);
   const [currentCourse, setCurrentCourse] = useState(null);
-  const [selectedTeacher, setSelectedTeacher] = useState("");
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [studentCounts, setStudentCounts] = useState({});
+  
 
-  // fetch all courses
+  // Fetch all courses
   useEffect(() => {
     getALlCourses();
   }, [getALlCourses]);
 
-  // fetch students in each course
-  useEffect(() => {
-    const getStudents = async (course_id) => {
-      try {
-        const response = await getStudentsInCourse(course_id);
-        setStudentCounts((prev) => ({
-          ...prev,
-          [course_id]: response?.count ?? 0,
-        }));
-      } catch (error) {
-        setStudentCounts((prev) => ({
-          ...prev,
-          [course_id]: error.response?.data?.error,
-        }));
-      }
-    };
-    if (courses.length > 0) {
-      courses.forEach((course) => {
-        getStudents(course.course_id);
-      });
-    }
-  }, [courses, getStudentsInCourse]);
-
-  // invovle students in a course
-  const handleInvolveStudents = async (course_id) => {
-    try {
-      const response = await involveStudents(course_id);
-      if (response.status === "success") {
-        alert(response.message); // optional: show actual response message
-        // Re-fetch student count after involving them
-        const updated = await getStudentsInCourse(course_id);
-        setStudentCounts((prev) => ({
-          ...prev,
-          [course_id]: updated?.count ?? 0,
-        }));
-      } else {
-        alert("Failed to involve students.");
-      }
-    } catch (error) {
-      console.error("Error involving students:", error);
-    }
-  };
-
-  // filter courses
-  useEffect(() => {
-    const filtered = courses.filter((course) => {
+  // Memoized filtered courses
+  const filteredCourses = useMemo(() => {
+    return courses.filter((course) => {
       return searchTerm
         ? course.course_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             course.teacher_name.toLowerCase().includes(searchTerm.toLowerCase())
         : true;
     });
-
-    setFilteredCourses(filtered);
   }, [searchTerm, courses]);
 
-  // handle change teacher
-  const handleChangeTeacher = async (course) => {
-    setCurrentCourse(course);
-    setSelectedTeacher(course.teacher_name);
-    await getTeacherBySection(course.grade_name, course.section_name);
-    setShowTeacherModal(true);
-  };
+  // Fetch students in all courses
+  const fetchStudentCounts = useCallback(async () => {
+    const results = await Promise.all(
+      courses.map(async (course) => {
+        try {
+          const response = await getStudentsInCourse(course.course_id);
+          return { id: course.course_id, count: response?.count ?? 0 };
+        } catch (error) {
+          return {
+            id: course.course_id,
+            count: error.response?.data?.error ?? "Error",
+          };
+        }
+      })
+    );
 
-  const handleSaveTeacher = () => {
-    // Ideally call an API to update teacher here
-    setShowTeacherModal(false);
-  };
+    const newCounts = results.reduce((acc, { id, count }) => {
+      acc[id] = count;
+      return acc;
+    }, {});
+    setStudentCounts(newCounts);
+  }, [courses, getStudentsInCourse]);
+
+  useEffect(() => {
+    if (courses.length > 0) {
+      fetchStudentCounts();
+    }
+  }, [courses, fetchStudentCounts]);
+
+  // Handle involve students
+  const handleInvolveStudents = useCallback(
+    async (course_id) => {
+      try {
+        const response = await involveStudents(course_id);
+        if (response.status === "success") {
+          alert(response.message);
+          const updated = await getStudentsInCourse(course_id);
+          setStudentCounts((prev) => ({
+            ...prev,
+            [course_id]: updated?.count ?? 0,
+          }));
+        } else {
+          alert("Failed to involve students.");
+        }
+      } catch (error) {
+        console.error("Error involving students:", error);
+      }
+    },
+    [involveStudents, getStudentsInCourse]
+  );
+
+  // Handle fetch teachers by department
+  useEffect(() => {
+    const fetchTeachers = async () => {
+      try {
+        const response = await getTeachersByDepartment(
+          currentCourse?.course_id
+        );
+        setSelectedTeacher(
+          response.data?.first_name + " " + response.data?.last_name
+        );
+      } catch (error) {
+        console.error("Error fetching teachers:", error);
+      }
+    };
+    if (currentCourse) {
+      fetchTeachers();
+    }
+  }, [currentCourse, getTeachersByDepartment]);
+
+  const handleChangeTeacher = useCallback(
+    async (course) => {
+      setCurrentCourse(course);
+      setSelectedTeacher({
+        teacher_id: course.teacher_id,
+        full_name: course.teacher_name,
+      });
+      await getTeachersByDepartment(course.course_id);
+      setShowTeacherModal(true);
+    },
+    [getTeachersByDepartment]
+  );
+
+  const handleSaveTeacher = useCallback(
+    async (course_id, newTeacher_id) => {
+      if (!newTeacher_id) {
+        alert("Please select a teacher.");
+        return;
+      }
+      await updateTeacher(course_id, newTeacher_id);
+      await getALlCourses();
+
+      // Only close modal after successful update
+      setShowTeacherModal(false);
+      setCurrentCourse(null);
+      setSelectedTeacher(null);
+    },
+    [updateTeacher, getALlCourses]
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -106,7 +149,7 @@ function CourseContent() {
           <p className="text-gray-600">Manage all courses and their content</p>
         </div>
 
-        {/* Search Bar Only */}
+        {/* Search Bar */}
         <div className="bg-white p-4 rounded-lg shadow mb-6">
           <div className="form-control mb-4">
             <label className="label">
@@ -120,7 +163,6 @@ function CourseContent() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-
           <div className="flex justify-end">
             <button
               onClick={() => setSearchTerm("")}
@@ -206,10 +248,13 @@ function CourseContent() {
         <div className="modal modal-open">
           <div className="modal-box">
             <h3 className="font-bold text-lg">
-              Change Teacher for {currentCourse?.course_id}
+              Change Teacher for {currentCourse?.course_name}
             </h3>
             <p className="py-2">
               Current teacher: {currentCourse?.teacher_name}
+            </p>
+            <p className="py-2">
+              Selected: {selectedTeacher?.full_name || "None"}
             </p>
 
             <div className="form-control">
@@ -217,24 +262,29 @@ function CourseContent() {
                 <span className="label-text">Select New Teacher</span>
               </label>
               <div className="space-y-2 max-h-60 overflow-y-auto">
-                {teachersBySection?.map((teacher) => (
-                  <div
-                    key={teacher.teacher_id}
-                    className={`p-2 rounded cursor-pointer ${
-                      selectedTeacher ===
-                      teacher.first_name + " " + teacher.last_name
-                        ? "bg-primary text-primary-content"
-                        : "hover:bg-gray-100"
-                    }`}
-                    onClick={() =>
-                      setSelectedTeacher(
-                        teacher.first_name + " " + teacher.last_name
-                      )
-                    }
-                  >
-                    {teacher.first_name + " " + teacher.last_name}
-                  </div>
-                ))}
+                {teachersByDepartment?.map((teacher) => {
+                  const fullName = teacher.first_name + " " + teacher.last_name;
+                  const isSelected =
+                    selectedTeacher?.teacher_id === teacher.teacher_id;
+                  return (
+                    <div
+                      key={teacher.teacher_id}
+                      className={`p-2 rounded cursor-pointer ${
+                        isSelected
+                          ? "bg-primary text-primary-content"
+                          : "hover:bg-gray-100"
+                      }`}
+                      onClick={() =>
+                        setSelectedTeacher({
+                          teacher_id: teacher.teacher_id,
+                          full_name: fullName,
+                        })
+                      }
+                    >
+                      {fullName}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -245,7 +295,15 @@ function CourseContent() {
               >
                 Cancel
               </button>
-              <button className="btn btn-primary" onClick={handleSaveTeacher}>
+              <button
+                className="btn btn-primary"
+                onClick={() =>
+                  handleSaveTeacher(
+                    currentCourse.course_id,
+                    selectedTeacher?.teacher_id
+                  )
+                }
+              >
                 Save Changes
               </button>
             </div>
