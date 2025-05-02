@@ -124,7 +124,44 @@ exports.involveStudents = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-
+//get all teachers from department
+exports.getTeachersByCourse = async (req, res) => {
+  try {
+    const { course_id } = req.body;
+    const courseData = await course.findOne({
+      where: {
+        course_id: course_id,
+      },
+      include: {
+        model: section,
+        as: "section",
+        attributes: ["section_id"],
+        include: {
+          model: grade,
+          as: "grade",
+          attributes: ["grade_id"],
+          include: {
+            model: department,
+            as: "dept",
+            attributes: ["department_id"],
+            include: {
+              model: teacher,
+              as: "teachers",
+              attributes: ["first_name", "last_name", "teacher_id"],
+            },
+          },
+        },
+      },
+    });
+    const teachers = courseData.section.grade.dept.teachers;
+    res.status(200).json({
+      status: "success",
+      data: teachers,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 // change teacher for specific course (don't forget to use getTeachersBySection from admin controller)
 exports.updateTeacher = async (req, res) => {
   try {

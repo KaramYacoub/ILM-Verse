@@ -85,6 +85,11 @@ router.post(
   authenticateUser,
   courseController.involveStudents
 );
+router.get(
+  "/course/getteachersbycourse",
+  authenticateUser,
+  courseController.getTeachersByCourse
+);
 router.patch(
   "/course/changeteacher",
   authenticateUser,
