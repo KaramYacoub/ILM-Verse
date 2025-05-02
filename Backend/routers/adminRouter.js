@@ -85,4 +85,15 @@ router.post(
   authenticateUser,
   courseController.involveStudents
 );
+router.patch(
+  "/course/changeteacher",
+  authenticateUser,
+  courseController.updateTeacher
+);
+router.get(
+  "/course/getstudents",
+  authenticateUser,
+  courseController.getStudentsInCourse
+);
+router.post("/course/addreport", authenticateUser, courseController.addReport);
 module.exports = router;

@@ -45,8 +45,8 @@ app.use("/shared", sharedRouter);
 
 //--------------------------------------
 // Prevents Data Folder from entry from any user:
-// app.use("/Data", (req, res, next) => {
-//   res.status(403).send("Access Forbidden");
-// });
+app.use("/Data", (req, res, next) => {
+  res.status(403).send("Access Forbidden");
+});
 
 module.exports = app;

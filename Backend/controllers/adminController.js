@@ -631,7 +631,6 @@ exports.deleteTeacher = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-
 // Delete Admin ✅
 exports.deleteAdmin = async (req, res) => {
   try {

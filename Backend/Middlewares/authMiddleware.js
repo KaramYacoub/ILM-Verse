@@ -44,6 +44,7 @@ const authenticateUser = async (req, res, next) => {
 
     // Attach user to request
     req.user = user;
+    req.user.id = id;
     req.role = role;
     next();
   } catch (err) {
