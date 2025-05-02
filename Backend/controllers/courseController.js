@@ -6,6 +6,7 @@ const models = initModels(SQL); // initialize models
 const { course, teacher, section, grade, department, course_student, student } =
   models;
 const Report = require("../models/NOSQL/Report");
+
 //get all courses(data is filtered)
 exports.getAllCourses = async (req, res) => {
   try {
@@ -41,7 +42,7 @@ exports.getAllCourses = async (req, res) => {
     const filteredCourses = courses.map((course) => {
       return {
         course_id: course.course_id,
-        course_name: course.course_name,
+        course_name: course.subject_name, // subject_name not course_name
         teacher_name: `${course.teacher?.first_name || "No teacher assigned"} ${
           course.teacher?.last_name || ""
         }`.trim(), // teacher name can be null
@@ -60,6 +61,7 @@ exports.getAllCourses = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
 // Involve students in a course
 exports.involveStudents = async (req, res) => {
   try {
@@ -122,6 +124,7 @@ exports.involveStudents = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
 // change teacher for specific course (don't forget to use getTeachersBySection from admin controller)
 exports.updateTeacher = async (req, res) => {
   try {
@@ -152,10 +155,15 @@ exports.updateTeacher = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
 // get students in course
 exports.getStudentsInCourse = async (req, res) => {
   try {
-    const { course_id } = req.body;
+    const { course_id } = req.params;
+
+    if (!course_id) {
+      return res.status(400).json({ error: "Course ID is required" });
+    }
 
     // Query the course_student table to fetch students enrolled in the specified course
     const courseStudents = await course_student.findAll({
@@ -186,13 +194,18 @@ exports.getStudentsInCourse = async (req, res) => {
     // Return the list of students
     res.status(200).json({
       status: "success",
-      data: students,
+      data: {
+        students,
+        count: students.length || "0",
+      },
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 // add a report for a student in (optional)
+
+//
 exports.addReport = async (req, res) => {
   const { course_id, student_id, date, description } = req.body;
   const role = req.role;

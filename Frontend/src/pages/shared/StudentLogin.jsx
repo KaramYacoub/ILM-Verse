@@ -68,10 +68,10 @@ function StudentLogin() {
             </select>
           </div>
 
-          {/* Email */}
+          {/* ID */}
           <div>
             <label className="label">
-              <span className="label-text text-base-100">Email</span>
+              <span className="label-text text-base-100">{role} ID</span>
             </label>
             <input
               type="text"
