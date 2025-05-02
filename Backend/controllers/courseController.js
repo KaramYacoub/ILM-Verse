@@ -192,15 +192,35 @@ exports.getStudentsInCourse = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-//
+// add a report for a student in (optional)
 exports.addReport = async (req, res) => {
-  const { first_name, last_name, course_id, student_id, date, description } =
-    req.body;
+  const { course_id, student_id, date, description } = req.body;
   const role = req.role;
+  const id = req.user.id;
 
-  console.log(course_id, student_id, date, description);
+  const formattedDate = new Date(date).toISOString().split("T")[0]; // Formats to YYYY-MM-DD
+
+  const newReport = await new Report({
+    instructor_id: id,
+    instructor_type: role,
+    course_id: course_id, // Optional field, can be left out if not needed
+    student_id: student_id,
+    description: description,
+    date: formattedDate,
+  }).save();
+
   res.status(201).json({
     status: "success",
     message: "Report Added Successfully",
   });
 };
+// here we should meet at discord ok karam?>
+exports.addMark = async (req, res) => {
+  try {
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+    });
+  }
+};
+exports.addUnit = async (req, res) => {};

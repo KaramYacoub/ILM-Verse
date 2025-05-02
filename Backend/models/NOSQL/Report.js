@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 // Define the Event Schema
 const reportSchema = new mongoose.Schema({
-  instructor_name: {
+  instructor_id: {
     type: String,
     required: true,
   },
@@ -12,7 +12,7 @@ const reportSchema = new mongoose.Schema({
   },
   course_id: {
     type: String,
-    required: true,
+    required: false,
   },
   student_id: {
     type: String,
@@ -23,7 +23,7 @@ const reportSchema = new mongoose.Schema({
     required: true,
   },
   date: {
-    type: Date,
+    type: String,
     required: true,
   },
 });
