@@ -28,6 +28,14 @@ app.use(
   express.static(path.join(__dirname, "data/Events"))
 );
 
+app.use(
+  "/resources",
+  (req, res, next) => {
+    next();
+  },
+  express.static(path.join(__dirname, "data/resources"))
+);
+
 //---------------------------------------
 //Routes Imports
 const adminRouter = require("./routers/adminRouter");

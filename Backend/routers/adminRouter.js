@@ -109,12 +109,12 @@ router.get(
   courseController.getCourseUnits
 );
 router.get(
-  "/course/:course_id/:unit_id",
+  "/course/media/:unit_id",
   authenticateUser,
   courseController.getUnitContent
 );
 router.post(
-  "/course/:course_id/:unit_id",
+  "/course/:unit_id",
   authenticateUser,
   uploadContent,
   courseController.addUnitContent

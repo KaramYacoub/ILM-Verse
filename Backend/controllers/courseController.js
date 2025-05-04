@@ -316,6 +316,7 @@ exports.addUnit = async (req, res) => {
   }
 };
 
+// get all the unit media ✅
 exports.getUnitContent = async (req, res) => {
   const { unit_id } = req.params;
   try {
@@ -326,6 +327,7 @@ exports.getUnitContent = async (req, res) => {
         message: "Unit not found",
       });
     }
+
     res.status(200).json({
       status: "success",
       data: unit.media,
@@ -337,13 +339,14 @@ exports.getUnitContent = async (req, res) => {
   }
 };
 
+// add new media to a unit ✅
 exports.addUnitContent = async (req, res) => {
   const { unit_id } = req.params;
   const { title } = req.body;
   const file = req.file;
   try {
     console.log(unit_id);
-    const filePath = `./Data/resources/${file.filename}`;
+    const filePath = `/resources/${req.file.filename}`; // Changed from ./Data/resources to /resources
     const fileType = file.mimetype;
     const formattedDate = new Date().toISOString().split("T")[0]; // Extract 'YYYY-MM-DD' from the ISO string
 
@@ -370,6 +373,7 @@ exports.addUnitContent = async (req, res) => {
     });
   }
 };
+
 exports.getLecture = async (req, res) => {
   // Construct the file path (make sure it's correct)
   const filePath = "./Data/resources/1746345672877-9fqg6p8402c.mp4";
@@ -440,6 +444,7 @@ exports.getLecture = async (req, res) => {
     });
   }
 };
+
 // supposing that karam built the getPDF
 
 // delete unit and it's all content
