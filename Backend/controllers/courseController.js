@@ -270,16 +270,6 @@ exports.addReport = async (req, res) => {
   }
 };
 
-// here we should meet at discord ok karam?>
-exports.addMark = async (req, res) => {
-  try {
-  } catch (error) {
-    res.status(400).json({
-      error: error.message,
-    });
-  }
-};
-
 // get all the units in a course ✅
 exports.getCourseUnits = async (req, res) => {
   const { course_id } = req.params;
@@ -456,16 +446,79 @@ exports.getLecture = async (req, res) => {
 };
 
 // supposing that karam built the getPDF
+
+// delete unit and it's all content
 exports.deleteUnit = async (req, res) => {
   try {
     const { unit_id } = req.params;
     const deletedUnit = await CourseUnit.findById(unit_id);
-    deletedUnit.media[index].path;
+    if (!deletedUnit) {
+      return res.status(404).json({
+        status: "failure",
+        message: "Unit not found",
+      });
+    }
+    for (mediaObject of deletedUnit.media) {
+      const filePath = mediaObject.path;
 
-    res.status(200).json({
+      try {
+        // Asynchronously delete the media file
+        await fs.promises.unlink(filePath);
+        console.log(`Deleted file: ${filePath}`);
+      } catch (error) {
+        console.error(`Failed to delete file`);
+      }
+    }
+    await CourseUnit.findByIdAndDelete(unit_id);
+
+    res.status(204).json({
       status: "success",
       message: "Unit Deleted Successfully",
-      data: deletedUnit,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+    });
+  }
+};
+// delete specific media from specific content
+exports.deleteMedia = async (req, res) => {
+  try {
+    const { unit_id, media_id } = req.params;
+    // Find the unit by its ID
+    const unit = await CourseUnit.findById(unit_id);
+
+    if (!unit) {
+      return res.status(404).json({
+        status: "failure",
+        message: "Unit not found",
+      });
+    }
+    // Find the media inside the unit by its media_id
+    const mediaIndex = unit.media.findIndex(
+      (media) => media._id.toString() === media_id
+    );
+
+    if (mediaIndex === -1) {
+      return res.status(404).json({
+        status: "failure",
+        message: "Media not found",
+      });
+    }
+
+    //Get the file path of the media to delete it from the server
+    const media = unit.media[mediaIndex];
+    const filePath = path.join(media.path);
+    //Delete the media file from the server
+    await fs.promises.unlink(filePath);
+    // Remove the media from the unit's media array
+    unit.media.splice(mediaIndex, 1);
+    // Save the updated unit to the database
+    await unit.save();
+
+    res.status(204).json({
+      status: "success",
+      message: "Media Deleted Successfully",
     });
   } catch (error) {
     res.status(400).json({
@@ -474,7 +527,41 @@ exports.deleteUnit = async (req, res) => {
   }
 };
 
-exports.deleteMedia = async (req, res) => {
+// Assigments
+exports.addAssigment = async (req, res) => {};
+exports.deleteAssigment = async (req, res) => {};
+exports.getAllAssigments = async (req, res) => {};
+exports.showAssigmentSubmission = async (req, res) => {};
+exports.markAssigment = async (req, res) => {};
+exports.submitAssigment = async (req, res) => {};
+
+// Quizes
+exports.addQuiz = async (req, res) => {};
+exports.deleteQuiz = async (req, res) => {};
+exports.getQuiz = async (req, res) => {};
+exports.editQuiz = async (req, res) => {};
+exports.getAllQuizes = async (req, res) => {};
+exports.showQuizSubmissions = async (req, res) => {};
+
+// marks
+// here we should meet at discord ok karam?>
+exports.addMark = async (req, res) => {
+  try {
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+    });
+  }
+};
+exports.editMark = async (req, res) => {
+  try {
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+    });
+  }
+};
+exports.getMark = async (req, res) => {
   try {
   } catch (error) {
     res.status(400).json({
