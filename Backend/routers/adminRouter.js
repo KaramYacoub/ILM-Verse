@@ -119,4 +119,9 @@ router.post(
   uploadContent,
   courseController.addUnitContent
 );
+router.get(
+  "/course/:course_id/:unit_id/:media_id",
+  authenticateUser,
+  courseController.getLecture
+);
 module.exports = router;

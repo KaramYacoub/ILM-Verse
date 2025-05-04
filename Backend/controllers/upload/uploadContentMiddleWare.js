@@ -23,6 +23,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Middleware for handling file upload (single file, named 'courseContentUpload')
-const courseContentUpload = upload.single("courseContentUpload");
+const courseContentUpload = upload.single("media");
 
 module.exports = courseContentUpload;

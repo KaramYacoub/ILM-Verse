@@ -1,12 +1,13 @@
 const path = require("path");
 const sequelize = require("sequelize");
+const fs = require("fs");
 const SQL = require("../models/Connections/SQL-Driver"); // your Sequelize instance
 const initModels = require("../models/index"); // path to index.js
 const models = initModels(SQL); // initialize models
 const { course, teacher, section, grade, department, course_student, student } =
   models;
 const Report = require("../models/NOSQL/Report");
-
+const CourseUnit = require("../models/NOSQL/CourseUnit");
 //get all courses(data is filtered)
 exports.getAllCourses = async (req, res) => {
   try {
@@ -322,7 +323,6 @@ exports.getCourseUnits = async (req, res) => {
     });
   }
 };
-
 exports.getUnitContent = async (req, res) => {
   const { unit_id } = req.params;
   try {
@@ -333,10 +333,9 @@ exports.getUnitContent = async (req, res) => {
         message: "Unit not found",
       });
     }
-
     res.status(200).json({
       status: "success",
-      data: unit,
+      data: unit.media,
     });
   } catch (error) {
     res.status(400).json({
@@ -345,14 +344,27 @@ exports.getUnitContent = async (req, res) => {
   }
 };
 exports.addUnitContent = async (req, res) => {
-  const { course_id, unit_id } = req.params;
+  const { unit_id } = req.params;
   const { title } = req.body;
+  const file = req.file;
   try {
     console.log(unit_id);
-    const filePath = path.join("./Data/resources", file.filename);
+    const filePath = `./Data/resources/${file.filename}`;
     const fileType = file.mimetype;
-    console.log(course_id, unit_id, title);
-    console.log(filePath, fileType);
+    const formattedDate = new Date().toISOString().split("T")[0]; // Extract 'YYYY-MM-DD' from the ISO string
+
+    const media = {
+      title: title,
+      path: filePath,
+      date: formattedDate,
+      type: fileType,
+    };
+
+    const unit = await CourseUnit.findByIdAndUpdate(
+      unit_id,
+      { $push: { media: media } },
+      { new: true }
+    );
 
     res.status(200).json({
       status: "success",
@@ -364,3 +376,74 @@ exports.addUnitContent = async (req, res) => {
     });
   }
 };
+exports.getLecture = async (req, res) => {
+  // Construct the file path (make sure it's correct)
+  const filePath = "./Data/resources/1746345672877-9fqg6p8402c.mp4";
+
+  try {
+    // Check if the file exists
+    fs.stat(filePath, (err, stats) => {
+      if (err) {
+        // If file not found, return 404
+        return res.status(404).json({
+          error: "Video not found",
+        });
+      }
+
+      const fileSize = stats.size; // Total size of the file
+      const range = req.headers.range; // Get the Range header from the request
+
+      if (!range) {
+        // If no Range header, send the whole video
+        res.setHeader("Content-Type", "video/mp4");
+        res.setHeader("Content-Length", fileSize);
+        const videoStream = fs.createReadStream(filePath);
+        videoStream.pipe(res);
+        return;
+      }
+
+      // Parsing the range header
+      const [start, end] = range
+        .replace(/bytes=/, "")
+        .split("-")
+        .map(Number);
+      const chunkStart = start || 0;
+      const chunkEnd = end || Math.min(chunkStart + 1000000, fileSize - 1); // Default chunk size of 1MB or the file size
+
+      if (chunkStart >= fileSize) {
+        res.status(416).json({ error: "Requested range not satisfiable" });
+        return;
+      }
+
+      // Set the headers for range request response
+      res.status(206); // Partial content response
+      res.setHeader("Content-Type", "video/mp4");
+      res.setHeader("Content-Length", chunkEnd - chunkStart + 1);
+      res.setHeader(
+        "Content-Range",
+        `bytes ${chunkStart}-${chunkEnd}/${fileSize}`
+      );
+
+      // Stream the requested range
+      const videoStream = fs.createReadStream(filePath, {
+        start: chunkStart,
+        end: chunkEnd,
+      });
+      videoStream.pipe(res);
+
+      // Handle errors in streaming
+      videoStream.on("error", (error) => {
+        console.error("Streaming error:", error);
+        res.status(500).json({
+          error: "Failed to stream video. Please try again later.",
+        });
+      });
+    });
+  } catch (error) {
+    console.error("General error:", error);
+    res.status(500).json({
+      error: "An unexpected error occurred. Please try again later.",
+    });
+  }
+};
+// supposing that karam built the getPDF
