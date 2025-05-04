@@ -1,28 +1,117 @@
 import { useLocation } from "react-router-dom";
-import { Pencil, Trash2, File, Video } from "lucide-react";
-import { useState } from "react";
-import GeneralNav from "../../components/general/GeneralNav"; // assuming the GeneralNav component is imported here
+import { Trash2, File, Video, Plus, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import GeneralNav from "../../components/general/GeneralNav";
+import { useCourseStore } from "../../store/CourseStore";
 
 function AdminUnitContent() {
   const location = useLocation();
   const unit = location.state?.unit;
+  const { unitContent, getUnitContent, addUnitContent, downloadResource } =
+    useCourseStore();
 
-  const [selectedLesson, setSelectedLesson] = useState(null);
+  const [selectedMedia, setSelectedMedia] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [uploadState, setUploadState] = useState({
+    file: null,
+    title: "",
+    isUploading: false,
+    uploadProgress: 0,
+  });
 
-  const openUploadModal = () => setIsUploadModalOpen(true);
-  const closeUploadModal = () => setIsUploadModalOpen(false);
+  useEffect(() => {
+    if (unit?.unit_id) {
+      getUnitContent(unit.unit_id);
+    }
+  }, [getUnitContent, unit?.unit_id]);
 
-  const openModal = (lesson) => {
-    setSelectedLesson(lesson);
+  const openUploadModal = () => {
+    setIsUploadModalOpen(true);
+    setUploadState({
+      file: null,
+      title: "",
+      isUploading: false,
+      uploadProgress: 0,
+    });
+  };
+
+  const closeUploadModal = () => {
+    setIsUploadModalOpen(false);
+  };
+
+  const handleFileChange = (e) => {
+    setUploadState({
+      ...uploadState,
+      file: e.target.files[0],
+      title: e.target.files[0]?.name.split(".")[0] || "",
+    });
+  };
+
+  const handleUpload = async () => {
+    if (!uploadState.file || !uploadState.title) {
+      alert("Please provide both a file and a title");
+      return;
+    }
+
+    setUploadState({ ...uploadState, isUploading: true });
+
+    try {
+      const formData = new FormData();
+      formData.append("media", uploadState.file);
+      formData.append("title", uploadState.title);
+
+      const interval = setInterval(() => {
+        setUploadState((prev) => {
+          const newProgress = prev.uploadProgress + 10;
+          if (newProgress >= 100) {
+            clearInterval(interval);
+            return { ...prev, uploadProgress: 100, isUploading: false };
+          }
+          return { ...prev, uploadProgress: newProgress };
+        });
+      }, 300);
+
+      await addUnitContent(unit.unit_id, formData);
+      await getUnitContent(unit.unit_id);
+
+      clearInterval(interval);
+      closeUploadModal();
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Upload failed. Please try again.");
+    } finally {
+      setUploadState((prev) => ({ ...prev, isUploading: false }));
+    }
+  };
+
+  const openMediaModal = (media) => {
+    setSelectedMedia(media);
     setIsModalOpen(true);
   };
 
-  const closeModal = () => {
-    setSelectedLesson(null);
+  const closeMediaModal = () => {
+    setSelectedMedia(null);
     setIsModalOpen(false);
+  };
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const getFileType = (mimeType) => {
+    if (mimeType.includes("video")) return "Video";
+    if (mimeType.includes("pdf")) return "PDF";
+    if (mimeType.includes("word") || mimeType.includes("msword")) return "DOC";
+    return mimeType.split("/")[1]?.toUpperCase() || "File";
+  };
+
+  const handleDownload = (media) => {
+    downloadResource(
+      media.path.split("/").pop(),
+      `${media.title}.${getFileType(media.type).toLowerCase()}`
+    );
   };
 
   if (!unit) {
@@ -34,45 +123,42 @@ function AdminUnitContent() {
   }
 
   return (
-    <div>
-      {/* General Navbar */}
+    <div className="min-h-screen bg-base-200 flex flex-col">
       <GeneralNav />
 
-      <div className="bg-base-100 p-6 rounded-lg shadow-md mt-6">
-        <h2 className="text-2xl font-bold text-primary mb-6">Course Content</h2>
+      <div className="bg-base-100 p-6 pb-0 max-w-6xl w-full mx-auto rounded-lg shadow-md mt-6">
+        <h2 className="text-2xl font-bold text-primary mb-6">Unit Content</h2>
 
-        {/* Unit Header */}
         <div className="bg-base-200 rounded-md px-4 py-2 flex justify-between items-center font-semibold text-lg mb-4">
-          <span>{unit.name}</span>
+          <span>{unit.unit_name}</span>
           <div className="flex gap-2">
             <button className="btn btn-sm btn-ghost" onClick={openUploadModal}>
-              <Pencil />
-            </button>
-            <button className="btn btn-sm btn-ghost text-error">
-              <Trash2 />
+              <Plus /> Add
             </button>
           </div>
         </div>
 
-        {/* Lessons */}
-        {unit.lessons &&
-          unit.lessons.map((lesson, i) => (
+        {unitContent?.length > 0 ? (
+          unitContent.map((media, i) => (
             <div
               key={i}
-              className="bg-base-100 border rounded-md mt-2 px-4 py-2 flex justify-between items-center"
+              className="bg-base-100 border rounded-md mt-2 px-4 py-3 mb-3 flex justify-between items-center"
             >
               <div>
-                <p
+                <div
                   className="font-medium cursor-pointer flex items-center gap-2 link-hover"
-                  onClick={() => openModal(lesson)}
+                  onClick={() =>
+                    media.type.includes("video")
+                      ? openMediaModal(media)
+                      : handleDownload(media)
+                  }
                 >
-                  <span>
-                    <Video />
-                  </span>{" "}
-                  Lecture: {lesson.title}
-                </p>
+                  {media.type.includes("video") ? <Video /> : <File />}
+                  {media.title}
+                </div>
                 <p className="text-sm text-gray-500">
-                  MP4 • {lesson.duration} mins • Uploaded on April 5, 2025
+                  {getFileType(media.type)} • Uploaded on{" "}
+                  {formatDate(media.date)}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -81,119 +167,153 @@ function AdminUnitContent() {
                 </button>
               </div>
             </div>
-          ))}
-
-        {/* Files */}
-        {unit.files &&
-          unit.files.map((file, i) => (
-            <div
-              key={i}
-              className="bg-base-100 border rounded-md mt-2 px-4 py-2 flex justify-between items-center"
-            >
-              <div>
-                <a
-                  href={`/assignments/${file.title}.${file.type}`}
-                  download={`${file.title}.${file.type}`}
-                  className="link-hover font-medium flex items-center gap-2"
-                >
-                  <File />
-                  File: {file.title}
-                </a>
-                <p className="text-sm text-gray-500">
-                  {file.type} • 3 pages • Uploaded on April 3, 2025
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <button className="btn btn-sm btn-ghost text-error">
-                  <Trash2 />
-                </button>
-              </div>
-            </div>
-          ))}
-
-        {/* Upload Modal */}
-        {isUploadModalOpen && (
-          <dialog className="modal modal-open">
-            <div className="modal-box">
-              <h3 className="font-bold text-lg mb-4">Upload Content</h3>
-              <p className="mb-4 text-sm text-gray-500">
-                Choose a file or a video to upload for this unit.
-              </p>
-
-              <div className="flex flex-col gap-4">
-                <label className="form-control w-full">
-                  <span className="label-text mb-1 font-medium  flex items-center gap-2">
-                    <span>
-                      <File />
-                    </span>{" "}
-                    Upload File
-                  </span>
-                  <input
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    className="file-input file-input-bordered w-full"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      console.log("Selected file:", file);
-                      // handle file upload logic here
-                    }}
-                  />
-                </label>
-
-                {/* Upload Video (e.g. MP4) */}
-                <label className="form-control w-full">
-                  <span className="label-text mb-1 font-medium flex items-center gap-2">
-                    <span>
-                      <Video />
-                    </span>{" "}
-                    Upload Video
-                  </span>
-                  <input
-                    type="file"
-                    accept="video/mp4"
-                    className="file-input file-input-bordered w-full"
-                    onChange={(e) => {
-                      const video = e.target.files[0];
-                      console.log("Selected video:", video);
-                      // handle video upload logic here
-                    }}
-                  />
-                </label>
-              </div>
-
-              <div className="modal-action mt-6 flex gap-2">
-                <button className="btn" onClick={closeUploadModal}>
-                  Cancel
-                </button>
-                <button
-                  className="btn btn-primary font-bold text-base w-1/3"
-                  onClick={closeUploadModal}
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </dialog>
+          ))
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            No content available for this unit
+          </div>
         )}
 
-        {/* Video Modal */}
-        {isModalOpen && selectedLesson && (
-          <dialog id="reviewModal" className="modal modal-open">
+        {/* Upload Modal */}
+        <dialog className={`modal ${isUploadModalOpen ? "modal-open" : ""}`}>
+          <div className="modal-box">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-bold text-lg">Upload Content</h3>
+              <button
+                onClick={closeUploadModal}
+                className="btn btn-ghost btn-sm"
+              >
+                <X />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-6">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">Content Title</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter content title"
+                  className="input input-bordered w-full"
+                  value={uploadState.title}
+                  onChange={(e) =>
+                    setUploadState({
+                      ...uploadState,
+                      title: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              <label className="form-control">
+                <div className="label">
+                  <span className="label-text">
+                    Select File (PDF, DOC, DOCX, MP4)
+                  </span>
+                </div>
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx,video/mp4"
+                  className="file-input file-input-bordered w-full"
+                  onChange={handleFileChange}
+                />
+                {uploadState.file && (
+                  <div className="mt-2 text-sm text-gray-500">
+                    Selected: {uploadState.file.name}
+                  </div>
+                )}
+              </label>
+
+              {uploadState.isUploading && (
+                <div className="mt-4">
+                  <div className="flex justify-between mb-1">
+                    <span>Uploading...</span>
+                    <span>{uploadState.uploadProgress}%</span>
+                  </div>
+                  <progress
+                    className="progress progress-primary w-full"
+                    value={uploadState.uploadProgress}
+                    max="100"
+                  ></progress>
+                </div>
+              )}
+            </div>
+
+            <div className="modal-action mt-6">
+              <button
+                className="btn"
+                onClick={closeUploadModal}
+                disabled={uploadState.isUploading}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={handleUpload}
+                disabled={
+                  uploadState.isUploading ||
+                  !uploadState.file ||
+                  !uploadState.title
+                }
+              >
+                {uploadState.isUploading ? (
+                  <span className="loading loading-spinner"></span>
+                ) : (
+                  "Upload"
+                )}
+              </button>
+            </div>
+          </div>
+        </dialog>
+
+        {/* Media Preview Modal */}
+        {isModalOpen && selectedMedia && (
+          <dialog className="modal modal-open">
             <div className="modal-box w-11/12 max-w-3xl">
-              <h3 className="font-bold text-xl mb-2">{selectedLesson.title}</h3>
+              <h3 className="font-bold text-xl mb-2">{selectedMedia.title}</h3>
               <p className="text-sm text-gray-500 mb-4">
-                Duration: {selectedLesson.duration} minutes
+                Uploaded on {formatDate(selectedMedia.date)}
               </p>
 
-              <div className="w-full aspect-video bg-black flex items-center justify-center text-white text-lg">
-                <video controls className="w-full rounded">
-                  <source src="" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+              <div className="w-full flex items-center justify-center">
+                {selectedMedia.type.includes("video") ? (
+                  <div className="w-full aspect-video bg-black">
+                    <video
+                      controls
+                      controlsList="nodownload"
+                      disablePictureInPicture
+                      className="w-full rounded"
+                    >
+                      <source
+                        src={`http://localhost:8001/resources/${selectedMedia.path
+                          .split("/")
+                          .pop()}`}
+                        type={selectedMedia.type}
+                      />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                ) : (
+                  <div className="w-full h-96 flex items-center justify-center bg-gray-100 rounded-lg">
+                    <div className="text-center">
+                      <File className="h-16 w-16 mx-auto text-gray-400" />
+                      <p className="mt-4">
+                        Preview not available for this file type
+                      </p>
+                      <button
+                        onClick={() => handleDownload(selectedMedia)}
+                        className="btn btn-primary mt-4"
+                      >
+                        Download File
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="modal-action">
-                <button className="btn" onClick={closeModal}>
+                <button className="btn" onClick={closeMediaModal}>
                   Close
                 </button>
               </div>

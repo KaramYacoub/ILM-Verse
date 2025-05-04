@@ -5,6 +5,7 @@ export const useCourseStore = create((set) => ({
   courses: [],
   teachersBySection: [],
   teachersByDepartment: [],
+  unitContent: [],
 
   getALlCourses: async () => {
     try {
@@ -92,6 +93,61 @@ export const useCourseStore = create((set) => ({
     } catch (error) {
       console.log(
         "Error in add unit: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  getUnitContent: async (unit_id) => {
+    try {
+      const response = await axiosInstance.get(`admin/course/media/${unit_id}`);
+      set({ unitContent: response.data.data });
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error fetching course units: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  addUnitContent: async (unit_id, formData) => {
+    try {
+      const response = await axiosInstance.post(
+        `admin/course/${unit_id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error adding media: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
+  downloadResource: async (filePath, fileName) => {
+    try {
+      const url = `http://localhost:8001/shared/download?path=${encodeURIComponent(
+        filePath
+      )}&filename=${encodeURIComponent(fileName)}`;
+
+      // For direct download (better approach)
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error(
+        "Download error:",
         error.response?.data?.error || error.message
       );
     }

@@ -142,7 +142,10 @@ function AdminCourseOverview() {
                           </div>
                         </div>
 
-                        <div>
+                        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                          <button className="btn btn-outline">
+                            Delete unit
+                          </button>
                           <button
                             className="btn btn-primary"
                             onClick={() =>
