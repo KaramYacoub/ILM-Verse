@@ -5,6 +5,7 @@ const courseController = require("../controllers/courseController");
 const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
 const uploadFiles = require("../controllers/upload/uploadEvent"); // Import the upload middleware for events
+const uploadContent = require("../controllers/upload/uploadContentMiddleWare"); //Import the upload middleware for courses
 // login
 router.post("/adminLogin", authController.adminLogin);
 //---------------------------------
@@ -101,4 +102,21 @@ router.get(
   courseController.getStudentsInCourse
 );
 router.post("/course/addreport", authenticateUser, courseController.addReport);
+router.post("/course/addunit", authenticateUser, courseController.addUnit);
+router.get(
+  "/course/:course_id",
+  authenticateUser,
+  courseController.getCourseUnits
+);
+router.get(
+  "/course/:course_id/:unit_id",
+  authenticateUser,
+  courseController.getUnitContent
+);
+router.post(
+  "/course/:course_id/:unit_id",
+  authenticateUser,
+  uploadContent,
+  courseController.addUnitContent
+);
 module.exports = router;

@@ -6,7 +6,7 @@ const models = initModels(SQL); // initialize models
 const { course, teacher, section, grade, department, course_student, student } =
   models;
 const Report = require("../models/NOSQL/Report");
-
+const CourseUnit = require("../models/NOSQL/CourseUnit");
 //get all courses(data is filtered)
 exports.getAllCourses = async (req, res) => {
   try {
@@ -242,27 +242,30 @@ exports.getStudentsInCourse = async (req, res) => {
 };
 // add a report for a student in (optional)
 
-//
+// wait
 exports.addReport = async (req, res) => {
   const { course_id, student_id, date, description } = req.body;
   const role = req.role;
   const id = req.user.id;
+  try {
+    const formattedDate = new Date(date).toISOString().split("T")[0]; // Formats to YYYY-MM-DD
 
-  const formattedDate = new Date(date).toISOString().split("T")[0]; // Formats to YYYY-MM-DD
+    const newReport = await new Report({
+      instructor_id: id,
+      instructor_type: role,
+      course_id: course_id, // Optional field, can be left out if not needed
+      student_id: student_id,
+      description: description,
+      date: formattedDate,
+    }).save();
 
-  const newReport = await new Report({
-    instructor_id: id,
-    instructor_type: role,
-    course_id: course_id, // Optional field, can be left out if not needed
-    student_id: student_id,
-    description: description,
-    date: formattedDate,
-  }).save();
-
-  res.status(201).json({
-    status: "success",
-    message: "Report Added Successfully",
-  });
+    res.status(201).json({
+      status: "success",
+      message: "Report Added Successfully",
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 };
 // here we should meet at discord ok karam?>
 exports.addMark = async (req, res) => {
@@ -273,4 +276,88 @@ exports.addMark = async (req, res) => {
     });
   }
 };
-exports.addUnit = async (req, res) => {};
+
+exports.addUnit = async (req, res) => {
+  const { course_id, unit_name, unit_description } = req.body;
+  try {
+    const newUnit = await new CourseUnit({
+      course_id: course_id,
+      unit_name: unit_name,
+      unit_description: unit_description,
+    }).save();
+
+    res.status(201).json({
+      status: "sucess",
+      data: newUnit,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+    });
+  }
+};
+exports.getCourseUnits = async (req, res) => {
+  const { course_id } = req.params;
+  try {
+    const units = await CourseUnit.find({ course_id: course_id })
+      .select("unit_name unit_description") // Select specific fields to return
+      .lean();
+
+    const result = units.map((unit) => ({
+      unit_id: unit._id, // Rename _id to unit_id
+      unit_name: unit.unit_name,
+      unit_description: unit.unit_description,
+    }));
+
+    res.status(200).json({
+      status: "success",
+      data: result,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+    });
+  }
+};
+
+exports.getUnitContent = async (req, res) => {
+  const { unit_id } = req.params;
+  try {
+    const unit = await CourseUnit.findById(unit_id);
+    if (!unit) {
+      return res.status(404).json({
+        status: "error",
+        message: "Unit not found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: unit,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+    });
+  }
+};
+exports.addUnitContent = async (req, res) => {
+  const { course_id, unit_id } = req.params;
+  const { title } = req.body;
+  try {
+    console.log(unit_id);
+    const filePath = path.join("./Data/resources", file.filename);
+    const fileType = file.mimetype;
+    console.log(course_id, unit_id, title);
+    console.log(filePath, fileType);
+
+    res.status(200).json({
+      status: "success",
+      message: "Unit content updated successfully",
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+    });
+  }
+};
