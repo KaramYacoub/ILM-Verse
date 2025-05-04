@@ -68,4 +68,32 @@ export const useCourseStore = create((set) => ({
       console.log("Error updating teacher:", error);
     }
   },
+
+  getCourseUnits: async (course_id) => {
+    try {
+      const response = await axiosInstance.get(`/admin/course/${course_id}`);
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error fetching course units: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  addCourseUnit: async (course_id, { unit_name, unit_description }) => {
+    try {
+      const response = await axiosInstance.post("/admin/course/addunit", {
+        course_id,
+        unit_name,
+        unit_description,
+      });
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error in add unit: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
 }));

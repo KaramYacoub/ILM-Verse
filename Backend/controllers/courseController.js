@@ -245,8 +245,6 @@ exports.getStudentsInCourse = async (req, res) => {
 };
 
 // add a report for a student in (optional)
-
-//
 exports.addReport = async (req, res) => {
   const { course_id, student_id, date, description } = req.body;
   const role = req.role;
@@ -281,25 +279,8 @@ exports.addMark = async (req, res) => {
     });
   }
 };
-exports.addUnit = async (req, res) => {
-  const { course_id, unit_name, unit_description } = req.body;
-  try {
-    const newUnit = await new CourseUnit({
-      course_id: course_id,
-      unit_name: unit_name,
-      unit_description: unit_description,
-    }).save();
 
-    res.status(201).json({
-      status: "sucess",
-      data: newUnit,
-    });
-  } catch (error) {
-    res.status(400).json({
-      error: error.message,
-    });
-  }
-};
+// get all the units in a course ✅
 exports.getCourseUnits = async (req, res) => {
   const { course_id } = req.params;
   try {
@@ -323,6 +304,28 @@ exports.getCourseUnits = async (req, res) => {
     });
   }
 };
+
+// add a unit in a course ✅
+exports.addUnit = async (req, res) => {
+  const { course_id, unit_name, unit_description } = req.body;
+  try {
+    const newUnit = await new CourseUnit({
+      course_id: course_id,
+      unit_name: unit_name,
+      unit_description: unit_description,
+    }).save();
+
+    res.status(201).json({
+      status: "sucess",
+      data: newUnit,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+    });
+  }
+};
+
 exports.getUnitContent = async (req, res) => {
   const { unit_id } = req.params;
   try {
@@ -343,6 +346,7 @@ exports.getUnitContent = async (req, res) => {
     });
   }
 };
+
 exports.addUnitContent = async (req, res) => {
   const { unit_id } = req.params;
   const { title } = req.body;
