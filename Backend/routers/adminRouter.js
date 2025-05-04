@@ -87,7 +87,7 @@ router.post(
   courseController.involveStudents
 );
 router.get(
-  "/course/getteachersbycourse",
+  "/course/getteachersbycourse/:course_id",
   authenticateUser,
   courseController.getTeachersByCourse
 );

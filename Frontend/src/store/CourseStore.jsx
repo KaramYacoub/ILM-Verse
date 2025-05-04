@@ -4,6 +4,7 @@ import { axiosInstance } from "../lib/axios";
 export const useCourseStore = create((set) => ({
   courses: [],
   teachersBySection: [],
+  teachersByDepartment: [],
 
   getALlCourses: async () => {
     try {
@@ -30,6 +31,18 @@ export const useCourseStore = create((set) => ({
     }
   },
 
+  getTeachersByDepartment: async (course_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/admin/course/getteachersbycourse/${course_id}`
+      );
+      set({ teachersByDepartment: response.data.data });
+      return response.data.data;
+    } catch (error) {
+      console.log("Error fetching teachers:", error.message);
+    }
+  },
+
   involveStudents: async (course_id) => {
     try {
       const response = await axiosInstance.post("/admin/course/involve", {
@@ -41,35 +54,18 @@ export const useCourseStore = create((set) => ({
     }
   },
 
-  getTeacherBySection: async (grad_id, section_id) => {
+  updateTeacher: async (course_id, newTeacher_id) => {
     try {
-      const response = await axiosInstance.get(
-        `/admin/addition/course/grades/${grad_id}/${section_id}`
+      const response = await axiosInstance.patch(
+        "/admin/course/changeteacher",
+        {
+          course_id,
+          newTeacher_id,
+        }
       );
-      set({ teachersBySection: response.data.data });
       return response.data;
     } catch (error) {
-      console.log("Error fetching teachers by section:", error.message);
+      console.log("Error updating teacher:", error);
     }
   },
-
-//   getAllGrades: async () => {
-//     try {
-//       const response = await axiosInstance.get("/admin/addition/course/grades");
-//       return response.data.data.filteredCourses;
-//     } catch (error) {
-//       console.error("Error fetching courses:", error);
-//     }
-//   },
-
-//   getAllSections: async (grad_id) => {
-//     try {
-//       const response = await axiosInstance.get(
-//         `/admin/addition/course/grades/${grad_id}`
-//       );
-//       return response.data.data.filteredCourses;
-//     } catch (error) {
-//       console.error("Error fetching courses:", error);
-//     }
-//   },
 }));
