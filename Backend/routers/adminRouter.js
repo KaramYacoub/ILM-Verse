@@ -124,4 +124,14 @@ router.get(
   authenticateUser,
   courseController.getLecture
 );
+router.delete(
+  "/course/:course_id/:unit_id",
+  authenticateUser,
+  courseController.deleteUnit
+);
+router.delete(
+  "/course/:course_id/:unit_id/:media_id",
+  authenticateUser,
+  courseController.deleteMedia
+);
 module.exports = router;

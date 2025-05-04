@@ -447,3 +447,28 @@ exports.getLecture = async (req, res) => {
   }
 };
 // supposing that karam built the getPDF
+exports.deleteUnit = async (req, res) => {
+  try {
+    const { unit_id } = req.params;
+    const deletedUnit = await CourseUnit.findById(unit_id);
+    deletedUnit.media[index].path;
+
+    res.status(200).json({
+      status: "success",
+      message: "Unit Deleted Successfully",
+      data: deletedUnit,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+    });
+  }
+};
+exports.deleteMedia = async (req, res) => {
+  try {
+  } catch (error) {
+    res.status(400).json({
+      error: error.message,
+    });
+  }
+};
