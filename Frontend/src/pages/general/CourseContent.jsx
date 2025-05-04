@@ -21,7 +21,6 @@ function CourseContent() {
   const [currentCourse, setCurrentCourse] = useState(null);
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [studentCounts, setStudentCounts] = useState({});
-  
 
   // Fetch all courses
   useEffect(() => {
@@ -218,7 +217,9 @@ function CourseContent() {
                     <button
                       className="btn btn-secondary btn-sm"
                       onClick={() =>
-                        navigate(`/admin-course-overview/${course.course_id}`)
+                        navigate(`/admin-course-overview/${course.course_id}`, {
+                          state: { course },
+                        })
                       }
                     >
                       View Details
