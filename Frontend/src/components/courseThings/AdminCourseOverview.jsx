@@ -5,7 +5,7 @@ import { useCourseStore } from "../../store/CourseStore";
 import { AlertCircle, ArrowLeft, Plus, FileText } from "lucide-react";
 
 function AdminCourseOverview() {
-  const { getCourseUnits, addCourseUnit } = useCourseStore();
+  const { getCourseUnits, addCourseUnit, deleteUnit } = useCourseStore();
 
   const navigate = useNavigate();
   const { courseId } = useParams();
@@ -14,6 +14,8 @@ function AdminCourseOverview() {
 
   const [courseUnits, setCourseUnits] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdding, setIsAdding] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newUnit, setNewUnit] = useState({
     unit_name: "",
@@ -37,7 +39,7 @@ function AdminCourseOverview() {
 
   const handleAddUnit = async () => {
     try {
-      // Add your logic to save the new unit
+      setIsAdding(true);
       await addCourseUnit(courseId, newUnit);
       // Refresh the units list
       const units = await getCourseUnits(courseId);
@@ -46,6 +48,25 @@ function AdminCourseOverview() {
       setNewUnit({ unit_name: "", unit_description: "" });
     } catch (error) {
       console.log("Error adding unit:", error);
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const handleDeleteUnit = async (course_id, unit_id) => {
+    try {
+      setIsDeleting(true);
+      await deleteUnit(course_id, unit_id);
+      // Refresh the units list
+      const units = await getCourseUnits(courseId);
+      setCourseUnits(units);
+    } catch (error) {
+      console.log(
+        "Error deleting course unit: ",
+        error.response?.data?.error || error.message
+      );
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -142,21 +163,33 @@ function AdminCourseOverview() {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                          <button className="btn btn-outline">
-                            Delete unit
-                          </button>
-                          <button
-                            className="btn btn-primary"
-                            onClick={() =>
-                              navigate(`/admin-unit-content/${courseId}`, {
-                                state: { unit },
-                              })
-                            }
-                          >
-                            View Content
-                          </button>
-                        </div>
+                        {isDeleting ? (
+                          <div className="flex justify-center items-center h-16">
+                            <span className="loading loading-spinner loading-sm text-primary"></span>
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                            <button
+                              onClick={() =>
+                                handleDeleteUnit(courseId, unit.unit_id)
+                              }
+                              className="btn btn-outline"
+                            >
+                              Delete unit
+                            </button>
+
+                            <button
+                              className="btn btn-primary"
+                              onClick={() =>
+                                navigate(`/admin-unit-content/${courseId}`, {
+                                  state: { unit },
+                                })
+                              }
+                            >
+                              View Content
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -226,15 +259,23 @@ function AdminCourseOverview() {
                 setShowAddModal(false);
                 setNewUnit({ unit_name: "", unit_description: "" });
               }}
+              disabled={isAdding}
             >
               Cancel
             </button>
             <button
               className="btn btn-primary"
               onClick={handleAddUnit}
-              disabled={!newUnit.unit_name.trim()}
+              disabled={!newUnit.unit_name.trim() || isAdding}
             >
-              Add Unit
+              {isAdding ? (
+                <>
+                  <span className="loading loading-spinner loading-sm"></span>
+                  Adding...
+                </>
+              ) : (
+                "Add Unit"
+              )}
             </button>
           </div>
         </div>
