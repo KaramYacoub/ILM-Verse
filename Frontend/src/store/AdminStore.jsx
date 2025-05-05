@@ -244,4 +244,30 @@ export const useAdminStore = create((set) => ({
       throw error;
     }
   },
+
+  addReport: async (student_id, title, date, description) => {
+    try {
+      if (title.length > 0) {
+        const response = await axiosInstance.post("admin/course/addreport", {
+          student_id,
+          title,
+          date,
+          description,
+        });
+        return response.data;
+      } else {
+        const response = await axiosInstance.post("admin/course/addreport", {
+          student_id,
+          date,
+          description,
+        });
+        return response.data;
+      }
+    } catch (error) {
+      console.log(
+        "Error adding report from admin: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
 }));

@@ -246,7 +246,7 @@ exports.getStudentsInCourse = async (req, res) => {
 
 // add a report for a student in (optional)
 exports.addReport = async (req, res) => {
-  const { course_id, student_id, date, description } = req.body;
+  const { course_id, student_id, title, date, description } = req.body;
   const role = req.role;
   const id = req.user.id;
   try {
@@ -257,6 +257,7 @@ exports.addReport = async (req, res) => {
       instructor_type: role,
       course_id: course_id, // Optional field, can be left out if not needed
       student_id: student_id,
+      title: title,
       description: description,
       date: formattedDate,
     }).save();
@@ -515,13 +516,13 @@ exports.deleteMedia = async (req, res) => {
       "../data/",
       media.path.replace(/\\/g, "/")
     );
-    console.log('Deleting media:', { unit_id, media_id, filePath });
+    console.log("Deleting media:", { unit_id, media_id, filePath });
     //Delete the media file from the server
     await fs.promises.unlink(filePath);
-    
+
     // Remove the media from the unit's media array
     unit.media.splice(mediaIndex, 1);
-    
+
     // Save the updated unit to the database
     await unit.save();
 
