@@ -130,7 +130,7 @@ router.delete(
   courseController.deleteUnit
 );
 router.delete(
-  "/course/:course_id/:unit_id/:media_id",
+  "/course/media/:unit_id/:media_id",
   authenticateUser,
   courseController.deleteMedia
 );

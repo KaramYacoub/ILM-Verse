@@ -508,11 +508,20 @@ exports.deleteMedia = async (req, res) => {
 
     //Get the file path of the media to delete it from the server
     const media = unit.media[mediaIndex];
-    const filePath = path.join(media.path);
+
+    // media.path already contains the filename: changed this one to correctly delete the file
+    const filePath = path.join(
+      __dirname,
+      "../data/",
+      media.path.replace(/\\/g, "/")
+    );
+    console.log('Deleting media:', { unit_id, media_id, filePath });
     //Delete the media file from the server
     await fs.promises.unlink(filePath);
+    
     // Remove the media from the unit's media array
     unit.media.splice(mediaIndex, 1);
+    
     // Save the updated unit to the database
     await unit.save();
 

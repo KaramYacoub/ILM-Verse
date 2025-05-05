@@ -166,4 +166,18 @@ export const useCourseStore = create((set) => ({
       );
     }
   },
+
+  deleteUnitContent: async (unit_id, media_id) => {
+    try {
+      const response = await axiosInstance.delete(
+        `admin/course/media/${unit_id}/${media_id}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error deleting media from a unit: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
 }));
