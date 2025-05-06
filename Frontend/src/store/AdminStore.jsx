@@ -270,4 +270,20 @@ export const useAdminStore = create((set) => ({
       );
     }
   },
+
+  addCourse: async ({ subject_name, section_id, teacher_id }) => {
+    try {
+      const response = await axiosInstance.post("/admin/addition/course", {
+        subject_name,
+        section_id,
+        teacher_id,
+      });
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error adding course: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
 }));

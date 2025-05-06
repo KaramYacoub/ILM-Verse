@@ -8,7 +8,8 @@ const { course, teacher, section, grade, department, course_student, student } =
   models;
 const Report = require("../models/NOSQL/Report");
 const CourseUnit = require("../models/NOSQL/CourseUnit");
-//get all courses(data is filtered)
+
+//get all courses(data is filtered) ✅
 exports.getAllCourses = async (req, res) => {
   try {
     const courses = await course.findAll({
@@ -244,7 +245,7 @@ exports.getStudentsInCourse = async (req, res) => {
   }
 };
 
-// add a report for a student in (optional)
+// add a report for a student in ✅
 exports.addReport = async (req, res) => {
   const { course_id, student_id, title, date, description } = req.body;
   const role = req.role;
@@ -446,9 +447,7 @@ exports.getLecture = async (req, res) => {
   }
 };
 
-// supposing that karam built the getPDF
-
-// delete unit and it's all content
+// delete unit and it's all content ✅
 exports.deleteUnit = async (req, res) => {
   try {
     const { unit_id } = req.params;
@@ -482,7 +481,8 @@ exports.deleteUnit = async (req, res) => {
     });
   }
 };
-// delete specific media from specific content
+
+// delete specific media from specific content ✅
 exports.deleteMedia = async (req, res) => {
   try {
     const { unit_id, media_id } = req.params;
