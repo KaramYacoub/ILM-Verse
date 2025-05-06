@@ -2,6 +2,10 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 
 export const useAdminStore = create((set) => ({
+  allGrades: [],
+  allSectionsInGrade: [],
+  teachersInDepartment: [],
+
   isFetchingStudents: false,
   isFetchingTeachers: false,
   isFetchingParents: false,
@@ -9,6 +13,7 @@ export const useAdminStore = create((set) => ({
 
   isChangingPassword: false,
 
+  // add admin
   addAdmin: async (admin) => {
     try {
       const formattedAdmin = {
@@ -28,6 +33,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // add student
   addStudent: async (student) => {
     try {
       const formattedStudent = {
@@ -49,6 +55,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // add parent
   addParent: async (parent) => {
     try {
       const formattedParent = {
@@ -68,6 +75,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // add teacher
   addTeacher: async (teacher) => {
     try {
       const formattedTeacher = {
@@ -89,121 +97,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
-  getAllAdmins: async () => {
-    try {
-      set({ isFetchingAdmins: true });
-      const response = await axiosInstance.get("/admin/getAdmins");
-      return response.data;
-    } catch (error) {
-      console.log("error fetching parents:", error.message);
-    } finally {
-      set({ isFetchingAdmins: false });
-    }
-  },
-
-  getAllStudents: async () => {
-    try {
-      set({ isFetchingStudents: true });
-      const response = await axiosInstance.get("/admin/getStudents");
-      return response.data;
-    } catch (error) {
-      console.log("error fetching students:", error.message);
-    } finally {
-      set({ isFetchingStudents: false });
-    }
-  },
-
-  getAllParents: async () => {
-    try {
-      set({ isFetchingParents: true });
-      const response = await axiosInstance.get("/admin/getParents");
-      return response.data;
-    } catch (error) {
-      console.log("error fetching parents:", error.message);
-    } finally {
-      set({ isFetchingParents: false });
-    }
-  },
-
-  getAllTeachers: async () => {
-    try {
-      set({ isFetchingTeachers: true });
-      const response = await axiosInstance.get("/admin/getTeachers");
-      return response.data;
-    } catch (error) {
-      console.log("error fetching parents:", error.message);
-    } finally {
-      set({ isFetchingTeachers: false });
-    }
-  },
-
-  getAllGrades: async () => {
-    try {
-      const response = await axiosInstance.get("/admin/addition/course/grades");
-      return response.data;
-    } catch (error) {
-      console.log("error fetching grades:", error.message);
-    }
-  },
-
-  getAllSections: async (gradID) => {
-    try {
-      const response = await axiosInstance.get(
-        `/admin/addition/course/grades/${gradID}`
-      );
-      return response.data;
-    } catch (error) {
-      console.log("error fetching sections:", error.message);
-    }
-  },
-
-  deleteStudent: async (studentId) => {
-    try {
-      const response = await axiosInstance.delete(
-        `/admin/delete/student/${studentId}`
-      );
-      return response.data;
-    } catch (error) {
-      console.log("Error deleting student:", error);
-    }
-  },
-
-  deleteParent: async (parentId) => {
-    try {
-      const response = await axiosInstance.delete(
-        `/admin/delete/parent/${parentId}`
-      );
-      return response.data;
-    } catch (error) {
-      console.log(
-        "Error deleting parent:",
-        error.response?.data?.error || error.message
-      );
-    }
-  },
-
-  deleteTeacher: async (teacherId) => {
-    try {
-      const response = await axiosInstance.delete(
-        `/admin/delete/teacher/${teacherId}`
-      );
-      return response.data;
-    } catch (error) {
-      console.log("Error deleting teacher:", error);
-    }
-  },
-
-  deleteAdmin: async (AdminId) => {
-    try {
-      const response = await axiosInstance.delete(
-        `/admin/delete/admin/${AdminId}`
-      );
-      return response.data;
-    } catch (error) {
-      console.log("Error deleting teacher:", error);
-    }
-  },
-
+  // add event
   addEvent: async (formData) => {
     try {
       const response = await axiosInstance.post("/admin/events", formData, {
@@ -217,34 +111,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
-  deleteEvent: async (event_id) => {
-    try {
-      console.log("Deleting event with ID:", event_id);
-      await axiosInstance.delete(`/admin/events/${event_id}`, {
-        data: { event_id },
-      });
-    } catch (error) {
-      console.log("Error deleting event:", error);
-    }
-  },
-
-  changeUserPassword: async ({ userType, identifier, newPassword }) => {
-    try {
-      const response = await axiosInstance.patch("/admin/update/password", {
-        userType,
-        identifier,
-        newPassword,
-      });
-      return response.data;
-    } catch (error) {
-      console.log(
-        "Error changing password:",
-        error.response?.data?.error || error.message
-      );
-      throw error;
-    }
-  },
-
+  // add report
   addReport: async (student_id, title, date, description) => {
     try {
       if (title.length > 0) {
@@ -271,6 +138,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // add course
   addCourse: async ({ subject_name, section_id, teacher_id }) => {
     try {
       const response = await axiosInstance.post("/admin/addition/course", {
@@ -284,6 +152,177 @@ export const useAdminStore = create((set) => ({
         "Error adding course: ",
         error.response?.data?.error || error.message
       );
+    }
+  },
+
+  // get all admins
+  getAllAdmins: async () => {
+    try {
+      set({ isFetchingAdmins: true });
+      const response = await axiosInstance.get("/admin/getAdmins");
+      return response.data;
+    } catch (error) {
+      console.log("error fetching parents:", error.message);
+    } finally {
+      set({ isFetchingAdmins: false });
+    }
+  },
+
+  // get all students
+  getAllStudents: async () => {
+    try {
+      set({ isFetchingStudents: true });
+      const response = await axiosInstance.get("/admin/getStudents");
+      return response.data;
+    } catch (error) {
+      console.log("error fetching students:", error.message);
+    } finally {
+      set({ isFetchingStudents: false });
+    }
+  },
+
+  // get all parents
+  getAllParents: async () => {
+    try {
+      set({ isFetchingParents: true });
+      const response = await axiosInstance.get("/admin/getParents");
+      return response.data;
+    } catch (error) {
+      console.log("error fetching parents:", error.message);
+    } finally {
+      set({ isFetchingParents: false });
+    }
+  },
+
+  // get all teachers
+  getAllTeachers: async () => {
+    try {
+      set({ isFetchingTeachers: true });
+      const response = await axiosInstance.get("/admin/getTeachers");
+      return response.data;
+    } catch (error) {
+      console.log("error fetching parents:", error.message);
+    } finally {
+      set({ isFetchingTeachers: false });
+    }
+  },
+
+  // get all grades
+  getAllGrades: async () => {
+    try {
+      const response = await axiosInstance.get("/admin/addition/course/grades");
+      set({ allGrades: response.data.data });
+      return response.data;
+    } catch (error) {
+      console.log("error fetching grades:", error.message);
+    }
+  },
+
+  // get all sections
+  getAllSections: async (grad_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/admin/addition/course/grades/${grad_id}`
+      );
+      set({ allSectionsInGrade: response.data.data });
+      return response.data;
+    } catch (error) {
+      console.log("error fetching sections:", error.message);
+    }
+  },
+
+  getTeacherByDepartment: async (grade_id, section_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/admin/addition/course/grades/${grade_id}/${section_id}`
+      );
+      set({ teachersInDepartment: response.data.data });
+      return response.data;
+    } catch (error) {
+      console.log(
+        "error fetching teachers by department:",
+        error.response.data.error || error.message
+      );
+    }
+  },
+
+  // delete student
+  deleteStudent: async (studentId) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/admin/delete/student/${studentId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Error deleting student:", error);
+    }
+  },
+
+  // delete parent
+  deleteParent: async (parentId) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/admin/delete/parent/${parentId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error deleting parent:",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  // delete teacher
+  deleteTeacher: async (teacherId) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/admin/delete/teacher/${teacherId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Error deleting teacher:", error);
+    }
+  },
+
+  // delete admin
+  deleteAdmin: async (AdminId) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/admin/delete/admin/${AdminId}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Error deleting teacher:", error);
+    }
+  },
+  // delete event
+  deleteEvent: async (event_id) => {
+    try {
+      console.log("Deleting event with ID:", event_id);
+      await axiosInstance.delete(`/admin/events/${event_id}`, {
+        data: { event_id },
+      });
+    } catch (error) {
+      console.log("Error deleting event:", error);
+    }
+  },
+
+  // change user password
+  changeUserPassword: async ({ userType, identifier, newPassword }) => {
+    try {
+      const response = await axiosInstance.patch("/admin/update/password", {
+        userType,
+        identifier,
+        newPassword,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error changing password:",
+        error.response?.data?.error || error.message
+      );
+      throw error;
     }
   },
 }));

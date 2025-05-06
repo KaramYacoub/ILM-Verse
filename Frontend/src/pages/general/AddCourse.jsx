@@ -1,99 +1,88 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GeneralNav from "../../components/general/GeneralNav";
+import { useAdminStore } from "../../store/AdminStore";
 
 function AddCourse() {
-  const grades = ["Grade 9", "Grade 10", "Grade 11", "Grade 12"];
-  const sections = ["A", "B", "C"];
+  const {
+    getAllGrades,
+    allGrades,
+    getAllSections,
+    allSectionsInGrade,
+    getTeacherByDepartment,
+    teachersInDepartment,
+    addCourse,
+  } = useAdminStore();
 
-  const teachers = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      subject: "Mathematics",
-      grade: "Grade 10",
-      section: "A",
-    },
-    {
-      id: 2,
-      name: "Michael Brown",
-      subject: "Science",
-      grade: "Grade 10",
-      section: "B",
-    },
-    {
-      id: 3,
-      name: "Emily Davis",
-      subject: "English",
-      grade: "Grade 11",
-      section: "A",
-    },
-  ];
-
-  const allStudents = [
-    { id: 1, name: "Ahmad Khalid", grade: "Grade 10", section: "A" },
-    { id: 2, name: "Layla Hassan", grade: "Grade 11", section: "A" },
-    { id: 3, name: "Omar Mahmoud", grade: "Grade 9", section: "B" },
-    { id: 4, name: "Noor Al-Ahmad", grade: "Grade 10", section: "B" },
-  ];
-
-  // State management
-  const [selectedGrade, setSelectedGrade] = useState("");
-  const [selectedSection, setSelectedSection] = useState("");
+  const [selectedGrade, setSelectedGrade] = useState(null);
+  const [selectedSection, setSelectedSection] = useState(null);
   const [selectedTeacher, setSelectedTeacher] = useState("");
   const [courseName, setCourseName] = useState("");
-  const [selectedStudents, setSelectedStudents] = useState([]);
-  const [filteredStudents, setFilteredStudents] = useState([]);
-  const [filteredTeachers, setFilteredTeachers] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // fetch the grades on mount
+  useEffect(() => {
+    const fetchGrades = async () => {
+      await getAllGrades();
+    };
+    fetchGrades();
+  }, [getAllGrades]);
+
+  // fetch sections when grade is selected
+  const fetchSections = async (grade_id) => {
+    await getAllSections(grade_id);
+  };
+
+  // fetch teachers when section is selected
+  const fetchTeachers = async (grade_id, section_id) => {
+    await getTeacherByDepartment(grade_id, section_id);
+  };
 
   // Handle Grade selection
   const handleGradeChange = (grade) => {
     setSelectedGrade(grade);
-    setSelectedSection("");
+    setSelectedSection(null);
     setSelectedTeacher("");
-    setSelectedStudents([]);
-    setFilteredStudents([]);
-    setFilteredTeachers([]);
+    fetchSections(grade.grade_id);
   };
 
   // Handle Section selection
   const handleSectionChange = (section) => {
     setSelectedSection(section);
-
-    const filteredStud = allStudents.filter(
-      (student) =>
-        student.grade === selectedGrade && student.section === section
-    );
-    const filteredTeach = teachers.filter(
-      (teacher) =>
-        teacher.grade === selectedGrade && teacher.section === section
-    );
-
-    setFilteredStudents(filteredStud);
-    setFilteredTeachers(filteredTeach);
-    setSelectedStudents([]);
     setSelectedTeacher("");
-  };
-
-  // Toggle student selection
-  const toggleStudentSelection = (studentId) => {
-    setSelectedStudents((prev) =>
-      prev.includes(studentId)
-        ? prev.filter((id) => id !== studentId)
-        : [...prev, studentId]
-    );
+    if (selectedGrade) {
+      fetchTeachers(selectedGrade.grade_id, section.section_id);
+    }
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({
-      courseName,
-      grade: selectedGrade,
-      section: selectedSection,
-      teacher: selectedTeacher,
-      students: selectedStudents,
-    });
-    alert("Course created successfully!");
+
+    if (!courseName || !selectedSection || !selectedTeacher) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const result = await addCourse({
+        subject_name: courseName,
+        section_id: selectedSection.section_id,
+        teacher_id: selectedTeacher,
+      });
+
+      if (result) {
+        // Reset form
+        setCourseName("");
+        setSelectedGrade(null);
+        setSelectedSection(null);
+        setSelectedTeacher("");
+
+        alert("Course created successfully!");
+      }
+    } catch (error) {
+      console.error("Error creating course:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -124,43 +113,47 @@ function AddCourse() {
           <div className="mb-6">
             <label className="block font-medium mb-2">Grade*</label>
             <div className="flex flex-wrap gap-2">
-              {grades.map((grade) => (
+              {allGrades.map((grade) => (
                 <button
-                  key={grade}
+                  key={grade.grade_id}
                   type="button"
                   onClick={() => handleGradeChange(grade)}
                   className={`btn btn-sm ${
-                    selectedGrade === grade ? "btn-primary" : "btn-ghost"
+                    selectedGrade?.grade_id === grade.grade_id
+                      ? "btn-primary"
+                      : "btn-ghost"
                   }`}
                 >
-                  {grade}
+                  {grade.grade_name}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Section Selection */}
+          {/* Section Selection - only shows if grade is selected */}
           {selectedGrade && (
             <div className="mb-6">
               <label className="block font-medium mb-2">Section*</label>
               <div className="flex flex-wrap gap-2">
-                {sections.map((section) => (
+                {allSectionsInGrade.map((section) => (
                   <button
-                    key={section}
+                    key={section.section_id}
                     type="button"
                     onClick={() => handleSectionChange(section)}
                     className={`btn btn-sm ${
-                      selectedSection === section ? "btn-primary" : "btn-ghost"
+                      selectedSection?.section_id === section.section_id
+                        ? "btn-primary"
+                        : "btn-ghost"
                     }`}
                   >
-                    {section}
+                    {section.section_name}
                   </button>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Teacher Selection */}
+          {/* Teacher Selection - only shows if section is selected */}
           {selectedSection && (
             <div className="mb-6">
               <label className="block font-medium mb-2">Teacher*</label>
@@ -169,50 +162,19 @@ function AddCourse() {
                 value={selectedTeacher}
                 onChange={(e) => setSelectedTeacher(e.target.value)}
                 required
+                disabled={!teachersInDepartment.length}
               >
                 <option value="" disabled>
-                  Select teacher
+                  {teachersInDepartment.length
+                    ? "Select teacher"
+                    : "Loading teachers..."}
                 </option>
-                {filteredTeachers.map((teacher) => (
-                  <option key={teacher.id} value={teacher.id}>
-                    {teacher.name} ({teacher.subject})
+                {teachersInDepartment.map((teacher) => (
+                  <option key={teacher.teacher_id} value={teacher.teacher_id}>
+                    {teacher.first_name} {teacher.last_name}
                   </option>
                 ))}
               </select>
-            </div>
-          )}
-
-          {/* Student Selection */}
-          {selectedSection && filteredStudents.length > 0 && (
-            <div className="mb-6">
-              <label className="block font-medium mb-2">
-                Students in {selectedGrade} {selectedSection}
-              </label>
-              <div className="border rounded-lg p-2 max-h-60 overflow-y-auto">
-                {filteredStudents.map((student) => (
-                  <div
-                    key={student.id}
-                    className="flex items-center p-2 hover:bg-gray-50"
-                  >
-                    <input
-                      type="checkbox"
-                      id={`student-${student.id}`}
-                      checked={selectedStudents.includes(student.id)}
-                      onChange={() => toggleStudentSelection(student.id)}
-                      className="checkbox checkbox-sm mr-3"
-                    />
-                    <label
-                      htmlFor={`student-${student.id}`}
-                      className="flex-grow"
-                    >
-                      {student.name}
-                    </label>
-                  </div>
-                ))}
-              </div>
-              <p className="text-sm text-gray-500 mt-1">
-                {selectedStudents.length} students selected
-              </p>
             </div>
           )}
 
@@ -222,13 +184,21 @@ function AddCourse() {
               type="submit"
               className="btn btn-primary"
               disabled={
+                isSubmitting ||
                 !courseName ||
                 !selectedGrade ||
                 !selectedSection ||
                 !selectedTeacher
               }
             >
-              Create Course
+              {isSubmitting ? (
+                <>
+                  <span className="loading loading-spinner"></span>
+                  Creating...
+                </>
+              ) : (
+                "Create Course"
+              )}
             </button>
           </div>
         </form>
