@@ -317,7 +317,7 @@ function App() {
                 }
               />
               <Route
-                path="/teacher-course-content/assignment-detail"
+                path="/teacher-course-content/:course_id/assignment-detail"
                 element={
                   authTeacher ? <AssignmentDetail /> : <Navigate to="/" />
                 }
@@ -330,7 +330,7 @@ function App() {
                 }
               />
               <Route
-                path="/teacher-course-content/quiz-submit-status"
+                path="/teacher-course-content/:course_id/quiz-submit-status"
                 element={
                   authTeacher ? <QuizSubmitStatus /> : <Navigate to="/" />
                 }

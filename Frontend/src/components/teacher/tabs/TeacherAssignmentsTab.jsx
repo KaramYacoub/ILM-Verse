@@ -5,6 +5,8 @@ import { useState } from "react";
 export default function TeacherAssignmentsTab() {
   const location = useLocation();
   const navigate = useNavigate();
+  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const courseID = pathSegments[pathSegments.length - 2];
   const unit = location.state?.unit;
   const [assignments, setAssignments] = useState(unit?.assignments || []);
   const [showModal, setShowModal] = useState(false);
@@ -98,9 +100,12 @@ export default function TeacherAssignmentsTab() {
               <div className="flex gap-2">
                 <button
                   onClick={() =>
-                    navigate("/teacher-course-content/assignment-detail", {
-                      state: { assignment },
-                    })
+                    navigate(
+                      `/teacher-course-content/${courseID}/assignment-detail`,
+                      {
+                        state: { assignment },
+                      }
+                    )
                   }
                   className="btn btn-sm btn-outline btn-primary"
                 >

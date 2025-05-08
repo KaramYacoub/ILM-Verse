@@ -19,7 +19,7 @@ function TeacherQuizzesTab() {
   };
 
   const handleShowSubmit = (quiz) => {
-    navigate("/teacher-course-content/quiz-submit-status", {
+    navigate(`/teacher-course-content/${courseID}/quiz-submit-status`, {
       state: { quiz },
     });
   };
