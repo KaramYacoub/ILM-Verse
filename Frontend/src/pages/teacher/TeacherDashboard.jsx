@@ -1,7 +1,17 @@
 import TeacherNavbar from "../../components/teacher/TeacherNavbar";
 import CourseCard from "../../components/shared/CourseCard";
+import { useTeacherStore } from "../../store/TeacherStore";
+import { useEffect } from "react";
 
 function TeacherDashboard() {
+  const { coursesForTeacher, getCoursesForTeacher } = useTeacherStore();
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      await getCoursesForTeacher();
+    };
+    fetchCourses();
+  }, [getCoursesForTeacher]);
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">
       <TeacherNavbar />
@@ -15,8 +25,12 @@ function TeacherDashboard() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 w-full">
-          {Array.from({ length: 6 }, (_, index) => (
-            <CourseCard to='/teacher-course-content' key={index} />
+          {coursesForTeacher.map((course) => (
+            <CourseCard
+              key={course.course_id}
+              to={`/teacher-course-content/${course.course_id}`}
+              title={course.subject_name}
+            />
           ))}
         </div>
       </div>

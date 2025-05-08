@@ -8,7 +8,7 @@ function CourseContent() {
 
   const {
     courses,
-    getALlCourses,
+    getAllCourses,
     getStudentsInCourse,
     involveStudents,
     teachersByDepartment,
@@ -24,8 +24,8 @@ function CourseContent() {
 
   // Fetch all courses
   useEffect(() => {
-    getALlCourses();
-  }, [getALlCourses]);
+    getAllCourses();
+  }, [getAllCourses]);
 
   // Memoized filtered courses
   const filteredCourses = useMemo(() => {
@@ -127,14 +127,14 @@ function CourseContent() {
         return;
       }
       await updateTeacher(course_id, newTeacher_id);
-      await getALlCourses();
+      await getAllCourses();
 
       // Only close modal after successful update
       setShowTeacherModal(false);
       setCurrentCourse(null);
       setSelectedTeacher(null);
     },
-    [updateTeacher, getALlCourses]
+    [updateTeacher, getAllCourses]
   );
 
   return (
