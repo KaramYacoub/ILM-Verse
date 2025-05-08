@@ -17,7 +17,7 @@ function Home() {
           <div className="flex-1">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">About us</h2>
             <p className="text-lg md:text-xl leading-relaxed font-semibold">
-              At Masha’el Al-Tafkeer School in the historic city of As-Salt,
+              At Thinkking Flares School in the historic city of As-Salt,
               <br />
               we ignite the spark of lifelong learning and critical thinking in
               every student.
@@ -48,7 +48,7 @@ function Home() {
           {/* General Administrator */}
           <div className="flex flex-col items-center gap-4">
             <h3 className="font-bold text-center">
-              General Administrator of Masha’el Al-Tafkeer
+              Administrator of Thinkking Flares School
             </h3>
             <div className="w-32 h-32 bg-gray-300 rounded-full"></div>
           </div>
@@ -64,14 +64,8 @@ function Home() {
             </div>
           </div>
 
-          {/* Department Managers */}
           <div className="flex flex-col items-center gap-4">
-            <h3 className="font-bold">Department Managers</h3>
-            <div className="flex flex-wrap justify-center gap-8">
-              <div className="w-24 h-24 bg-gray-300 rounded-full"></div>
-              <div className="w-24 h-24 bg-gray-300 rounded-full"></div>
-              <div className="w-24 h-24 bg-gray-300 rounded-full"></div>
-            </div>
+            <div className="flex flex-wrap justify-center gap-8"></div>
           </div>
         </div>
       </section>

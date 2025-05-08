@@ -7,11 +7,17 @@ import { useCourseStore } from "../../store/CourseStore";
 function AdminUnitContent() {
   const location = useLocation();
   const unit = location.state?.unit;
-  const { unitContent, getUnitContent, addUnitContent, downloadResource } =
-    useCourseStore();
+  const {
+    unitContent,
+    getUnitContent,
+    addUnitContent,
+    downloadResource,
+    deleteUnitContent,
+  } = useCourseStore();
 
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deletingMediaId, setDeletingMediaId] = useState(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [uploadState, setUploadState] = useState({
     file: null,
@@ -114,6 +120,22 @@ function AdminUnitContent() {
     );
   };
 
+  const handleDeleteMedia = async (unit_id, media_id) => {
+    try {
+      setDeletingMediaId(media_id);
+      await deleteUnitContent(unit_id, media_id);
+      // Refresh the content
+      await getUnitContent(unit_id);
+    } catch (error) {
+      console.log(
+        "Error deleting media from a unit (from the page): ",
+        error.response?.data?.error || error.message
+      );
+    } finally {
+      setDeletingMediaId(null);
+    }
+  };
+
   if (!unit) {
     return (
       <div className="text-center text-error text-2xl mt-16 font-bold">
@@ -162,8 +184,18 @@ function AdminUnitContent() {
                 </p>
               </div>
               <div className="flex gap-2">
-                <button className="btn btn-sm btn-ghost text-error">
-                  <Trash2 />
+                <button
+                  onClick={() => {
+                    handleDeleteMedia(unit.unit_id, media._id);
+                  }}
+                  className="btn btn-sm btn-ghost text-error"
+                  disabled={deletingMediaId === media._id}
+                >
+                  {deletingMediaId === media._id ? (
+                    <span className="loading loading-spinner loading-xs"></span>
+                  ) : (
+                    <Trash2 />
+                  )}
                 </button>
               </div>
             </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Loader2, Search } from "lucide-react";
 import { useAdminStore } from "../../store/AdminStore";
+import AdminReportModal from "../general/AdminReportModal";
 
 function SearchStudent() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -8,6 +9,17 @@ function SearchStudent() {
   const [filteredStudents, setFilteredStudents] = useState([]);
 
   const { isFetchingStudents, getAllStudents } = useAdminStore();
+
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+
+  const handleReportClick = (student) => {
+    setSelectedStudent({
+      ...student,
+      student_name: `${student.first_name} ${student.last_name}`, // Create combined name
+    });
+    setIsReportModalOpen(true);
+  };
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -82,6 +94,7 @@ function SearchStudent() {
                   <th>Grade</th>
                   <th>Department</th>
                   <th>Parent ID</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -95,6 +108,14 @@ function SearchStudent() {
                     <td>{student.grade_name}</td>
                     <td>{student.dept_name}</td>
                     <td>{student.parent_id}</td>
+                    <td>
+                      <button
+                        onClick={() => handleReportClick(student)}
+                        className="btn btn-primary btn-sm"
+                      >
+                        add report
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -102,6 +123,11 @@ function SearchStudent() {
           </div>
         </div>
       )}
+      <AdminReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
+        student={selectedStudent}
+      />
     </div>
   );
 }

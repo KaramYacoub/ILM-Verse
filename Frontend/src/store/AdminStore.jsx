@@ -2,6 +2,10 @@ import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 
 export const useAdminStore = create((set) => ({
+  allGrades: [],
+  allSectionsInGrade: [],
+  teachersInDepartment: [],
+
   isFetchingStudents: false,
   isFetchingTeachers: false,
   isFetchingParents: false,
@@ -9,6 +13,7 @@ export const useAdminStore = create((set) => ({
 
   isChangingPassword: false,
 
+  // add admin
   addAdmin: async (admin) => {
     try {
       const formattedAdmin = {
@@ -28,6 +33,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // add student
   addStudent: async (student) => {
     try {
       const formattedStudent = {
@@ -49,6 +55,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // add parent
   addParent: async (parent) => {
     try {
       const formattedParent = {
@@ -68,6 +75,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // add teacher
   addTeacher: async (teacher) => {
     try {
       const formattedTeacher = {
@@ -89,6 +97,65 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // add event
+  addEvent: async (formData) => {
+    try {
+      const response = await axiosInstance.post("/admin/events", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.log("Error adding event:", error);
+    }
+  },
+
+  // add report
+  addReport: async (student_id, title, date, description) => {
+    try {
+      if (title.length > 0) {
+        const response = await axiosInstance.post("admin/course/addreport", {
+          student_id,
+          title,
+          date,
+          description,
+        });
+        return response.data;
+      } else {
+        const response = await axiosInstance.post("admin/course/addreport", {
+          student_id,
+          date,
+          description,
+        });
+        return response.data;
+      }
+    } catch (error) {
+      console.log(
+        "Error adding report from admin: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  // add course
+  addCourse: async ({ subject_name, section_id, teacher_id }) => {
+    try {
+      const response = await axiosInstance.post("/admin/addition/course", {
+        subject_name,
+        section_id,
+        teacher_id,
+      });
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error adding course: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  // get all admins
   getAllAdmins: async () => {
     try {
       set({ isFetchingAdmins: true });
@@ -101,6 +168,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // get all students
   getAllStudents: async () => {
     try {
       set({ isFetchingStudents: true });
@@ -113,6 +181,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // get all parents
   getAllParents: async () => {
     try {
       set({ isFetchingParents: true });
@@ -125,6 +194,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // get all teachers
   getAllTeachers: async () => {
     try {
       set({ isFetchingTeachers: true });
@@ -137,26 +207,46 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // get all grades
   getAllGrades: async () => {
     try {
       const response = await axiosInstance.get("/admin/addition/course/grades");
+      set({ allGrades: response.data.data });
       return response.data;
     } catch (error) {
       console.log("error fetching grades:", error.message);
     }
   },
 
-  getAllSections: async (gradID) => {
+  // get all sections
+  getAllSections: async (grad_id) => {
     try {
       const response = await axiosInstance.get(
-        `/admin/addition/course/grades/${gradID}`
+        `/admin/addition/course/grades/${grad_id}`
       );
+      set({ allSectionsInGrade: response.data.data });
       return response.data;
     } catch (error) {
       console.log("error fetching sections:", error.message);
     }
   },
 
+  getTeacherByDepartment: async (grade_id, section_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/admin/addition/course/grades/${grade_id}/${section_id}`
+      );
+      set({ teachersInDepartment: response.data.data });
+      return response.data;
+    } catch (error) {
+      console.log(
+        "error fetching teachers by department:",
+        error.response.data.error || error.message
+      );
+    }
+  },
+
+  // delete student
   deleteStudent: async (studentId) => {
     try {
       const response = await axiosInstance.delete(
@@ -168,6 +258,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // delete parent
   deleteParent: async (parentId) => {
     try {
       const response = await axiosInstance.delete(
@@ -182,6 +273,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // delete teacher
   deleteTeacher: async (teacherId) => {
     try {
       const response = await axiosInstance.delete(
@@ -193,6 +285,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // delete admin
   deleteAdmin: async (AdminId) => {
     try {
       const response = await axiosInstance.delete(
@@ -203,20 +296,7 @@ export const useAdminStore = create((set) => ({
       console.log("Error deleting teacher:", error);
     }
   },
-
-  addEvent: async (formData) => {
-    try {
-      const response = await axiosInstance.post("/admin/events", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.log("Error adding event:", error);
-    }
-  },
-
+  // delete event
   deleteEvent: async (event_id) => {
     try {
       console.log("Deleting event with ID:", event_id);
@@ -228,6 +308,7 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // change user password
   changeUserPassword: async ({ userType, identifier, newPassword }) => {
     try {
       const response = await axiosInstance.patch("/admin/update/password", {
