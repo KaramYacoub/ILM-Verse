@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Calendar, FileText, Trash2, Download, X, Pencil } from "lucide-react";
+import { Calendar, FileText, Trash2, Pencil } from "lucide-react";
 import { useState } from "react";
 
 function TeacherQuizzesTab() {
@@ -9,12 +9,17 @@ function TeacherQuizzesTab() {
   const [quizzes, setQuizzes] = useState(unit?.quizzes || []);
 
   const handleEdit = (title) => {
-    // Replace with actual file download logic
     alert(`Editing: ${title}`);
   };
 
   const handleDelete = (title) => {
     setQuizzes((prev) => prev.filter((q) => q.title !== title));
+  };
+
+  const handleShowSubmit = (quiz) => {
+    navigate("/teacher-course-content/quiz-submit-status", {
+      state: { quiz },
+    });
   };
 
   return (
@@ -56,12 +61,18 @@ function TeacherQuizzesTab() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 mt-1">
+              <div className="flex flex-col gap-2 items-center mt-1">
                 <button
                   onClick={() => handleEdit(quiz.title)}
                   className="btn btn-sm btn-outline"
                 >
                   <Pencil className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => handleShowSubmit(quiz)}
+                  className="btn btn-sm btn-outline btn-info"
+                >
+                  Show Quiz Submit
                 </button>
                 <button
                   onClick={() => handleDelete(quiz.title)}

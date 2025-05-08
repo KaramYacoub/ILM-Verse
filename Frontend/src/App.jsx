@@ -63,6 +63,12 @@ const TeacherAddQuizzes = lazy(() =>
 const TeacherTakeAbscene = lazy(() =>
   import("./pages/teacher/TeacherTakeAbscene")
 );
+const AssignmentDetail = lazy(() =>
+  import("./components/teacher/tabs/AssignmentDetail")
+);
+const QuizSubmitStatus = lazy(() =>
+  import("./components/teacher/tabs/QuizSubmitStatus")
+);
 
 const ParentDashboard = lazy(() => import("./pages/parent/ParentDashboard"));
 const ParentAssignment = lazy(() =>
@@ -303,6 +309,7 @@ function App() {
                   authTeacher ? <TeacherCoresStudentab /> : <Navigate to="/" />
                 }
               />
+
               <Route
                 path="teacher-assignments"
                 element={
@@ -310,9 +317,22 @@ function App() {
                 }
               />
               <Route
+                path="/teacher-course-content/assignment-detail"
+                element={
+                  authTeacher ? <AssignmentDetail /> : <Navigate to="/" />
+                }
+              />
+
+              <Route
                 path="teacher-quizzes"
                 element={
                   authTeacher ? <TeacherQuizzesTab /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="/teacher-course-content/quiz-submit-status"
+                element={
+                  authTeacher ? <QuizSubmitStatus /> : <Navigate to="/" />
                 }
               />
             </Route>
