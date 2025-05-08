@@ -728,3 +728,69 @@ exports.changePassword = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+exports.changeAdminPassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const hashedOldPassword = await bcrypt.hash(oldPassword, 3);
+
+    const exisitingAdmin = await admin.findOne({
+      where: {
+        gm_id: req.user.id,
+      },
+    });
+    if (await bcrypt.compare(oldPassword, exisitingAdmin.dataValues.password)) {
+      await admin.update(
+        {
+          password: await bcrypt.hash(newPassword, 3),
+        },
+        {
+          where: {
+            gm_id: req.user.id,
+          },
+        }
+      );
+      res.status(201).json({
+        status: "success",
+        message: "Password Changed Successfully",
+      });
+    } else {
+      res.status(400).json({ error: "Invalid Password" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+exports.changeAdminName = async (req, res) => {
+  try {
+    const { oldPassword, first_name, last_name } = req.body;
+    const hashedOldPassword = await bcrypt.hash(oldPassword, 3);
+
+    const exisitingAdmin = await admin.findOne({
+      where: {
+        gm_id: req.user.id,
+      },
+    });
+    if (await bcrypt.compare(oldPassword, exisitingAdmin.dataValues.password)) {
+      await admin.update(
+        {
+          first_name,
+          last_name,
+        },
+        {
+          where: {
+            gm_id: req.user.id,
+          },
+        }
+      );
+      res.status(201).json({
+        status: "success",
+        message: "Password Changed Successfully",
+      });
+    } else {
+      res.status(400).json({ error: "Invalid Password" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

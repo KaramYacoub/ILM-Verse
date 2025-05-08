@@ -152,6 +152,18 @@ router.get(
   authenticateUser,
   courseController.getMark
 );
+// admin settings (change password , change name)
+router.patch(
+  "/settings/password",
+  authenticateUser,
+  adminController.changeAdminPassword
+);
+router.patch(
+  "/settings/changename",
+  authenticateUser,
+  adminController.changeAdminName
+);
+
 // Absence functionalites
 router.post("/absence", authenticateUser, absenceController.updateAbsence);
 router.get("/absence", authenticateUser, absenceController.getAbsence);
