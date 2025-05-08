@@ -130,17 +130,6 @@ function StudentAssignmentsTab() {
                   />
                 </div>
 
-                <div className="mb-6">
-                  <label className="label">
-                    <span className="label-text">Or write your answer</span>
-                  </label>
-                  <textarea
-                    className="textarea textarea-bordered w-full"
-                    rows="5"
-                    placeholder="Write your answer here..."
-                  ></textarea>
-                </div>
-
                 <div className="modal-action">
                   <label htmlFor="submit-modal" className="btn btn-outline">
                     Cancel

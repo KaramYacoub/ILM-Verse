@@ -57,19 +57,27 @@ function Settings() {
             <h3 className="text-xl font-bold mb-4">Profile Information</h3>
             <div className="space-y-4">
               <div>
-                <label className="block font-medium mb-1">Full Name</label>
+                <label className="block font-medium mb-1">First Name</label>
                 <input
                   type="text"
                   className="input input-bordered w-full"
-                  placeholder="Enter full name"
+                  placeholder="Enter First Name"
                 />
               </div>
               <div>
-                <label className="block font-medium mb-1">Email</label>
+                <label className="block font-medium mb-1">Last Name</label>
                 <input
-                  type="email"
+                  type="text"
                   className="input input-bordered w-full"
-                  placeholder="Enter email"
+                  placeholder="Enter Last Name"
+                />
+              </div>
+              <div>
+                <label className="block font-medium mb-1">Password</label>
+                <input
+                  type="password"
+                  className="input input-bordered w-full"
+                  placeholder="Enter your password"
                 />
               </div>
               <div className="flex justify-end">
