@@ -41,7 +41,7 @@ exports.updateAbsence = async (req, res) => {
 
 exports.getAbsence = async (req, res) => {
   try {
-    const { section_id, date } = req.body;
+    const { section_id, date } = req.params;
 
     // Step 1: Fetch all students in the specific section
     const studentsInSection = await student.findAll({
@@ -58,6 +58,7 @@ exports.getAbsence = async (req, res) => {
     let responseData;
 
     if (absenceReport) {
+      console.log('absence in controller: ', absenceReport)
       // If the absence report exists, map through absenceReport.students
       responseData = absenceReport.students
         .map((absentStudent) => {

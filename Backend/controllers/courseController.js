@@ -546,6 +546,27 @@ exports.deleteMedia = async (req, res) => {
   }
 };
 
+exports.getStudentInSection = async (req, res) => {
+  try {
+    const { section_id } = req.params;
+    const students = await student.findAll({
+      where: {
+        section_id,
+      },
+    });
+    console.log(students)
+
+    res.status(200).json({
+      status: "success",
+      data: students,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
 // Assigments
 exports.addAssigment = async (req, res) => {};
 exports.deleteAssigment = async (req, res) => {};

@@ -5,6 +5,8 @@ export const useCourseStore = create((set) => ({
   courses: [],
   teachersBySection: [],
   teachersByDepartment: [],
+  studentsInSection: [],
+  studentsInCourse: [],
   unitContent: [],
   allReports: [],
 
@@ -18,11 +20,26 @@ export const useCourseStore = create((set) => ({
     }
   },
 
+  getStudentsInSection: async (section_id) => {
+    try {
+      const response = await axiosInstance.get(`/admin/students/${section_id}`);
+      set({ studentsInSection: response.data.data });
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error fetching students:",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
   getStudentsInCourse: async (course_id) => {
     try {
       const response = await axiosInstance.get(
         `/admin/course/getstudents/${course_id}`
       );
+      set({ studentsInCourse: response.data.data });
       return response.data.data;
     } catch (error) {
       console.log(
@@ -190,6 +207,36 @@ export const useCourseStore = create((set) => ({
     } catch (error) {
       console.log(
         "Error deleting media from a unit: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  getAbsence: async (section_id, date) => {
+    try {
+      const response = await axiosInstance.get(
+        `/admin/absence/${section_id}/${date}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error updating absence: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  updateAbsence: async (students, section_id, date) => {
+    try {
+      const response = await axiosInstance.post("/admin/absence", {
+        students,
+        section_id,
+        date,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error updating absence: ",
         error.response?.data?.error || error.message
       );
     }

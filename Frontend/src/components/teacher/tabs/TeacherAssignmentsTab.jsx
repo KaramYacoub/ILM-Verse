@@ -1,9 +1,12 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Calendar, FileText, Trash2, X } from "lucide-react";
 import { useState } from "react";
 
 export default function TeacherAssignmentsTab() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const courseID = pathSegments[pathSegments.length - 2];
   const unit = location.state?.unit;
   const [assignments, setAssignments] = useState(unit?.assignments || []);
   const [showModal, setShowModal] = useState(false);
@@ -94,20 +97,27 @@ export default function TeacherAssignmentsTab() {
                 </div>
               </div>
 
-              {/* <div className="flex items-center mt-1"> */}
-              {/* <button
-                  onClick={() => handleDownload(assignment.title)}
-                  className="btn btn-sm btn-outline"
+              <div className="flex gap-2">
+                <button
+                  onClick={() =>
+                    navigate(
+                      `/teacher-course-content/${courseID}/assignment-detail`,
+                      {
+                        state: { assignment },
+                      }
+                    )
+                  }
+                  className="btn btn-sm btn-outline btn-primary"
                 >
-                  <Download className="w-4 h-4" />
-                </button> */}
-              <button
-                onClick={() => handleDelete(assignment.title)}
-                className="btn btn-sm btn-outline btn-error"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-              {/* </div> */}
+                  Show submission
+                </button>
+                <button
+                  onClick={() => handleDelete(assignment.title)}
+                  className="btn btn-sm btn-outline btn-error"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -120,7 +130,6 @@ export default function TeacherAssignmentsTab() {
         <button className="text-red-600 font-semibold">+ Add Assignment</button>
       </div>
 
-      {/* Modal */}
       {showModal && (
         <div className=" fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
@@ -180,10 +189,7 @@ export default function TeacherAssignmentsTab() {
 
               <div>
                 <label className="form-control w-full">
-                  <span className="label-text mb-1 font-medium  flex items-center gap-2">
-                    {/* <span>
-                      <File />
-                    </span>{" "} */}
+                  <span className="label-text mb-1 font-medium">
                     Upload File
                   </span>
                   <input
@@ -193,7 +199,6 @@ export default function TeacherAssignmentsTab() {
                     onChange={(e) => {
                       const file = e.target.files[0];
                       console.log("Selected file:", file);
-                      // handle file upload logic here
                     }}
                   />
                 </label>
