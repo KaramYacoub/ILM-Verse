@@ -68,7 +68,7 @@ function TeacherNavbar() {
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
           >
             <FaCalendarAlt color="#fff" />
-            <span>TakeAbsense</span>
+            <span>Take Absence</span>
           </Link>
 
           <Link
