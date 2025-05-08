@@ -1,21 +1,108 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GeneralNav from "../../components/general/GeneralNav";
+import { useAdminStore } from "../../store/AdminStore";
+import { useCourseStore } from "../../store/CourseStore";
 
 function TakeAbsence() {
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedGrade, setSelectedGrade] = useState("");
-  const [selectedSection, setSelectedSection] = useState("");
-  const [absentStudents, setAbsentStudents] = useState([]);
+  const { getAllGrades, allGrades, getAllSections, allSectionsInGrade } =
+    useAdminStore();
+  const { getStudentsInSection, studentsInSection, getAbsence, updateAbsence } =
+    useCourseStore();
 
-  // Dummy data
-  const grades = ["KG", "Primary", "Intermediate Male", "Intermediate Female"];
-  const sections = ["A", "B", "C"];
-  const students = [
-    { id: 1, name: "Omar Khalid" },
-    { id: 2, name: "Lina Ahmed" },
-    { id: 3, name: "Yousef Mansour" },
-    { id: 4, name: "Sara Nabil" },
-  ];
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedGrade, setSelectedGrade] = useState(null);
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [absentStudents, setAbsentStudents] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState({ text: "", type: "" });
+
+  // Fetch the grades on mount
+  useEffect(() => {
+    const fetchGrades = async () => {
+      try {
+        await getAllGrades();
+      } catch {
+        setMessage({ text: "Failed to load grades", type: "error" });
+      }
+    };
+    fetchGrades();
+  }, [getAllGrades]);
+
+  // Fetch sections when grade is selected
+  useEffect(() => {
+    if (selectedGrade) {
+      const fetchSections = async () => {
+        try {
+          await getAllSections(selectedGrade.grade_id);
+        } catch {
+          setMessage({ text: "Failed to load sections", type: "error" });
+        }
+      };
+      fetchSections();
+    }
+  }, [selectedGrade, getAllSections]);
+
+  // Fetch students when grade and section are selected
+  useEffect(() => {
+    if (selectedGrade && selectedSection) {
+      const fetchStudents = async () => {
+        try {
+          await getStudentsInSection(selectedSection.section_id);
+        } catch {
+          setMessage({ text: "Failed to load students", type: "error" });
+        }
+      };
+      fetchStudents();
+    }
+  }, [getStudentsInSection, selectedGrade, selectedSection]);
+
+  // Fetch absence data when section or date changes
+  useEffect(() => {
+    if (selectedSection?.section_id && selectedDate) {
+      const fetchAbsenceData = async () => {
+        setIsLoading(true);
+        try {
+          const response = await getAbsence(
+            selectedSection.section_id,
+            selectedDate
+          );
+          if (response) {
+            const absentIds = response
+              .filter((student) => student.isAbsence)
+              .map((student) => student.student_id);
+            setAbsentStudents(absentIds);
+          }
+        } catch (error) {
+          console.error("Error fetching absence data:", error);
+          // Don't show error if it's just that no record exists yet
+          if (error.response?.status !== 404) {
+            setMessage({ text: "Failed to load absence data", type: "error" });
+          }
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchAbsenceData();
+    }
+  }, [selectedSection, selectedDate, getAbsence]);
+
+  const handleGradeChange = (e) => {
+    const gradeId = e.target.value;
+    const grade = allGrades.find((g) => g.grade_id === gradeId) || null;
+    setSelectedGrade(grade);
+    setSelectedSection(null);
+    setAbsentStudents([]);
+    setMessage({ text: "", type: "" });
+  };
+
+  const handleSectionChange = (e) => {
+    const sectionId = e.target.value;
+    const section =
+      allSectionsInGrade.find((s) => s.section_id === sectionId) || null;
+    setSelectedSection(section);
+    setAbsentStudents([]);
+    setMessage({ text: "", type: "" });
+  };
 
   const toggleAbsence = (studentId) => {
     setAbsentStudents((prev) =>
@@ -25,21 +112,28 @@ function TakeAbsence() {
     );
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedDate || !selectedGrade || !selectedSection) {
-      alert("Please select all fields.");
+      setMessage({ text: "Please select all fields", type: "error" });
       return;
     }
 
-    const data = {
-      date: selectedDate,
-      grade: selectedGrade,
-      section: selectedSection,
-      absentStudents,
-    };
+    setIsLoading(true);
+    try {
+      const students = studentsInSection.map((student) => ({
+        student_id: student.student_id,
+        isAbsence: absentStudents.includes(student.student_id),
+      }));
 
-    console.log("Absence submitted:", data);
-    alert("Absence has been recorded.");
+      await updateAbsence(students, selectedSection.section_id, selectedDate);
+
+      setMessage({ text: "Absence recorded successfully!", type: "success" });
+    } catch (error) {
+      console.error("Error submitting absence:", error);
+      setMessage({ text: "Failed to record absence", type: "error" });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -48,6 +142,12 @@ function TakeAbsence() {
 
       <div className="p-8 max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-6 text-primary">Take Absence</h1>
+
+        {message.text && (
+          <div className={`alert alert-${message.type} mb-4`}>
+            {message.text}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
@@ -64,13 +164,14 @@ function TakeAbsence() {
             <label className="font-medium mb-1 block">Select Grade</label>
             <select
               className="select select-bordered w-full"
-              value={selectedGrade}
-              onChange={(e) => setSelectedGrade(e.target.value)}
+              value={selectedGrade?.grade_id || ""}
+              onChange={handleGradeChange}
+              disabled={isLoading}
             >
               <option value="">-- Choose Grade --</option>
-              {grades.map((grade, index) => (
-                <option key={index} value={grade}>
-                  {grade}
+              {allGrades.map((grade) => (
+                <option key={grade.grade_id} value={grade.grade_id}>
+                  {grade.grade_name}
                 </option>
               ))}
             </select>
@@ -80,41 +181,66 @@ function TakeAbsence() {
             <label className="font-medium mb-1 block">Select Section</label>
             <select
               className="select select-bordered w-full"
-              value={selectedSection}
-              onChange={(e) => setSelectedSection(e.target.value)}
+              value={selectedSection?.section_id || ""}
+              onChange={handleSectionChange}
+              disabled={!selectedGrade || isLoading}
             >
               <option value="">-- Choose Section --</option>
-              {sections.map((section, index) => (
-                <option key={index} value={section}>
-                  {section}
+              {allSectionsInGrade.map((section) => (
+                <option key={section.section_id} value={section.section_id}>
+                  {section.section_name}
                 </option>
               ))}
             </select>
           </div>
         </div>
 
-        <div className="bg-base-100 p-4 rounded-md shadow">
-          <h2 className="text-xl font-semibold mb-4">Mark Absence</h2>
-          <ul className="space-y-2">
-            {students.map((student) => (
-              <li key={student.id} className="flex items-center gap-4">
-                <input
-                  type="checkbox"
-                  className="checkbox checkbox-primary"
-                  checked={absentStudents.includes(student.id)}
-                  onChange={() => toggleAbsence(student.id)}
-                />
-                <span>{student.name}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {selectedGrade && selectedSection && (
+          <div className="bg-base-100 p-4 rounded-md shadow">
+            <h2 className="text-xl font-semibold mb-4">Mark Absence</h2>
+            {isLoading && !studentsInSection.length ? (
+              <div className="flex justify-center">
+                <span className="loading loading-spinner loading-lg"></span>
+              </div>
+            ) : (
+              <ul className="space-y-2">
+                {studentsInSection.map((student) => (
+                  <li
+                    key={student.student_id}
+                    className="flex items-center gap-4"
+                  >
+                    <input
+                      type="checkbox"
+                      className="checkbox checkbox-primary"
+                      checked={absentStudents.includes(student.student_id)}
+                      onChange={() => toggleAbsence(student.student_id)}
+                      disabled={isLoading}
+                    />
+                    <span>
+                      {student.first_name} {student.last_name}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
 
         <button
           className="btn btn-primary mt-6 w-full md:w-1/2"
           onClick={handleSubmit}
+          disabled={
+            !selectedDate || !selectedGrade || !selectedSection || isLoading
+          }
         >
-          Submit Absence
+          {isLoading ? (
+            <>
+              <span className="loading loading-spinner"></span>
+              Submitting...
+            </>
+          ) : (
+            "Submit Absence"
+          )}
         </button>
       </div>
     </>

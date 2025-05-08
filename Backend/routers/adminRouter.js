@@ -144,6 +144,10 @@ router.post(
 );
 
 // Absence functionalites
+router.get("/absence/:section_id/:date", authenticateUser, absenceController.getAbsence);
 router.post("/absence", authenticateUser, absenceController.updateAbsence);
-router.get("/absence", authenticateUser, absenceController.getAbsence);
+
+
+router.get("/students/:section_id", authenticateUser, courseController.getStudentInSection);
+
 module.exports = router;
