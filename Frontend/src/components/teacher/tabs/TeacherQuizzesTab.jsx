@@ -5,6 +5,8 @@ import { useState } from "react";
 function TeacherQuizzesTab() {
   const navigate = useNavigate();
   const location = useLocation();
+  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const courseID = pathSegments[pathSegments.length - 2];
   const unit = location.state?.unit;
   const [quizzes, setQuizzes] = useState(unit?.quizzes || []);
 
@@ -88,7 +90,9 @@ function TeacherQuizzesTab() {
 
       <div
         onClick={() =>
-          navigate("/teacher-course-content/teacher-quizzes/teacher-add-quiz")
+          navigate(
+            `/teacher-course-content/${courseID}/teacher-quizzes/teacher-add-quiz`
+          )
         }
         className="mt-6 border-dashed border-2 border-red-400 text-center rounded-md py-4 cursor-pointer hover:bg-red-50 transition"
       >
