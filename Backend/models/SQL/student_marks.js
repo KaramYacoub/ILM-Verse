@@ -4,9 +4,10 @@ module.exports = function (sequelize, DataTypes) {
     "student_marks",
     {
       mark_id: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true,
+        defaultValue: Sequelize.UUIDV4,
       },
       course_id: {
         type: DataTypes.STRING(20),
@@ -38,8 +39,7 @@ module.exports = function (sequelize, DataTypes) {
       },
       mark_date: {
         type: DataTypes.DATEONLY,
-        allowNull: false,
-        defaultValue: Sequelize.Sequelize.literal("CURRENT_DATE"),
+        allowNull: true,
       },
     },
     {

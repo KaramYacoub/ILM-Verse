@@ -142,7 +142,16 @@ router.post(
   authenticateUser,
   courseController.addMark
 );
-
+router.patch(
+  "/course/:course_id/mark",
+  authenticateUser,
+  courseController.editMark
+);
+router.get(
+  "/course/:course_id/mark",
+  authenticateUser,
+  courseController.getMark
+);
 // Absence functionalites
 router.post("/absence", authenticateUser, absenceController.updateAbsence);
 router.get("/absence", authenticateUser, absenceController.getAbsence);
