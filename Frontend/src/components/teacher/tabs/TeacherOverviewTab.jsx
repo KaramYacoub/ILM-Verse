@@ -1,6 +1,9 @@
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 
 function TeacherOverviewTab() {
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const courseID = pathSegments[pathSegments.length - 2];
   const { courseData } = useOutletContext();
   const navigate = useNavigate();
 
@@ -28,9 +31,12 @@ function TeacherOverviewTab() {
                   <button
                     className="btn btn-primary text-lg btn-md"
                     onClick={() =>
-                      navigate("/teacher-course-content/teacher-unit-content", {
-                        state: { unit: unit },
-                      })
+                      navigate(
+                        `/teacher-course-content/${courseID}/teacher-unit-content`,
+                        {
+                          state: { unit: unit },
+                        }
+                      )
                     }
                   >
                     View unit

@@ -6,6 +6,7 @@ function TeacherNavigationTabs() {
 
   const pathSegments = location.pathname.split("/").filter(Boolean); // Split the path into segments and filter out empty strings
   const lastSegment = pathSegments[pathSegments.length - 1];
+  const courseID = pathSegments[pathSegments.length - 2];;
 
   // Determine if the Overview tab is active based on the path
   // The Overview tab is active if the last segment is "overview" or if there are no segments
@@ -17,7 +18,7 @@ function TeacherNavigationTabs() {
   const navigate = useNavigate();
   function handleNavigation(tab) {
     return () => {
-      navigate(`/teacher-course-content/${tab}`, {
+      navigate(`/teacher-course-content/${courseID}/${tab}`, {
         state: { unit: location.state?.unit },
       });
     };

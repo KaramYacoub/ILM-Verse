@@ -6,8 +6,9 @@ export const useCourseStore = create((set) => ({
   teachersBySection: [],
   teachersByDepartment: [],
   unitContent: [],
+  allReports: [],
 
-  getALlCourses: async () => {
+  getAllCourses: async () => {
     try {
       const response = await axiosInstance.get("/admin/course");
       set({ courses: response.data.data.filteredCourses });
@@ -41,6 +42,19 @@ export const useCourseStore = create((set) => ({
       return response.data.data;
     } catch (error) {
       console.log("Error fetching teachers:", error.message);
+    }
+  },
+
+  getAllReports: async () => {
+    try {
+      const response = await axiosInstance.get("/admin/course/getreport");
+      set({ allReports: response.data.data });
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error getting all reports: ",
+        error.response?.data?.error || error.message
+      );
     }
   },
 

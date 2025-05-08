@@ -276,7 +276,7 @@ function App() {
               element={authTeacher ? <TeacherDashboard /> : <Navigate to="/" />}
             />
             <Route
-              path="/teacher-course-content/"
+              path="/teacher-course-content/:course_id"
               element={
                 authTeacher ? <TeacherCourseContent /> : <Navigate to="/" />
               }
@@ -317,7 +317,7 @@ function App() {
               />
             </Route>
             <Route
-              path="/teacher-course-content/teacher-quizzes/teacher-add-quiz"
+              path="/teacher-course-content/:course_id/teacher-quizzes/teacher-add-quiz"
               element={
                 authTeacher ? <TeacherAddQuizzes /> : <Navigate to="/" />
               }
