@@ -2,10 +2,12 @@ const express = require("express");
 const router = express.Router();
 const adminController = require("../controllers/adminController");
 const courseController = require("../controllers/courseController");
+const absenceController = require("../controllers/absenceController");
 const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
 const uploadFiles = require("../controllers/upload/uploadEvent"); // Import the upload middleware for events
 const uploadContent = require("../controllers/upload/uploadContentMiddleWare"); //Import the upload middleware for courses
+
 // login
 router.post("/adminLogin", authController.adminLogin);
 //---------------------------------
@@ -134,4 +136,14 @@ router.delete(
   authenticateUser,
   courseController.deleteMedia
 );
+//Marks functionalites
+router.post(
+  "/course/:course_id/mark",
+  authenticateUser,
+  courseController.addMark
+);
+
+// Absence functionalites
+router.post("/absence", authenticateUser, absenceController.updateAbsence);
+router.get("/absence", authenticateUser, absenceController.getAbsence);
 module.exports = router;

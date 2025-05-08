@@ -4,8 +4,17 @@ const fs = require("fs");
 const SQL = require("../models/Connections/SQL-Driver"); // your Sequelize instance
 const initModels = require("../models/index"); // path to index.js
 const models = initModels(SQL); // initialize models
-const { course, teacher, section, grade, department, course_student, student } =
-  models;
+const {
+  course,
+  teacher,
+  section,
+  grade,
+  department,
+  course_student,
+  student,
+  mark_type,
+  student_marks,
+} = models;
 const Report = require("../models/NOSQL/Report");
 const CourseUnit = require("../models/NOSQL/CourseUnit");
 
@@ -557,6 +566,19 @@ exports.showQuizSubmissions = async (req, res) => {};
 // here we should meet at discord ok karam?>
 exports.addMark = async (req, res) => {
   try {
+    const { course_id } = req.params;
+    const { student_id, mark_type, mark_value } = req.body;
+    //Marktypes(first,second,third,final) MT-001 MT-002 MT-003 MT-004
+    const newMark = student_marks.create({
+      course_id: course_id,
+      student_id: student_id,
+      mark_type: mark_type,
+      mark_value: mark_value,
+    });
+    res.status(201).json({
+      status: "success",
+      message: "Mark Added Successfully",
+    });
   } catch (error) {
     res.status(400).json({
       error: error.message,
@@ -565,6 +587,12 @@ exports.addMark = async (req, res) => {
 };
 exports.editMark = async (req, res) => {
   try {
+    const { course_id } = req.params;
+    const { student_id, mark_type, mark_value } = req.body;
+    res.status(204).json({
+      status: "success",
+      message: "Mark Updated Successfully",
+    });
   } catch (error) {
     res.status(400).json({
       error: error.message,

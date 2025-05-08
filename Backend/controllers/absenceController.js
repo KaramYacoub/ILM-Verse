@@ -1,4 +1,95 @@
-// imports
-// section_id , date
-exports.getAbsence = async (req, res) => {};
-exports.updateUpsence = async (req, res) => {};
+const AbsenceReport = require("../models/NOSQL/AbsenceReport");
+const sequelize = require("sequelize");
+const SQL = require("../models/Connections/SQL-Driver"); // your Sequelize instance
+const initModels = require("../models/index"); // path to index.js
+const { response } = require("express");
+const models = initModels(SQL); // initialize models
+const { student } = models;
+exports.updateAbsence = async (req, res) => {
+  try {
+    const { students, section_id, date } = req.body;
+    // Check if an AbsenceReport exists for the same section_id and date
+    const existingReport = await AbsenceReport.findOne({ section_id, date });
+
+    if (existingReport) {
+      // If the report exists, update the students data
+      existingReport.students = students;
+      await existingReport.save();
+
+      res.status(200).json({
+        status: "success",
+        message: "Absence Report Updated Successfully",
+      });
+    } else {
+      // If no report exists, create a new one
+      const newAbsenceReport = new AbsenceReport({
+        section_id: section_id,
+        date: date,
+        students: students,
+      });
+      await newAbsenceReport.save();
+
+      res.status(201).json({
+        status: "success",
+        message: "Absence Report Created Successfully",
+      });
+    }
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.getAbsence = async (req, res) => {
+  try {
+    const { section_id, date } = req.body;
+
+    // Step 1: Fetch all students in the specific section
+    const studentsInSection = await student.findAll({
+      where: {
+        section_id: section_id,
+      },
+      attributes: ["student_id", "first_name", "last_name"],
+    });
+
+    // Step 2: Check if an absence report exists for the same section_id and date
+    const absenceReport = await AbsenceReport.findOne({ section_id, date });
+
+    // Step 3: Format the response
+    let responseData;
+
+    if (absenceReport) {
+      // If the absence report exists, map through absenceReport.students
+      responseData = absenceReport.students
+        .map((absentStudent) => {
+          // Find the corresponding student in studentsInSection by student_id
+          const studentInSection = studentsInSection.find(
+            (student) => student.student_id === absentStudent.student_id
+          );
+
+          if (studentInSection) {
+            return {
+              student_id: studentInSection.student_id,
+              fullname: `${studentInSection.first_name} ${studentInSection.last_name}`,
+              isAbsence: absentStudent.isAbsence, // Keep the isAbsence from the report
+            };
+          }
+        })
+        .filter(Boolean); // Remove undefined values if no student is found
+    } else {
+      // If no absence report exists, return all students with isAbsence set to false
+      responseData = studentsInSection.map((student) => ({
+        student_id: student.student_id,
+        fullname: `${student.first_name} ${student.last_name}`,
+        isAbsence: false, // Default absence status is false
+      }));
+    }
+
+    // Step 4: Send the response
+    res.status(200).json({
+      status: "success",
+      data: responseData,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
