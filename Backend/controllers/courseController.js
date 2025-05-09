@@ -687,8 +687,7 @@ exports.editMark = async (req, res) => {
 
 exports.getMark = async (req, res) => {
   try {
-    const { course_id } = req.params;
-    const { student_id, mark_type } = req.body;
+    const { course_id, student_id, mark_type } = req.params;
 
     // Fetch the mark from the database
     const mark = await student_marks.findOne({
@@ -719,3 +718,4 @@ exports.getMark = async (req, res) => {
     });
   }
 };
+

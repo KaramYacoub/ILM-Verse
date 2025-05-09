@@ -241,4 +241,53 @@ export const useCourseStore = create((set) => ({
       );
     }
   },
+
+  getMark: async (course_id, student_id, mark_type) => {
+    try {
+      const response = await axiosInstance.get(
+        `/admin/course/${course_id}/mark/${student_id}/${mark_type}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error getting mark:",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
+  addMark: async (course_id, { student_id, mark_type, mark_value }) => {
+    try {
+      const response = await axiosInstance.post(`/admin/course/${course_id}/mark`, {
+        student_id,
+        mark_type,
+        mark_value,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error adding mark:",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
+  editMark: async (course_id, { student_id, mark_type, mark_value }) => {
+    try {
+      const response = await axiosInstance.patch(`/admin/course/${course_id}/mark`, {
+        student_id,
+        mark_type,
+        mark_value,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error editing mark:",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
 }));
