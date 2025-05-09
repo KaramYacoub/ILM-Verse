@@ -153,7 +153,7 @@ router.patch(
   courseController.editMark
 );
 router.get(
-  "/course/:course_id/mark",
+  "/course/:course_id/mark/:student_id/:mark_type",
   authenticateUser,
   courseController.getMark
 );

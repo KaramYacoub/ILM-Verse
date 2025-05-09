@@ -8,6 +8,9 @@ function SearchStudent() {
   const [allStudents, setAllStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const studentsPerPage = 5;
+
   const { isFetchingStudents, getAllStudents } = useAdminStore();
 
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -16,7 +19,7 @@ function SearchStudent() {
   const handleReportClick = (student) => {
     setSelectedStudent({
       ...student,
-      student_name: `${student.first_name} ${student.last_name}`, // Create combined name
+      student_name: `${student.first_name} ${student.last_name}`,
     });
     setIsReportModalOpen(true);
   };
@@ -25,7 +28,6 @@ function SearchStudent() {
     const fetchStudents = async () => {
       try {
         const response = await getAllStudents();
-
         if (response && response.data) {
           setAllStudents(response.data);
           setFilteredStudents(response.data);
@@ -40,7 +42,7 @@ function SearchStudent() {
   const handleSearch = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
-
+    setCurrentPage(1);
     if (term.length > 0) {
       const results = allStudents.filter(
         (student) =>
@@ -53,6 +55,22 @@ function SearchStudent() {
     } else {
       setFilteredStudents(allStudents);
     }
+  };
+
+  const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
+  const indexOfLastStudent = currentPage * studentsPerPage;
+  const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
+  const currentStudents = filteredStudents.slice(
+    indexOfFirstStudent,
+    indexOfLastStudent
+  );
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
+
+  const handlePrevious = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
 
   if (isFetchingStudents) {
@@ -98,7 +116,7 @@ function SearchStudent() {
                 </tr>
               </thead>
               <tbody>
-                {filteredStudents.map((student) => (
+                {currentStudents.map((student) => (
                   <tr key={student.student_id} className="hover">
                     <td>{student.student_id}</td>
                     <td>
@@ -121,8 +139,31 @@ function SearchStudent() {
               </tbody>
             </table>
           </div>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-between items-center mt-4">
+            <button
+              onClick={handlePrevious}
+              className="btn btn-sm"
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span className="text-sm">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={handleNext}
+              className="btn btn-sm"
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
         </div>
       )}
+
+      {/* Report Modal */}
       <AdminReportModal
         isOpen={isReportModalOpen}
         onClose={() => setIsReportModalOpen(false)}

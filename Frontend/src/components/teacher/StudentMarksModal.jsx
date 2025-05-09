@@ -1,20 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useCourseStore } from "../../store/CourseStore";
 
-function StudentMarksModal({ isOpen, onClose, student, course }) {
+function StudentMarksModal({ isOpen, onClose, student, course, studentId }) {
+  const { addMark, editMark, getMark } = useCourseStore();
   const [activeTerm, setActiveTerm] = useState("Term 1");
   const [marks, setMarks] = useState({
-    "Term 1": [{ max: 40, obtained: 28 }],
-    "Term 2": [{ max: 40, obtained: 0 }],
-    "Term 3": [{ max: 40, obtained: 0 }],
-    Final: [{ type: "Final Exam", max: 80, obtained: 0 }],
+    "Term 1": [{ type: "MT-001", max: 20, obtained: 0 }],
+    "Term 2": [{ type: "MT-002", max: 20, obtained: 0 }],
+    "Term 3": [{ type: "MT-003", max: 20, obtained: 0 }],
+    Final: [{ type: "MT-004", max: 40, obtained: 0 }],
   });
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Handle mark changes
+  const loadMarks = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const markType = {
+        "Term 1": "MT-001",
+        "Term 2": "MT-002",
+        "Term 3": "MT-003",
+        Final: "MT-004",
+      }[activeTerm];
+
+      console.log("mark type: ", markType);
+      
+      const maxMark = {
+        "Term 1": 20,
+        "Term 2": 20,
+        "Term 3": 20,
+        Final: 40,
+      }[activeTerm];
+      
+      console.log("max Mark: ", maxMark);
+
+      const markValue = await getMark(course.id, studentId, markType);
+
+      setMarks((prev) => ({
+        ...prev,
+        [activeTerm]: [
+          {
+            type: markType,
+            max: maxMark,
+            obtained: markValue === "No mark found" ? 0 : markValue,
+          },
+        ],
+      }));
+    } catch (error) {
+      console.error("Error loading marks:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [activeTerm, course.id, getMark, studentId]);
+
+  // Load marks when modal opens or term changes
+  useEffect(() => {
+    if (isOpen) {
+      loadMarks();
+    }
+  }, [isOpen, activeTerm, loadMarks]);
+
   const handleMarkChange = (index, value) => {
     const updatedMarks = { ...marks };
     const currentTermData = [...updatedMarks[activeTerm]];
 
-    // Update obtained marks
     currentTermData[index] = {
       ...currentTermData[index],
       obtained: value,
@@ -24,20 +72,40 @@ function StudentMarksModal({ isOpen, onClose, student, course }) {
     setMarks(updatedMarks);
   };
 
-  const handleSave = () => {
-    console.log("Saving marks:", { student, course, marks });
-    onClose();
-  };
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+      const termData = marks[activeTerm][0];
 
-  const handleReset = () => {
-    const updatedMarks = { ...marks };
-    const currentTermData = updatedMarks[activeTerm].map((item) => ({
-      ...item,
-      obtained: "",
-    }));
+      // First try to edit existing mark
+      try {
+        await editMark(course.id, {
+          student_id: studentId,
+          mark_type: termData.type,
+          mark_value: termData.obtained,
+        });
+      } catch (editError) {
+        // If edit fails (mark doesn't exist), try to add new mark
+        if (editError.response?.status === 404) {
+          await addMark(course.id, {
+            student_id: studentId,
+            mark_type: termData.type,
+            mark_value: termData.obtained,
+          });
+        } else {
+          throw editError;
+        }
+      }
 
-    updatedMarks[activeTerm] = currentTermData;
-    setMarks(updatedMarks);
+      onClose();
+    } catch (error) {
+      console.error("Error saving mark:", error);
+      alert(
+        "Failed to save mark: " + (error.response?.data?.error || error.message)
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -46,7 +114,7 @@ function StudentMarksModal({ isOpen, onClose, student, course }) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-3xl p-6">
         <h2 className="text-2xl font-bold text-primary mb-4">
-          Enter Marks: {student} - {course}
+          Enter Marks: {student} - {course.name}
         </h2>
 
         {/* Term selector */}
@@ -87,6 +155,7 @@ function StudentMarksModal({ isOpen, onClose, student, course }) {
                       onChange={(e) => handleMarkChange(index, e.target.value)}
                       min="0"
                       max={item.max}
+                      disabled={isLoading}
                     />
                   </td>
                 </tr>
@@ -97,14 +166,26 @@ function StudentMarksModal({ isOpen, onClose, student, course }) {
 
         {/* Actions */}
         <div className="flex justify-end gap-2">
-          <button className="btn btn-ghost" onClick={onClose}>
+          <button
+            className="btn btn-ghost"
+            onClick={onClose}
+            disabled={isLoading}
+          >
             Cancel
           </button>
-          <button className="btn btn-outline" onClick={handleReset}>
-            Reset
-          </button>
-          <button className="btn btn-primary" onClick={handleSave}>
-            Save
+          <button
+            className="btn btn-primary"
+            onClick={handleSave}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <span className="loading loading-spinner loading-sm"></span>
+                Saving...
+              </>
+            ) : (
+              "Save"
+            )}
           </button>
         </div>
       </div>

@@ -137,7 +137,7 @@ function TakeAbsence() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       <GeneralNav />
 
       <div className="p-8 max-w-4xl mx-auto">
@@ -243,7 +243,7 @@ function TakeAbsence() {
           )}
         </button>
       </div>
-    </>
+    </div>
   );
 }
 

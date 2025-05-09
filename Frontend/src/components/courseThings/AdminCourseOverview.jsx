@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import GeneralNav from "../general/GeneralNav";
 import { useCourseStore } from "../../store/CourseStore";
 import { AlertCircle, ArrowLeft, Plus, FileText } from "lucide-react";
+import ShowCourseStudents from "../general/ShowCourseStudents";
 
 function AdminCourseOverview() {
   const { getCourseUnits, addCourseUnit, deleteUnit } = useCourseStore();
@@ -21,6 +22,7 @@ function AdminCourseOverview() {
     unit_name: "",
     unit_description: "",
   });
+  const [showStudentsModal, setShowStudentsModal] = useState(false);
 
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -89,6 +91,12 @@ function AdminCourseOverview() {
             >
               Go Back
             </button>
+            <button
+              className="btn btn-secondary"
+              onClick={() => setShowStudentsModal(true)}
+            >
+              Show Students
+            </button>
           </div>
         </div>
       </div>
@@ -114,6 +122,12 @@ function AdminCourseOverview() {
               <button className="btn btn-outline" onClick={() => navigate(-1)}>
                 <ArrowLeft className="h-4 w-4" />
                 Back
+              </button>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setShowStudentsModal(true)}
+              >
+                Show Students
               </button>
               <button
                 className="btn btn-primary"
@@ -280,6 +294,15 @@ function AdminCourseOverview() {
           </div>
         </div>
       </div>
+
+      {/* Show students Modal */}
+      {showStudentsModal && (
+        <ShowCourseStudents
+          courseId={courseId}
+          course={course}
+          onClose={() => setShowStudentsModal(false)}
+        />
+      )}
     </div>
   );
 }
