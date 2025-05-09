@@ -136,6 +136,11 @@ router.delete(
   authenticateUser,
   courseController.deleteMedia
 );
+router.delete(
+  "/course/:course_id",
+  authenticateUser,
+  courseController.deleteCourse
+);
 //Marks functionalites
 router.post(
   "/course/:course_id/mark",
@@ -165,10 +170,17 @@ router.patch(
 );
 
 // Absence functionalites
-router.get("/absence/:section_id/:date", authenticateUser, absenceController.getAbsence);
+router.get(
+  "/absence/:section_id/:date",
+  authenticateUser,
+  absenceController.getAbsence
+);
 router.post("/absence", authenticateUser, absenceController.updateAbsence);
 
-
-router.get("/students/:section_id", authenticateUser, courseController.getStudentInSection);
+router.get(
+  "/students/:section_id",
+  authenticateUser,
+  courseController.getStudentInSection
+);
 
 module.exports = router;
