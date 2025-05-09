@@ -17,7 +17,7 @@ const {
 } = models;
 const Report = require("../models/NOSQL/Report");
 const CourseUnit = require("../models/NOSQL/CourseUnit");
-
+const Assigment = require("../models//NOSQL/Assigment.js");
 //get all courses(data is filtered) ✅
 exports.getAllCourses = async (req, res) => {
   try {
@@ -546,6 +546,72 @@ exports.deleteMedia = async (req, res) => {
   }
 };
 
+// delete course and all associated units and media
+exports.deleteCourse = async (req, res) => {
+  const { course_id } = req.params;
+
+  try {
+    // remove all the students in that course, because the foreign key of course_id in the course_student relationship
+    await course_student.destroy({ where: { course_id: course_id } });
+
+    // Find all units associated with the course (Mongoose model)
+    const units = await CourseUnit.find({ course_id: course_id });
+
+    if (units.length === 0) {
+      // If no units are found, delete the course itself
+      await course.destroy({ where: { course_id: course_id } });
+      console.log(`No units found. Deleted course: ${course_id}`);
+
+      return res.status(200).json({
+        status: "success",
+        message: "Course has been deleted successfully (no units found)",
+      });
+    }
+
+    // Loop through each unit to delete its media and then the unit
+    for (let unit of units) {
+      // Loop through each media file in the unit
+      for (let mediaObject of unit.media) {
+        const filePath = path.join(
+          __dirname,
+          "../data/",
+          mediaObject.path.replace(/\\/g, "/")
+        );
+
+        try {
+          // Get the absolute file path to delete it from the server
+
+          await fs.promises.unlink(filePath);
+          console.log(`Deleted media file: ${filePath}`);
+        } catch (error) {
+          console.error(`Failed to delete media file: ${filePath}`);
+        }
+      }
+
+      // Now that media is deleted, remove all the media entries from the unit
+      unit.media = []; // Clear the media array from the unit
+
+      // Now delete the unit itself (Mongoose model)
+      await CourseUnit.findByIdAndDelete(unit._id);
+      console.log(`Deleted unit: ${unit._id}`);
+    }
+
+    // Finally, delete the course itself
+    await course.destroy({ where: { course_id: course_id } });
+    console.log(`Deleted course: ${course_id}`);
+
+    res.status(200).json({
+      status: "success",
+      message: "Course and all units have been deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error while deleting course:", error);
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
 exports.getStudentInSection = async (req, res) => {
   try {
     const { section_id } = req.params;
@@ -554,7 +620,7 @@ exports.getStudentInSection = async (req, res) => {
         section_id,
       },
     });
-    console.log(students)
+    console.log(students);
 
     res.status(200).json({
       status: "success",
@@ -568,10 +634,75 @@ exports.getStudentInSection = async (req, res) => {
 };
 
 // Assigments
-exports.addAssigment = async (req, res) => {};
-exports.deleteAssigment = async (req, res) => {};
-exports.getAllAssigments = async (req, res) => {};
+exports.addAssigment = async (req, res) => {
+  try {
+    const { course_id } = req.params;
+    const { title, description, end_at } = req.body;
+    const file = req.file;
+    const filePath = file.destination + "/" + file.filename;
+    const fileType = file.mimetype;
+    const published_at = new Date().toISOString().split("T")[0]; // Extract 'YYYY-MM-DD' from the ISO string
+
+    const newAssigment = await new Assigment({
+      course_id: course_id,
+      title: title,
+      description: description,
+      path: filePath,
+      type: fileType,
+      published_at: published_at,
+      end_at: end_at,
+    }).save();
+    console.log("in the add assigment");
+    res.status(200).json({
+      status: "success",
+      data: newAssigment,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+exports.deleteAssigment = async (req, res) => {
+  try {
+    const { assigment_id } = req.params;
+    const deletedAssigment = await Assigment.findById(assigment_id);
+    if (!deletedAssigment) {
+      return res.status(404).json({
+        status: "failure",
+        message: "Assigment not found",
+      });
+    }
+    const filePath = deletedAssigment.path;
+
+    try {
+      // Asynchronously delete the media file
+      await fs.promises.unlink(filePath);
+      console.log(`Deleted file: ${filePath}`);
+    } catch (error) {
+      console.error(`Failed to delete file`);
+    }
+    await Assigment.findByIdAndDelete(assigment_id);
+
+    res.status(204).json({
+      status: "success",
+      message: "Assigment Deleted Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+exports.getAllAssigmentsForTeacher = async (req, res) => {
+  try {
+    const { course_id } = req.params;
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
 exports.showAssigmentSubmission = async (req, res) => {};
+exports.getAllAssigmentsForStudent = async (req, res) => {};
 exports.markAssigment = async (req, res) => {};
 exports.submitAssigment = async (req, res) => {};
 
