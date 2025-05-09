@@ -7,13 +7,15 @@ function SearchParent() {
   const [allParents, setAllParents] = useState([]);
   const [filteredParents, setFilteredParents] = useState([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const parentsPerPage = 5;
+
   const { isFetchingParents, getAllParents } = useAdminStore();
 
   useEffect(() => {
     const fetchParents = async () => {
       try {
         const response = await getAllParents();
-
         if (response?.data) {
           setAllParents(response.data);
           setFilteredParents(response.data);
@@ -28,6 +30,7 @@ function SearchParent() {
   const handleSearch = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
+    setCurrentPage(1);
 
     const results = allParents.filter(
       (parent) =>
@@ -39,6 +42,22 @@ function SearchParent() {
         parent.email?.toLowerCase().includes(term.toLowerCase())
     );
     setFilteredParents(term.length > 0 ? results : allParents);
+  };
+
+  const totalPages = Math.ceil(filteredParents.length / parentsPerPage);
+  const indexOfLastParent = currentPage * parentsPerPage;
+  const indexOfFirstParent = indexOfLastParent - parentsPerPage;
+  const currentParents = filteredParents.slice(
+    indexOfFirstParent,
+    indexOfLastParent
+  );
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
+
+  const handlePrevious = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
   };
 
   if (isFetchingParents) {
@@ -78,7 +97,7 @@ function SearchParent() {
                 </tr>
               </thead>
               <tbody>
-                {filteredParents.map((parent) => (
+                {currentParents.map((parent) => (
                   <tr key={parent.parent_id} className="hover">
                     <td>{parent.parent_id}</td>
                     <td>
@@ -89,6 +108,27 @@ function SearchParent() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex justify-between items-center mt-4">
+            <button
+              onClick={handlePrevious}
+              className="btn btn-sm"
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span className="text-sm">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={handleNext}
+              className="btn btn-sm"
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
           </div>
         </div>
       ) : (

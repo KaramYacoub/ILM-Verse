@@ -196,7 +196,7 @@ function CourseContent() {
             filteredCourses.map((course) => (
               <div
                 key={course.course_id}
-                className="p-4 bg-base-100 rounded-lg shadow hover:shadow-md transition-shadow"
+                className="p-4 bg-base-100 rounded-lg shadow hover:shadow-md transition-shadow relative"
               >
                 <div className="flex flex-col md:flex-row justify-between">
                   <div className="mb-4 md:mb-0">
@@ -204,7 +204,7 @@ function CourseContent() {
                       {course.course_name}
                       <button
                         onClick={() => handleDeleteCourse(course.course_id)}
-                        className="btn btn-primary btn-xs ml-2"
+                        className="btn btn-primary btn-xs absolute right-3 top-3"
                         title="Delete course"
                       >
                         Delete
