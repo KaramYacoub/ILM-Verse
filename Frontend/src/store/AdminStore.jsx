@@ -325,4 +325,24 @@ export const useAdminStore = create((set) => ({
       throw error;
     }
   },
+
+  //change Admin password
+  changeAdminPassword: async (oldPassword, newPassword) => {
+    try {
+      set({ isChangingPassword: true });
+      const response = await axiosInstance.patch("/admin/settings/password", {
+        oldPassword,
+        newPassword,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error changing password:",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    } finally {
+      set({ isChangingPassword: false });
+    }
+  },
 }));

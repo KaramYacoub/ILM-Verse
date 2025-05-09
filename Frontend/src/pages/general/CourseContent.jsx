@@ -14,6 +14,7 @@ function CourseContent() {
     teachersByDepartment,
     getTeachersByDepartment,
     updateTeacher,
+    deleteCourse,
   } = useCourseStore();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -86,6 +87,23 @@ function CourseContent() {
       }
     },
     [involveStudents, getStudentsInCourse]
+  );
+
+  // Handle delete course
+  const handleDeleteCourse = useCallback(
+    async (courseId) => {
+      if (window.confirm("Are you sure you want to delete this course?")) {
+        try {
+          await deleteCourse(courseId);
+          await getAllCourses(); // Refresh the course list
+          alert("Course deleted successfully");
+        } catch (error) {
+          console.error("Error deleting course:", error);
+          alert("Failed to delete course");
+        }
+      }
+    },
+    [deleteCourse, getAllCourses]
   );
 
   // Handle fetch teachers by department
@@ -182,7 +200,16 @@ function CourseContent() {
               >
                 <div className="flex flex-col md:flex-row justify-between">
                   <div className="mb-4 md:mb-0">
-                    <h3 className="text-xl font-bold">{course.course_name}</h3>
+                    <h3 className="text-xl font-bold flex items-center gap-2">
+                      {course.course_name}
+                      <button
+                        onClick={() => handleDeleteCourse(course.course_id)}
+                        className="btn btn-primary btn-xs ml-2"
+                        title="Delete course"
+                      >
+                        Delete
+                      </button>
+                    </h3>
                     <div className="flex flex-wrap gap-2 mt-2">
                       <span className="badge badge-primary">
                         {course.grade_name}
