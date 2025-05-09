@@ -139,7 +139,7 @@ function GeneralNav() {
               </Link>
 
               <Link
-                to="/#"
+                to="/reports"
                 className="flex items-center gap-3 py-2 cursor-pointer hover:text-yellow-500 px-6"
                 onClick={toggleMenu}
               >

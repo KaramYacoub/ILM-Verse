@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import GeneralNav from "../../components/general/GeneralNav";
 import { useCourseStore } from "../../store/CourseStore";
+import { useAdminStore } from "../../store/AdminStore";
 
 function CourseContent() {
   const navigate = useNavigate();
@@ -14,8 +15,9 @@ function CourseContent() {
     teachersByDepartment,
     getTeachersByDepartment,
     updateTeacher,
-    deleteCourse,
   } = useCourseStore();
+
+  const { deleteCourse } = useAdminStore();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [showTeacherModal, setShowTeacherModal] = useState(false);

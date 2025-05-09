@@ -13,6 +13,8 @@ export const useAdminStore = create((set) => ({
 
   isChangingPassword: false,
 
+  isDeletingCourse: false,
+
   // add admin
   addAdmin: async (admin) => {
     try {
@@ -343,6 +345,23 @@ export const useAdminStore = create((set) => ({
       throw error;
     } finally {
       set({ isChangingPassword: false });
+    }
+  },
+
+  // delete course
+  deleteCourse: async (course_id) => {
+    try {
+      set({ isDeletingCourse: true });
+      const response = await axiosInstance.delete(`/admin/course/${course_id}`);
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error deleting course:",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    } finally {
+      set({ isDeletingCourse: false });
     }
   },
 }));
