@@ -13,8 +13,6 @@ export const useAdminStore = create((set) => ({
 
   isChangingPassword: false,
 
-  isDeletingCourse: false,
-
   // add admin
   addAdmin: async (admin) => {
     try {
