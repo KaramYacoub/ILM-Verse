@@ -48,7 +48,7 @@ const AssigmentSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
-      isSubmitted: {
+      isChecked: {
         type: Boolean,
         default: false,
       },

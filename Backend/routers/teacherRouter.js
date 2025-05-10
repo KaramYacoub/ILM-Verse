@@ -24,7 +24,17 @@ router.post(
 router.get(
   "/course/:course_id/assigments",
   authenticateUser,
-  courseController.getAllAssigmentsForTeacher
+  courseController.getAllAssigmentsForCourse
+);
+router.get(
+  "/course/:course_id/assigments/:assignment_id",
+  authenticateUser,
+  courseController.showAssigmentSubmission
+);
+router.patch(
+  "/course/:course_id/assigments/:assignment_id",
+  authenticateUser,
+  courseController.updateSubmissionStatus
 );
 
 module.exports = router;
