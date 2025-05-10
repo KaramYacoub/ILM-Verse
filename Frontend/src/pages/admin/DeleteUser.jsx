@@ -1,10 +1,10 @@
 import { useState } from "react";
-import GeneralNav from "../../components/general/GeneralNav";
-import StudentDeleteTable from "../../components/general/deletition/StudentDeleteTable";
-import TeacherDeleteTable from "../../components/general/deletition/TeacherDeleteTable";
-import ParentDeleteTable from "../../components/general/deletition/ParentDeleteTable";
-import AdminDeleteTable from "../../components/general/deletition/AdminDeleteTable";
-import TabNavigation from "../../components/general/TabNavigation";
+import AdminNavbar from "../../components/admin/adminNavbar";
+import StudentDeleteTable from "../../components/admin/deletition/StudentDeleteTable";
+import TeacherDeleteTable from "../../components/admin/deletition/TeacherDeleteTable";
+import ParentDeleteTable from "../../components/admin/deletition/ParentDeleteTable";
+import AdminDeleteTable from "../../components/admin/deletition/adminDeleteTable";
+import TabNavigation from "../../components/admin/TabNavigation";
 
 function DeleteUser() {
   const [activeTab, setActiveTab] = useState("students");
@@ -25,7 +25,7 @@ function DeleteUser() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <GeneralNav />
+      <AdminNavbar />
 
       <div className="p-8 max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold mb-2">Administrator</h1>

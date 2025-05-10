@@ -1,13 +1,13 @@
-import GeneralNav from "../../components/general/GeneralNav";
+import AdminNavbar from "../../components/admin/adminNavbar";
 import { useState } from "react";
-import { useAdminStore } from "../../store/AdminStore";
-import AdminForm from "../../components/general/addition/AdminForm";
-import StudentForm from "../../components/general/addition/StudentForm";
-import TeacherForm from "../../components/general/addition/TeacherForm";
-import ParentForm from "../../components/general/addition/ParentForm";
-import TabNavigation from "../../components/general/TabNavigation";
+import { useAdminStore } from "../../store/adminStore";
+import AdminForm from "../../components/admin/addition/adminForm";
+import StudentForm from "../../components/admin/addition/StudentForm";
+import TeacherForm from "../../components/admin/addition/TeacherForm";
+import ParentForm from "../../components/admin/addition/ParentForm";
+import TabNavigation from '../../components/admin/TabNavigation';
 
-function Addition() {
+function AddUser() {
   const [activeTab, setActiveTab] = useState("students");
   const [formData, setFormData] = useState({});
   const [status, setStatus] = useState({ message: "", type: "" });
@@ -64,7 +64,7 @@ function Addition() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <GeneralNav />
+      <AdminNavbar />
 
       <div className="p-8 max-w-4xl mx-auto">
         <div className="mb-8">
@@ -119,4 +119,4 @@ function Addition() {
   );
 }
 
-export default Addition;
+export default AddUser;

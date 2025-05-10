@@ -1,7 +1,7 @@
-import GeneralNav from "../../components/general/GeneralNav";
+import AdminNavbar from "../../components/admin/adminNavbar";
 import { Eye, EyeOff, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useAdminStore } from "../../store/AdminStore";
+import { useAdminStore } from "../../store/adminStore";
 
 function ResetPassword() {
   const [userType, setUserType] = useState("");
@@ -93,7 +93,7 @@ function ResetPassword() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <GeneralNav />
+      <AdminNavbar />
 
       <div className="p-6 max-w-6xl mx-auto">
         <div className="mb-8">

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import GeneralNav from "../../components/general/GeneralNav";
+import AdminNavbar from "../../components/admin/adminNavbar";
 import EventList from "../../components/shared/EventList";
 import { Loader2, Plus } from "lucide-react";
-import EventModal from "../../components/general/EventModal";
-import { useAdminStore } from "../../store/AdminStore";
+import EventModal from "../../components/admin/EventModal";
+import { useAdminStore } from "../../store/adminStore";
 import { useSharedStore } from "../../store/SharedStore";
 
-function GenralEvents() {
+function AdminEvents() {
   const [currentYear, setCurrentYear] = useState("2025");
   const [showModal, setShowModal] = useState(false);
   const [formError, setFormError] = useState("");
@@ -110,7 +110,7 @@ function GenralEvents() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <GeneralNav />
+      <AdminNavbar />
 
       <div className="p-8 max-w-7xl mx-auto">
         {/* Header */}
@@ -171,4 +171,4 @@ function GenralEvents() {
   );
 }
 
-export default GenralEvents;
+export default AdminEvents;

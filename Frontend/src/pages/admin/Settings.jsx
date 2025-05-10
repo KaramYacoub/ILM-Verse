@@ -1,6 +1,6 @@
 import { useState } from "react";
-import GeneralNav from "../../components/general/GeneralNav";
-import { useAdminStore } from "../../store/AdminStore";
+import AdminNavbar from "../../components/admin/adminNavbar";
+import { useAdminStore } from "../../store/adminStore";
 
 function Settings() {
   // Local state for form fields
@@ -38,7 +38,7 @@ function Settings() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <GeneralNav />
+      <AdminNavbar />
 
       <div className="p-8 max-w-4xl mx-auto">
         {/* Page Header */}

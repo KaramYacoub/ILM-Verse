@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAdminStore } from "../../store/AdminStore";
+import { useAdminStore } from "../../store/adminStore";
 
 function AdminReportModal({ isOpen, onClose, student }) {
   const addReport = useAdminStore((state) => state.addReport);

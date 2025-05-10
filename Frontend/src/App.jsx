@@ -97,18 +97,18 @@ const ParentShowAbsences = lazy(() =>
   import("./pages/parent/ParentShowAbsences")
 );
 
-const GeneralDash = lazy(() => import("./pages/general/GeneralDash"));
-const Addition = lazy(() => import("./pages/general/Addition"));
-const Deletion = lazy(() => import("./pages/general/Deletition"));
-const CourseContent = lazy(() => import("./pages/general/CourseContent"));
-const ResetPassword = lazy(() => import("./pages/general/ResetPassword"));
-const Settings = lazy(() => import("./pages/general/Settings"));
-const GenralEvents = lazy(() => import("./pages/general/GenralEvents"));
-const Reports = lazy(() => import("./pages/general/Reports"));
-const AddCourse = lazy(() => import("./pages/general/AddCourse"));
-const AdminCourseOverview = lazy(() => import("./components/courseThings/AdminCourseOverview"));
-const AdminUnitContent = lazy(() => import("./components/courseThings/AdminUnitContent"));
-const TakeAbsence = lazy(() => import("./pages/general/TakeAbsence"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AddUser = lazy(() => import("./pages/admin/AddUser"));
+const DeleteUser = lazy(() => import("./pages/admin/DeleteUser"));
+const CourseContent = lazy(() => import("./pages/admin/CourseContent"));
+const ResetPassword = lazy(() => import("./pages/admin/ResetPassword"));
+const Settings = lazy(() => import("./pages/admin/Settings"));
+const AdminEvents = lazy(() => import("./pages/admin/AdminEvents"));
+const Reports = lazy(() => import("./pages/admin/Reports"));
+const AddCourse = lazy(() => import("./pages/admin/AddCourse"));
+const AdminCourseOverview = lazy(() => import("./components/admin/courseThings/AdminCourseOverview"));
+const AdminUnitContent = lazy(() => import("./components/admin/courseThings/AdminUnitContent"));
+const TakeAbsence = lazy(() => import("./pages/admin/TakeAbsence"));
 
 function App() {
   const {
@@ -127,7 +127,7 @@ function App() {
   const isAuthenticated = authAdmin || authTeacher || authStudent || authParent;
 
   const getRedirectPath = () => {
-    if (authAdmin) return "/general-dashboard";
+    if (authAdmin) return "/admin-dashboard";
     if (authTeacher) return "/teacher-dashboard";
     if (authStudent) return "/student-dashboard";
     if (authParent) return "/parent-dashboard";
@@ -402,19 +402,19 @@ function App() {
             </Route>
           </>
 
-          {/* General Routes */}
+          {/* admin Routes */}
           <>
             <Route
-              path="/general-dashboard"
-              element={authAdmin ? <GeneralDash /> : <Navigate to="/" />}
+              path="/admin-dashboard"
+              element={authAdmin ? <AdminDashboard /> : <Navigate to="/" />}
             />
             <Route
               path="/addition"
-              element={authAdmin ? <Addition /> : <Navigate to="/" />}
+              element={authAdmin ? <AddUser /> : <Navigate to="/" />}
             />
             <Route
               path="/deletion"
-              element={authAdmin ? <Deletion /> : <Navigate to="/" />}
+              element={authAdmin ? <DeleteUser /> : <Navigate to="/" />}
             />
             <Route
               path="/reset-password"
@@ -430,8 +430,8 @@ function App() {
               element={authAdmin ? <Settings /> : <Navigate to="/" />}
             />
             <Route
-              path="/general-event"
-              element={authAdmin ? <GenralEvents /> : <Navigate to="/" />}
+              path="/admin-event"
+              element={authAdmin ? <AdminEvents /> : <Navigate to="/" />}
             />
             <Route
               path="/reports"

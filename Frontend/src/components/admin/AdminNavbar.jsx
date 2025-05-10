@@ -14,7 +14,7 @@ import {
 
 import { useAuthStore } from "../../store/AuthStore";
 
-function GeneralNav() {
+function AdminNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isUserLoggingOut, logout, authAdmin } = useAuthStore();
 
@@ -52,7 +52,7 @@ function GeneralNav() {
         {/* Center: Nav Items */}
         <div className="flex gap-6 text-accent text-sm items-center">
           <Link
-            to="/general-dashboard"
+            to="/admin-dashboard"
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
           >
             <FaHome color="#fff" />
@@ -60,7 +60,7 @@ function GeneralNav() {
           </Link>
 
           <Link
-            to="/general-event"
+            to="/admin-event"
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
           >
             <FaCalendarAlt color="#fff" />
@@ -121,7 +121,7 @@ function GeneralNav() {
           <div className="absolute top-16 left-0 right-0 bg-primary z-50 py-4 shadow-lg">
             <div className="flex flex-col gap-4 text-accent">
               <Link
-                to="/general-dashboard"
+                to="/admin-dashboard"
                 className="flex items-center gap-3 py-2 cursor-pointer hover:text-yellow-500 px-6"
                 onClick={toggleMenu}
               >
@@ -130,7 +130,7 @@ function GeneralNav() {
               </Link>
 
               <Link
-                to="/general-event"
+                to="/admin-event"
                 className="flex items-center gap-3 py-2 cursor-pointer hover:text-yellow-500 px-6"
                 onClick={toggleMenu}
               >
@@ -183,4 +183,4 @@ function GeneralNav() {
   );
 }
 
-export default GeneralNav;
+export default AdminNavbar;

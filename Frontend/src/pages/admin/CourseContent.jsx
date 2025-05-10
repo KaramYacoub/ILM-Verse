@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import GeneralNav from "../../components/general/GeneralNav";
+import AdminNavbar from "../../components/admin/adminNavbar";
 import { useCourseStore } from "../../store/CourseStore";
-import { useAdminStore } from "../../store/AdminStore";
+import { useAdminStore } from "../../store/adminStore";
 
 function CourseContent() {
   const navigate = useNavigate();
@@ -159,7 +159,7 @@ function CourseContent() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <GeneralNav />
+      <AdminNavbar />
       <div className="p-4 md:p-8 max-w-6xl mx-auto">
         <div className="mb-6">
           <h1 className="text-2xl md:text-3xl font-bold mb-1">

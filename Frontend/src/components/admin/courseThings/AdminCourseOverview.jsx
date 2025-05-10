@@ -1,9 +1,9 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import GeneralNav from "../general/GeneralNav";
-import { useCourseStore } from "../../store/CourseStore";
+import AdminNavbar from "../adminNavbar";
+import { useCourseStore } from "../../../store/CourseStore";
 import { AlertCircle, ArrowLeft, Plus, FileText } from "lucide-react";
-import ShowCourseStudents from "../general/ShowCourseStudents";
+import ShowCourseStudents from "../ShowCourseStudents";
 
 function AdminCourseOverview() {
   const { getCourseUnits, addCourseUnit, deleteUnit } = useCourseStore();
@@ -75,7 +75,7 @@ function AdminCourseOverview() {
   if (!course) {
     return (
       <div className="min-h-screen bg-base-200 flex flex-col">
-        <GeneralNav />
+        <AdminNavbar />
         <div className="flex-1 flex flex-col items-center justify-center p-6">
           <div className="card bg-base-100 shadow-xl p-8 max-w-md text-center">
             <div className="text-error mb-4">
@@ -105,7 +105,7 @@ function AdminCourseOverview() {
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col">
-      <GeneralNav />
+      <AdminNavbar />
       <div className="flex-1 p-6 max-w-6xl w-full mx-auto">
         {/* Course Header */}
         <div className="bg-base-100 rounded-xl shadow-md p-6 mb-8">

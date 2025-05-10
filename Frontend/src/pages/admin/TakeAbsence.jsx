@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import GeneralNav from "../../components/general/GeneralNav";
-import { useAdminStore } from "../../store/AdminStore";
+import AdminNavbar from "../../components/admin/adminNavbar";
+import { useAdminStore } from "../../store/adminStore";
 import { useCourseStore } from "../../store/CourseStore";
 
 function TakeAbsence() {
@@ -138,7 +138,7 @@ function TakeAbsence() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <GeneralNav />
+      <AdminNavbar />
 
       <div className="p-8 max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-6 text-primary">Take Absence</h1>

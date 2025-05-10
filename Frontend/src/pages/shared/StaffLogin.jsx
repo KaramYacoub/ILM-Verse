@@ -27,7 +27,7 @@ function StudentLogin() {
 
       if (response?.status === "success") {
         navigate(
-          role === "admin" ? "/general-dashboard" : "/teacher-dashboard"
+          role === "admin" ? "/admin-dashboard" : "/teacher-dashboard"
         );
       }
     } catch (err) {

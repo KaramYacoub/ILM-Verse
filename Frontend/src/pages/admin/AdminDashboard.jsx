@@ -1,15 +1,15 @@
 import { useState } from "react";
-import GeneralNav from "../../components/general/GeneralNav";
-import SearchStudent from "../../components/general/SearchStudent";
-import SearchParent from "../../components/general/SearchParent";
-import QuickActions from "../../components/general/QuickActions";
+import AdminNavbar from "../../components/admin/adminNavbar";
+import SearchStudent from "../../components/admin/SearchStudent";
+import SearchParent from "../../components/admin/SearchParent";
+import QuickActions from "../../components/admin/QuickActions";
 
-function GeneralDash() {
+function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("students");
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <GeneralNav />
+      <AdminNavbar />
 
       <div className="p-8 max-w-6xl mx-auto">
         {/* Tab Navigation */}
@@ -42,4 +42,4 @@ function GeneralDash() {
   );
 }
 
-export default GeneralDash;
+export default AdminDashboard;

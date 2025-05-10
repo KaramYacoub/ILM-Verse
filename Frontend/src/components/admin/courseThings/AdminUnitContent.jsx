@@ -1,8 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { Trash2, File, Video, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import GeneralNav from "../../components/general/GeneralNav";
-import { useCourseStore } from "../../store/CourseStore";
+import AdminNavbar from "../adminNavbar";
+import { useCourseStore } from "../../../store/CourseStore";
 
 function AdminUnitContent() {
   const location = useLocation();
@@ -146,7 +146,7 @@ function AdminUnitContent() {
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col">
-      <GeneralNav />
+      <AdminNavbar />
 
       <div className="bg-base-100 p-6 pb-0 max-w-6xl w-full mx-auto rounded-lg shadow-md mt-6">
         <h2 className="text-2xl font-bold text-primary mb-6">Unit Content</h2>

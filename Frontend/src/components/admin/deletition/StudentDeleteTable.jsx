@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAdminStore } from "../../../store/AdminStore";
+import { useAdminStore } from "../../../store/adminStore";
 import { Loader2 } from "lucide-react";
 
 function StudentDeleteTable({ searchTerm }) {
