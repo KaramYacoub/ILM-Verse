@@ -12,9 +12,11 @@ import { Loader2 } from "lucide-react";
 
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/AuthStore";
+import ParentChatPanel from "./ChatThings/ParentChatPanel";
 
 function ParentNavBar() {
   const { isUserLoggingOut, logout, authParent } = useAuthStore();
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -75,13 +77,16 @@ function ParentNavBar() {
             <span>Events</span>
           </Link>
           {/* Chat */}
-          <Link
-            to="#"
-            className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
+          <button
+            onClick={() => {
+              toggleMenu();
+              setIsChatOpen(true);
+            }}
+            className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500 text-left w-full"
           >
             <FaComments color="#fff" />
             <span>Chat</span>
-          </Link>
+          </button>
         </div>
 
         {/* Right: Logout */}
@@ -135,14 +140,16 @@ function ParentNavBar() {
                 <FaCalendarAlt color="#fff" />
                 <span>Events</span>
               </Link>
-              <Link
-                to="#"
-                className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
-                onClick={toggleMenu}
+              <button
+                onClick={() => {
+                  toggleMenu();
+                  setIsChatOpen(true);
+                }}
+                className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500 text-left w-full"
               >
                 <FaComments color="#fff" />
                 <span>Chat</span>
-              </Link>
+              </button>
 
               <div className="divider divider-accent my-0" />
 
@@ -158,6 +165,11 @@ function ParentNavBar() {
           </div>
         )}
       </div>
+      {/* Chat Panel */}
+      <ParentChatPanel
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+      />
     </div>
   );
 }

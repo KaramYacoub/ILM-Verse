@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   FaHome,
   FaClipboardList,
@@ -7,15 +8,21 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
-import { useState } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/AuthStore";
 import { Loader2 } from "lucide-react";
+import StudentChatPanel from "./ChatThings/StudentChatPanel";
 
 function StudentNavbar() {
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const { isUserLoggingOut, logout, authStudent } = useAuthStore();
   const navigate = useNavigate();
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -23,12 +30,6 @@ function StudentNavbar() {
     } catch (error) {
       console.log(error.message);
     }
-  };
-
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
   };
 
   if (isUserLoggingOut) {
@@ -47,6 +48,7 @@ function StudentNavbar() {
         <div className="font-bold text-base-100">
           {authStudent.first_name} {authStudent.last_name}
         </div>
+
         {/* Center: Nav Items */}
         <div className="flex gap-6 text-accent text-sm items-center">
           <Link
@@ -70,13 +72,13 @@ function StudentNavbar() {
             <FaCalendarAlt color="#fff" />
             <span>Events</span>
           </Link>
-          <Link
-            to="#"
-            className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
+          <button
+            onClick={() => setIsChatOpen(true)}
+            className="flex items-center gap-1 cursor-pointer hover:text-yellow-500 text-accent text-sm"
           >
             <FaComments color="#fff" />
             <span>Chat</span>
-          </Link>
+          </button>
         </div>
 
         {/* Right: Logout */}
@@ -92,12 +94,10 @@ function StudentNavbar() {
 
       {/* Mobile Navbar */}
       <div className="md:hidden flex justify-between items-center">
-        {/* Profile Section - Left Side */}
         <div className="font-bold text-base-100">
           {authStudent.first_name} {authStudent.last_name}
         </div>
 
-        {/* Hamburger Button - Right Side */}
         <button onClick={toggleMenu} className="text-white">
           {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
         </button>
@@ -131,16 +131,17 @@ function StudentNavbar() {
               <FaCalendarAlt color="#fff" />
               <span>Events</span>
             </Link>
-            <Link
-              to="#"
-              className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
-              onClick={toggleMenu}
+            <button
+              onClick={() => {
+                toggleMenu();
+                setIsChatOpen(true);
+              }}
+              className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500 text-left w-full"
             >
               <FaComments color="#fff" />
               <span>Chat</span>
-            </Link>
+            </button>
 
-            
             <div className="divider divider-accent m-0" />
 
             <Link
@@ -157,6 +158,12 @@ function StudentNavbar() {
           </div>
         </div>
       )}
+
+      {/* Chat Panel */}
+      <StudentChatPanel
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+      />
     </div>
   );
 }

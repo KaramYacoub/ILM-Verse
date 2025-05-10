@@ -443,7 +443,9 @@ function App() {
             />
             <Route
               path="/admin-course-overview/:courseId"
-              element={authAdmin ? <AdminCourseOverview /> : <Navigate to="/" />}
+              element={
+                authAdmin ? <AdminCourseOverview /> : <Navigate to="/" />
+              }
             />
             <Route
               path="/admin-unit-content/:courseId"
