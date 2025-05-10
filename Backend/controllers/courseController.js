@@ -642,7 +642,7 @@ exports.addAssigment = async (req, res) => {
     const filePath = file.destination + "/" + file.filename;
     const fileType = file.mimetype;
     const published_at = new Date().toISOString().split("T")[0]; // Extract 'YYYY-MM-DD' from the ISO string
-
+    console.log("in add assigment");
     const newAssigment = await new Assigment({
       course_id: course_id,
       title: title,
