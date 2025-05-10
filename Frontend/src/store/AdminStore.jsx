@@ -207,10 +207,31 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // get all departments
+  getAllDepartments: async () => {
+    try {
+      const response = await axiosInstance.get("/admin/depts");
+      return response.data;
+    } catch (error) {
+      console.log("error fetching depts:", error.message);
+    }
+  },
+
   // get all grades
   getAllGrades: async () => {
     try {
       const response = await axiosInstance.get("/admin/addition/course/grades");
+      set({ allGrades: response.data.data });
+      return response.data;
+    } catch (error) {
+      console.log("error fetching grades:", error.message);
+    }
+  },
+
+  // get all grades
+  getGradesInDepartment: async (dept_id) => {
+    try {
+      const response = await axiosInstance.get(`/admin/${dept_id}/grades`);
       set({ allGrades: response.data.data });
       return response.data;
     } catch (error) {

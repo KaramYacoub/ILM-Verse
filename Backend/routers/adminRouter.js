@@ -183,4 +183,7 @@ router.get(
   courseController.getStudentInSection
 );
 
+router.get("/depts", authenticateUser, adminController.getAllDepartments);
+router.get("/:dept_id/grades", authenticateUser, adminController.getGradesInDepartment);
+
 module.exports = router;

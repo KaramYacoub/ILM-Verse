@@ -5,7 +5,7 @@ import AdminForm from "../../components/admin/addition/adminForm";
 import StudentForm from "../../components/admin/addition/StudentForm";
 import TeacherForm from "../../components/admin/addition/TeacherForm";
 import ParentForm from "../../components/admin/addition/ParentForm";
-import TabNavigation from '../../components/admin/TabNavigation';
+import TabNavigation from "../../components/admin/TabNavigation";
 
 function AddUser() {
   const [activeTab, setActiveTab] = useState("students");
@@ -26,35 +26,47 @@ function AddUser() {
     setStatus({ message: "", type: "" });
 
     try {
-      if (activeTab === "admins") {
-        await addAdmin(formData);
-        setStatus({
-          message: "Admin added successfully!",
-          type: "success",
-        });
-      } else if (activeTab === "students") {
-        await addStudent(formData);
-        setStatus({
-          message: "Student added successfully!",
-          type: "success",
-        });
-      } else if (activeTab === "parents") {
-        await addParent(formData);
-        setStatus({
-          message: "Parent added successfully!",
-          type: "success",
-        });
-      } else if (activeTab === "teachers") {
-        await addTeacher(formData);
-        setStatus({
-          message: "Teacher added successfully!",
-          type: "success",
-        });
+      switch (activeTab) {
+        case "admins":
+          await addAdmin(formData);
+          setStatus({
+            message: "Admin added successfully!",
+            type: "success",
+          });
+          break;
+        case "teachers":
+          await addTeacher(formData);
+          setStatus({
+            message: "Teacher added successfully!",
+            type: "success",
+          });
+          break;
+        case "students":
+          await addStudent(formData);
+          setStatus({
+            message: "Student added successfully!",
+            type: "success",
+          });
+          break;
+        case "parents":
+          await addParent(formData);
+          setStatus({
+            message: "Parent added successfully!",
+            type: "success",
+          });
+          break;
+
+        default:
+          setFormData({});
+          break;
       }
 
       setFormData({});
+      setTimeout(() => {
+        setStatus({ message: "", type: "" });
+      }, 3000);
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.log("Error submitting add form:", error);
       setStatus({
         message: error.response?.data?.error || "Something went wrong!",
         type: "error",
@@ -68,17 +80,16 @@ function AddUser() {
 
       <div className="p-8 max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Administrator</h1>
-          <h2 className="text-2xl font-semibold">Add New User</h2>
+          <h1 className="text-3xl text-primary font-bold mb-2">Administrator</h1>
+          <h2 className="text-xl font-semibold">Add New {activeTab}</h2>
         </div>
 
-        
         {/* Tab Navigation */}
         <TabNavigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-6 rounded-lg shadow-md space-y-6"
+          className="bg-base-100 p-6 rounded-lg shadow-md space-y-6"
         >
           {activeTab === "students" && (
             <StudentForm formData={formData} handleChange={handleChange} />

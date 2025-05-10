@@ -1,4 +1,44 @@
+import { useEffect, useState } from "react";
+import { useAdminStore } from "../../../store/adminStore";
+
 export default function TeacherForm({ formData, handleChange }) {
+  const { getAllDepartments, getGradesInDepartment, getAllSections } =
+    useAdminStore();
+
+  const [departments, setDepartments] = useState([]);
+  const [grades, setGrades] = useState([]);
+  const [sections, setSections] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const deptData = await getAllDepartments();
+
+      setDepartments(Array.isArray(deptData.data) ? deptData.data : []);
+    };
+    fetchData();
+  }, [getAllDepartments]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const gradeData = await getGradesInDepartment(formData.dept_id);
+
+      setGrades(Array.isArray(gradeData.data) ? gradeData.data : []);
+    };
+    fetchData();
+  }, [getAllDepartments, formData.dept_id, getGradesInDepartment]);
+
+  useEffect(() => {
+    const fetchSections = async () => {
+      if (formData.grade_id) {
+        const sectionData = await getAllSections(formData.grade_id);
+        setSections(sectionData.data);
+      } else {
+        setSections([]);
+      }
+    };
+    fetchSections();
+  }, [getGradesInDepartment, formData.grade_id, getAllSections]);
+
   return (
     <>
       <h3 className="text-xl font-bold mb-4">Add New Teacher</h3>
@@ -7,6 +47,7 @@ export default function TeacherForm({ formData, handleChange }) {
           <label className="block font-medium mb-1">Teacher ID</label>
           <div className="bg-gray-100 p-2 rounded">Auto-generated</div>
         </div>
+
         <div>
           <label className="block font-medium mb-1">First Name*</label>
           <input
@@ -19,6 +60,7 @@ export default function TeacherForm({ formData, handleChange }) {
             required
           />
         </div>
+
         <div>
           <label className="block font-medium mb-1">Last Name*</label>
           <input
@@ -31,6 +73,7 @@ export default function TeacherForm({ formData, handleChange }) {
             required
           />
         </div>
+
         <div>
           <label className="block font-medium mb-1">Email*</label>
           <input
@@ -43,6 +86,7 @@ export default function TeacherForm({ formData, handleChange }) {
             required
           />
         </div>
+
         <div>
           <label className="block font-medium mb-1">Password*</label>
           <input
@@ -55,6 +99,7 @@ export default function TeacherForm({ formData, handleChange }) {
             required
           />
         </div>
+
         <div>
           <label className="block font-medium mb-1">Department*</label>
           <select
@@ -64,15 +109,38 @@ export default function TeacherForm({ formData, handleChange }) {
             className="select select-bordered w-full"
             required
           >
-            <option disabled value="">
+            <option value="">
               Select Department
             </option>
-            <option value="Department-001">KG</option>
-            <option value="Department-002">Primary</option>
-            <option value="Department-003">Intermediate Males</option>
-            <option value="Department-004">Intermediate Females</option>
+            {departments.map((dept) => (
+              <option key={dept.department_id} value={dept.department_id}>
+                {dept.name}
+              </option>
+            ))}
           </select>
         </div>
+
+        <div>
+          <label className="block font-medium mb-1">Grade*</label>
+          <select
+            name="grade_id"
+            value={formData.grade_id || ""}
+            onChange={handleChange}
+            className="select select-bordered w-full"
+            disabled={!formData.dept_id}
+            required
+          >
+            <option value="">
+              {formData.dept_id ? "Select Grade" : "Select Department First"}
+            </option>
+            {grades.map((grade) => (
+              <option key={grade.grade_id} value={grade.grade_id}>
+                {grade.grade_name}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div>
           <label className="block font-medium mb-1">Section*</label>
           <select
@@ -81,12 +149,16 @@ export default function TeacherForm({ formData, handleChange }) {
             onChange={handleChange}
             className="select select-bordered w-full"
             required
+            disabled={!formData.grade_id || !formData.dept_id }
           >
-            <option disabled value="">
-              Select Section
+            <option value="">
+              {formData.grade_id ? "Select Section" : "Select Grade First"}
             </option>
-            <option value="Section-001">A</option>
-            <option value="Section-002">B</option>
+            {sections.map((section) => (
+              <option key={section.section_id} value={section.section_id}>
+                {section.section_name}
+              </option>
+            ))}
           </select>
         </div>
       </div>
