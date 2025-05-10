@@ -695,16 +695,68 @@ exports.deleteAssigment = async (req, res) => {
 exports.getAllAssigmentsForTeacher = async (req, res) => {
   try {
     const { course_id } = req.params;
+    const assigments = await Assigment.find({ course_id: course_id }).select(
+      "-studentsSubmission"
+    ); // Excluding studentsSubmission
+
+    if (assigments && assigments.length > 0) {
+      res.status(200).json({
+        status: "success",
+        data: assigments,
+      });
+    } else {
+      res.status(404).json({
+        status: "failure",
+        message: "No assignments found",
+      });
+    }
   } catch (error) {
     res.status(500).json({
       error: error.message,
     });
   }
 };
-exports.showAssigmentSubmission = async (req, res) => {};
+exports.submitAssigment= async(req,res)=>{
+}
+exports.getAssigmentSubmission = async (req, res) => {};
+exports.showAssigmentSubmission = async (req, res) => {
+  try {
+    const { assignment_id } = req.params; // Getting the assignment_id from params
+
+    // Find the assignment by its assignment_id (no need to exclude studentsSubmission)
+    const assignment = await Assigment.findById(assignment_id);
+
+    if (assignment) {
+      // Check if the assignment has submissions
+      if (
+        assignment.studentsSubmission &&
+        assignment.studentsSubmission.length > 0
+      ) {
+        res.status(200).json({
+          status: "success",
+          data: assignment.studentsSubmission, // Return the studentsSubmission data
+        });
+      } else {
+        res.status(404).json({
+          status: "failure",
+          message: "No submissions found for this assignment",
+        });
+      }
+    } else {
+      res.status(404).json({
+        status: "failure",
+        message: "Assignment not found",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
 exports.getAllAssigmentsForStudent = async (req, res) => {};
 exports.markAssigment = async (req, res) => {};
-exports.submitAssigment = async (req, res) => {};
 
 // Quizes
 exports.addQuiz = async (req, res) => {};
@@ -849,4 +901,3 @@ exports.getMark = async (req, res) => {
     });
   }
 };
-

@@ -21,5 +21,10 @@ router.post(
   uploadAssigment,
   courseController.addAssigment
 );
+router.get(
+  "/course/:course_id/assigments",
+  authenticateUser,
+  courseController.getAllAssigmentsForTeacher
+);
 
 module.exports = router;
