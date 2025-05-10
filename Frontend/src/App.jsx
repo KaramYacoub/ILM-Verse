@@ -103,11 +103,16 @@ const Deletion = lazy(() => import("./pages/general/Deletition"));
 const CourseContent = lazy(() => import("./pages/general/CourseContent"));
 const ResetPassword = lazy(() => import("./pages/general/ResetPassword"));
 const Settings = lazy(() => import("./pages/general/Settings"));
+
 const GenralEvents = lazy(() => import("./pages/general/GenralEvents"));
 const Reports = lazy(() => import("./pages/general/Reports"));
 const AddCourse = lazy(() => import("./pages/general/AddCourse"));
-const AdminCourseOverview = lazy(() => import("./components/courseThings/AdminCourseOverview"));
-const AdminUnitContent = lazy(() => import("./components/courseThings/AdminUnitContent"));
+const AdminCourseOverview = lazy(() =>
+  import("./components/courseThings/AdminCourseOverview")
+);
+const AdminUnitContent = lazy(() =>
+  import("./components/courseThings/AdminUnitContent")
+);
 const TakeAbsence = lazy(() => import("./pages/general/TakeAbsence"));
 
 function App() {
@@ -443,7 +448,9 @@ function App() {
             />
             <Route
               path="/admin-course-overview/:courseId"
-              element={authAdmin ? <AdminCourseOverview /> : <Navigate to="/" />}
+              element={
+                authAdmin ? <AdminCourseOverview /> : <Navigate to="/" />
+              }
             />
             <Route
               path="/admin-unit-content/:courseId"

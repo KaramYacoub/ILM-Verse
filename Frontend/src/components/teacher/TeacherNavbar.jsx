@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   FaHome,
   FaCalendarAlt,
@@ -6,15 +7,17 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
-import { useState } from "react";
+
 import { Loader2 } from "lucide-react";
 
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/AuthStore";
+import TeacherChatPanel from "./ChatThings/TeacherChatPanel";
 
 function TeacherNavbar() {
   const { isUserLoggingOut, logout, authTeacher } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const navigate = useNavigate();
   const handleLogout = async () => {
@@ -71,13 +74,13 @@ function TeacherNavbar() {
             <span>Take Absence</span>
           </Link>
 
-          <Link
-            to="#"
-            className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
+          <button
+            onClick={() => setIsChatOpen(true)}
+            className="flex items-center gap-1 cursor-pointer hover:text-yellow-500 text-accent text-sm"
           >
             <FaComments color="#fff" />
             <span>Chat</span>
-          </Link>
+          </button>
         </div>
 
         {/* Right: Logout */}
@@ -123,14 +126,16 @@ function TeacherNavbar() {
                 <FaCalendarAlt color="#fff" />
                 <span>Events</span>
               </Link>
-              <Link
-                to="#"
-                className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
-                onClick={toggleMenu}
+              <button
+                onClick={() => {
+                  toggleMenu();
+                  setIsChatOpen(true);
+                }}
+                className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500 text-left w-full"
               >
                 <FaComments color="#fff" />
                 <span>Chat</span>
-              </Link>
+              </button>
 
               <div className="divider divider-accent my-0" />
 
@@ -149,6 +154,12 @@ function TeacherNavbar() {
           </div>
         )}
       </div>
+
+      {/* Chat Panel */}
+      <TeacherChatPanel
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+      />
     </div>
   );
 }
