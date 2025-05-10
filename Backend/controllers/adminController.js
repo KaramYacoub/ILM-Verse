@@ -195,7 +195,7 @@ exports.addStudent = async (req, res) => {
   }
 };
 
-// Add Course
+// Add Course ✅
 exports.addCourse = async (req, res) => {
   const { subject_name, section_id, teacher_id } = req.body;
   try {
@@ -761,6 +761,7 @@ exports.changeAdminPassword = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 exports.changeAdminName = async (req, res) => {
   try {
     const { oldPassword, first_name, last_name } = req.body;
@@ -790,6 +791,36 @@ exports.changeAdminName = async (req, res) => {
     } else {
       res.status(400).json({ error: "Invalid Password" });
     }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// get all the departments
+exports.getAllDepartments = async (req, res) => {
+  try {
+    const allDepts = await department.findAll();
+    res.status(200).json({
+      status: "success",
+      data: allDepts,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getGradesInDepartment = async (req, res) => {
+  try {
+    const { dept_id } = req.params;
+    const allDepts = await grade.findAll({
+      where: {
+        dept_id,
+      },
+    });
+    res.status(200).json({
+      status: "success",
+      data: allDepts,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
