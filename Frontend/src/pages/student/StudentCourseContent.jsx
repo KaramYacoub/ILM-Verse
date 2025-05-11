@@ -115,7 +115,6 @@ const courseData = {
 };
 
 function StudentCourseContent() {
-
   return (
     <div className="min-h-screen bg-base-200 flex flex-col justify-start pb-5">
       <StudentNavbar />
