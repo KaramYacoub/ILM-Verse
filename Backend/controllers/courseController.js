@@ -893,24 +893,47 @@ exports.editMark = async (req, res) => {
         error: "Mark value should be between 0 and 40",
       });
     }
-    // Find the mark record to update
-    const updatedMark = await student_marks.update(
-      { mark_value: mark_value }, // The updated fields
+
+    // First check if the mark exists
+    const existingMark = await student_marks.findOne({
+      where: {
+        course_id: course_id,
+        student_id: student_id,
+        type_id: mark_type,
+      },
+    });
+
+    if (!existingMark) {
+      return res.status(404).json({
+        error: "Mark not found",
+      });
+    }
+
+    // Update the mark
+    await student_marks.update(
+      { mark_value: mark_value },
       {
         where: {
           course_id: course_id,
           student_id: student_id,
-          type_id: mark_type, // Make sure the correct field is used here (type_id instead of mark_type)
+          type_id: mark_type,
         },
-        returning: true, // This option ensures the updated record is returned
-        plain: true, // Ensures that only the updated record is returned
       }
     );
+
+    // Get the updated mark
+    const updatedMark = await student_marks.findOne({
+      where: {
+        course_id: course_id,
+        student_id: student_id,
+        type_id: mark_type,
+      },
+    });
 
     res.status(200).json({
       status: "success",
       message: "Mark updated successfully",
-      data: updatedMark[1], // The second item in the array contains the updated record
+      data: updatedMark,
     });
   } catch (error) {
     res.status(400).json({
