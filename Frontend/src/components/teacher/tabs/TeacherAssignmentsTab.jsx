@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Calendar, FileText, Trash2, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTeacherStore } from "../../../store/TeacherStore";
 
 export default function TeacherAssignmentsTab() {
@@ -9,20 +9,36 @@ export default function TeacherAssignmentsTab() {
   const pathSegments = location.pathname.split("/").filter(Boolean);
   const courseID = pathSegments[pathSegments.length - 2];
   const unit = location.state?.unit;
-  const [assignments, setAssignments] = useState(unit?.assignments || []);
-  const [showModal, setShowModal] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
 
   const TeacherAddAssignment = useTeacherStore(
     (state) => state.TeacherAddAssignment
   );
+  const TeacherGetAssignment = useTeacherStore(
+    (state) => state.TeacherGetAssignment
+  );
 
+  const [assignments, setAssignments] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [newAssignment, setNewAssignment] = useState({
     title: "",
     description: "",
     dueDate: "",
     points: "",
   });
+
+  useEffect(() => {
+    const fetchAssignments = async () => {
+      try {
+        const data = await TeacherGetAssignment(courseID);
+        setAssignments(data || []);
+      } catch (error) {
+        console.error("Failed to load assignments:", error);
+      }
+    };
+
+    fetchAssignments();
+  }, [courseID, TeacherGetAssignment]);
 
   const handleDelete = (title) => {
     setAssignments((prev) => prev.filter((a) => a.title !== title));
@@ -57,22 +73,15 @@ export default function TeacherAssignmentsTab() {
     const formData = new FormData();
     formData.append("title", newAssignment.title);
     formData.append("description", newAssignment.description);
-    formData.append("dueDate", newAssignment.dueDate);
+    formData.append("end_at", newAssignment.dueDate); // Backend expects end_at
     formData.append("points", newAssignment.points);
     formData.append("media", selectedFile);
 
     try {
       const response = await TeacherAddAssignment(courseID, formData);
       if (response.status === 200) {
-        setAssignments((prev) => [
-          ...prev,
-          {
-            title: newAssignment.title,
-            description: newAssignment.description,
-            dueDate: newAssignment.dueDate || "No due date",
-            // Remove points if not needed
-          },
-        ]);
+        const updatedAssignments = await TeacherGetAssignment(courseID);
+        setAssignments(updatedAssignments);
         handleCloseModal();
       }
     } catch (error) {
@@ -113,7 +122,7 @@ export default function TeacherAssignmentsTab() {
                 <div className="text-sm text-gray-500 mt-1">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    Due: {assignment.dueDate || "No due date"}
+                    Due: {assignment.end_at || "No due date"}
                   </span>
                 </div>
               </div>
