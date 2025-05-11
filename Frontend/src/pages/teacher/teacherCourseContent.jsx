@@ -1,9 +1,12 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import TeacherNavbar from "../../components/teacher/TeacherNavbar";
 import TeacherNavigationTabs from "../../components/teacher/TeacherNavigationTabs";
+import { useEffect } from "react";
+import { useTeacherStore } from "../../store/TeacherStore";
+import { useState } from "react";
 
 // sample course data
-const courseData = {
+const courseContent = {
   name: "Introduction to Programming",
   teacher: "teacher name",
   grade: "Grade 10",
@@ -79,7 +82,11 @@ const courseData = {
           duration: 50,
           uploadedAt: "Apr 5, 2025",
         },
-        { title: "Debugging Basics", duration: 40, uploadedAt: "Apr 5, 2025" },
+        {
+          title: "Debugging Basics",
+          duration: 40,
+          uploadedAt: "Apr 5, 2025",
+        },
       ],
       assignments: [
         {
@@ -222,7 +229,11 @@ const courseData = {
           duration: 45,
           uploadedAt: "Apr 5, 2025",
         },
-        { title: "Nested Conditions", duration: 50, uploadedAt: "Apr 5, 2025" },
+        {
+          title: "Nested Conditions",
+          duration: 50,
+          uploadedAt: "Apr 5, 2025",
+        },
       ],
       assignments: [
         {
@@ -288,6 +299,22 @@ const courseData = {
 };
 
 function TeacherCourseContent() {
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const course_id = pathSegments[pathSegments.length - 2];
+  const { getCourseByID } = useTeacherStore();
+
+  const [course, setCourse] = useState([]);
+
+  useEffect(() => {
+    const fetchCourseContent = async () => {
+      const courseData = await getCourseByID(course_id);
+      setCourse(courseData);
+    };
+
+    fetchCourseContent();
+  }, [course_id, getCourseByID]);
+
   return (
     <div className="min-h-screen bg-base-200 flex flex-col justify-start pb-5">
       <TeacherNavbar />
@@ -295,18 +322,15 @@ function TeacherCourseContent() {
         {/* Course Header */}
         <div className="bg-primary flex flex-col items-center rounded-lg shadow-md p-6 mb-6">
           <h1 className="text-3xl text-accent font-bold mb-2">
-            {courseData.name}
+            {course.subject_name}
           </h1>
-          <p className="text-base-100 mb-4">
-            {courseData.grade} • {courseData.semester}
-          </p>
         </div>
 
         {/* NavigationTabs */}
         <TeacherNavigationTabs to="teacher-course-content" />
 
         {/* Tab Content */}
-        <Outlet context={{ courseData }} />
+        <Outlet context={{ course }} />
       </div>
     </div>
   );

@@ -4,10 +4,28 @@ const SQL = require("../models/Connections/SQL-Driver"); // your Sequelize insta
 const initModels = require("../models/index"); // path to index.js
 const { response } = require("express");
 const models = initModels(SQL); // initialize models
-const { student } = models;
+const { student, teacher } = models;
 exports.updateAbsence = async (req, res) => {
   try {
-    const { students, section_id, date } = req.body;
+    const { students, date } = req.body;
+    let section_id;
+    if (req.role === "teacher") {
+      const foundedTeacher = await teacher.findOne({
+        where: {
+          teacher_id: req.user.id,
+        },
+        attributes: ["section_id"],
+      });
+      section_id = foundedTeacher.section_id;
+      if (!section_id) {
+        return res.status(404).json({
+          status: "failed",
+          message: "This teacher don't asiggned to section",
+        });
+      }
+    } else {
+      section_id = req.params;
+    }
     // Check if an AbsenceReport exists for the same section_id and date
     const existingReport = await AbsenceReport.findOne({ section_id, date });
 
@@ -41,8 +59,25 @@ exports.updateAbsence = async (req, res) => {
 
 exports.getAbsence = async (req, res) => {
   try {
-    const { section_id, date } = req.params;
-
+    const { date } = req.params;
+    let section_id;
+    if (req.role === "teacher") {
+      const foundedTeacher = await teacher.findOne({
+        where: {
+          teacher_id: req.user.id,
+        },
+        attributes: ["section_id"],
+      });
+      section_id = foundedTeacher.section_id;
+      if (!section_id) {
+        return res.status(404).json({
+          status: "failed",
+          message: "This teacher don't asiggned to section",
+        });
+      }
+    } else {
+      section_id = req.params;
+    }
     // Step 1: Fetch all students in the specific section
     const studentsInSection = await student.findAll({
       where: {
@@ -58,7 +93,7 @@ exports.getAbsence = async (req, res) => {
     let responseData;
 
     if (absenceReport) {
-      console.log('absence in controller: ', absenceReport)
+      console.log("absence in controller: ", absenceReport);
       // If the absence report exists, map through absenceReport.students
       responseData = absenceReport.students
         .map((absentStudent) => {
