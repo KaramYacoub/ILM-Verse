@@ -3,6 +3,7 @@ import { axiosInstance } from "../lib/axios.js";
 
 export const useTeacherStore = create((set) => ({
   coursesForTeacher: [],
+  course: [],
 
   getCoursesForTeacher: async () => {
     try {
@@ -15,6 +16,33 @@ export const useTeacherStore = create((set) => ({
       );
     }
   },
+
+  getCourseByID: async (course_id) => {
+    try {
+      const response = await axiosInstance.get(`/teacher/course/${course_id}`);
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error fetching course: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  getCourseUnits: async (course_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/teacher/course/${course_id}/units`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error fetching course units: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
   TeacherGetAssignment: async (course_id) => {
     try {
       const response = await axiosInstance.get(
@@ -40,6 +68,10 @@ export const useTeacherStore = create((set) => ({
       );
       return response; // Add this line
     } catch (error) {
+      console.log(
+        "Error adding assignment: ",
+        error.response?.data?.error || error.message
+      );
       throw error; // Re-throw the error
     }
   },

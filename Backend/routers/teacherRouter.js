@@ -12,10 +12,19 @@ router.post("/teacherLogin", authController.TeacherLogin);
 //Marks functionalites
 
 // course Functionalites
-router.get("/courses", authenticateUser, teacherController.getCourseByID);
-// get all students in course
+router.get(
+  "/courses",
+  authenticateUser,
+  teacherController.getCourseByTeacherID
+);
 router.get(
   "/course/:course_id",
+  authenticateUser,
+  teacherController.getCourseByCourseID
+);
+// get all students in course
+router.get(
+  "/course/:course_id/students",
   authenticateUser,
   courseController.getStudentsInCourse
 );
