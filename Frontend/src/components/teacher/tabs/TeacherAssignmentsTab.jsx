@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Calendar, FileText, Trash2, X } from "lucide-react";
 import { useState } from "react";
+import { useTeacherStore } from "../../../store/TeacherStore";
 
 export default function TeacherAssignmentsTab() {
   const location = useLocation();
@@ -10,6 +11,12 @@ export default function TeacherAssignmentsTab() {
   const unit = location.state?.unit;
   const [assignments, setAssignments] = useState(unit?.assignments || []);
   const [showModal, setShowModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const TeacherAddAssignment = useTeacherStore(
+    (state) => state.TeacherAddAssignment
+  );
+
   const [newAssignment, setNewAssignment] = useState({
     title: "",
     description: "",
@@ -27,39 +34,54 @@ export default function TeacherAssignmentsTab() {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setNewAssignment({
-      title: "",
-      description: "",
-      dueDate: "",
-      points: "",
-    });
+    setNewAssignment({ title: "", description: "", dueDate: "", points: "" });
+    setSelectedFile(null);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewAssignment((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setNewAssignment((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSaveAssignment = () => {
-    if (!newAssignment.title) {
-      alert("Assignment title is required");
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+  };
+
+  const handleSaveAssignment = async () => {
+    if (!newAssignment.title || !selectedFile) {
+      alert("Title and file are required.");
       return;
     }
 
-    setAssignments((prev) => [
-      ...prev,
-      {
-        title: newAssignment.title,
-        description: newAssignment.description,
-        dueDate: newAssignment.dueDate || "No due date",
-        points: newAssignment.points || "0",
-      },
-    ]);
+    const formData = new FormData();
+    formData.append("title", newAssignment.title);
+    formData.append("description", newAssignment.description);
+    formData.append("dueDate", newAssignment.dueDate);
+    formData.append("points", newAssignment.points);
+    formData.append("media", selectedFile);
 
-    handleCloseModal();
+    try {
+      const response = await TeacherAddAssignment(courseID, formData);
+      if (response.status === 200) {
+        setAssignments((prev) => [
+          ...prev,
+          {
+            title: newAssignment.title,
+            description: newAssignment.description,
+            dueDate: newAssignment.dueDate || "No due date",
+            // Remove points if not needed
+          },
+        ]);
+        handleCloseModal();
+      }
+    } catch (error) {
+      console.error(
+        "Error adding assignment:",
+        error.response?.data?.error || error.message
+      );
+      alert("Error saving assignment.");
+    }
   };
 
   return (
@@ -71,7 +93,6 @@ export default function TeacherAssignmentsTab() {
       ) : (
         <div className="grid gap-4 mb-6">
           <h2 className="text-3xl text-primary font-semibold">Assignments</h2>
-
           {assignments.map((assignment, i) => (
             <div
               key={i}
@@ -79,12 +100,12 @@ export default function TeacherAssignmentsTab() {
             >
               <div className="space-y-1 cursor-pointer">
                 <a
-                  href={`/assignments/${assignment.title}.pdf`}
-                  download={`${assignment.title}.pdf`}
+                  href={`/assignments/${assignment.title || `file${i}`}.pdf`}
+                  download={`${assignment.title || `file${i}`}.pdf`}
                   className="text-lg font-bold flex items-center gap-2 text-primary hover:underline"
                 >
                   <FileText className="w-5 h-5" />
-                  {assignment.title}
+                  {assignment.title || `Untitled`}
                 </a>
                 <p className="text-gray-700">
                   {assignment.description || "No description available."}
@@ -92,7 +113,7 @@ export default function TeacherAssignmentsTab() {
                 <div className="text-sm text-gray-500 mt-1">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    Due: {assignment.dueDate}
+                    Due: {assignment.dueDate || "No due date"}
                   </span>
                 </div>
               </div>
@@ -131,7 +152,7 @@ export default function TeacherAssignmentsTab() {
       </div>
 
       {showModal && (
-        <div className=" fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
             <div className="flex justify-between items-center p-4 border-b">
               <h3 className="text-lg text-primary font-semibold">
@@ -196,10 +217,7 @@ export default function TeacherAssignmentsTab() {
                     type="file"
                     accept=".pdf,.doc,.docx"
                     className="file-input file-input-bordered w-full"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      console.log("Selected file:", file);
-                    }}
+                    onChange={handleFileChange}
                   />
                 </label>
               </div>

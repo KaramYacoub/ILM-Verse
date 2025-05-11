@@ -15,4 +15,18 @@ export const useTeacherStore = create((set) => ({
       );
     }
   },
+  TeacherAddAssignment: async (course_id, assignmentData) => {
+    try {
+      const response = await axiosInstance.post(
+        `/teacher/course/${course_id}/addassigment`,
+        assignmentData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      return response; // Add this line
+    } catch (error) {
+      throw error; // Re-throw the error
+    }
+  },
 }));

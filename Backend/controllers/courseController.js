@@ -76,7 +76,7 @@ exports.getAllCourses = async (req, res) => {
 // Involve students in a course ✅
 exports.involveStudents = async (req, res) => {
   try {
-    const { course_id } = req.body;
+    const { course_id } = req?.body;
 
     // Step 1: Get section_id of the course
     const courseData = await course.findOne({
@@ -139,7 +139,7 @@ exports.involveStudents = async (req, res) => {
 //get all teachers from department ✅
 exports.getTeachersByCourse = async (req, res) => {
   try {
-    const { course_id } = req.params;
+    const { course_id } = req?.params;
     const courseData = await course.findOne({
       where: {
         course_id: course_id,
@@ -178,7 +178,7 @@ exports.getTeachersByCourse = async (req, res) => {
 // change teacher for specific course ✅
 exports.updateTeacher = async (req, res) => {
   try {
-    const { course_id, newTeacher_id } = req.body;
+    const { course_id, newTeacher_id } = req?.body;
     const courseData = await course.findOne({
       where: {
         course_id: course_id,
@@ -209,7 +209,7 @@ exports.updateTeacher = async (req, res) => {
 // get students in course ✅
 exports.getStudentsInCourse = async (req, res) => {
   try {
-    const { course_id } = req.params;
+    const { course_id } = req?.params;
 
     if (!course_id) {
       return res.status(400).json({ error: "Course ID is required" });
@@ -256,9 +256,9 @@ exports.getStudentsInCourse = async (req, res) => {
 
 // add a report for a student in ✅
 exports.addReport = async (req, res) => {
-  const { course_id, student_id, title, date, description } = req.body;
-  const role = req.role;
-  const id = req.user.id;
+  const { course_id, student_id, title, date, description } = req?.body;
+  const role = req?.role;
+  const id = req?.user.id;
   try {
     const formattedDate = new Date(date).toISOString().split("T")[0]; // Formats to YYYY-MM-DD
 
@@ -283,7 +283,7 @@ exports.addReport = async (req, res) => {
 
 // get all the units in a course ✅
 exports.getCourseUnits = async (req, res) => {
-  const { course_id } = req.params;
+  const { course_id } = req?.params;
   try {
     const units = await CourseUnit.find({ course_id: course_id })
       .select("unit_name unit_description") // Select specific fields to return
@@ -353,7 +353,7 @@ exports.getUnitContent = async (req, res) => {
 // add new media to a unit ✅
 exports.addUnitContent = async (req, res) => {
   const { unit_id } = req.params;
-  const { title } = req.body;
+  const { title } = req?.body;
   const file = req.file;
   try {
     console.log(unit_id);
@@ -636,11 +636,12 @@ exports.getStudentInSection = async (req, res) => {
 // Assigments
 exports.addAssigment = async (req, res) => {
   try {
-    const { course_id } = req.params;
-    const { title, description, end_at } = req.body;
-    const file = req.file;
-    const filePath = file.destination + "/" + file.filename;
-    const fileType = file.mimetype;
+    const { course_id } = req?.params;
+    const { title, description } = req?.body;
+    const end_at = req.body.dueDate || req.body.end_at;
+    const file = req?.file;
+    const filePath = file?.destination + "/" + file?.filename;
+    const fileType = file?.mimetype;
     const published_at = new Date().toISOString().split("T")[0]; // Extract 'YYYY-MM-DD' from the ISO string
     console.log("in add assigment");
     const newAssigment = await new Assigment({
