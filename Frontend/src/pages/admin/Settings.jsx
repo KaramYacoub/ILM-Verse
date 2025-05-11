@@ -3,17 +3,23 @@ import AdminNavbar from "../../components/admin/adminNavbar";
 import { useAdminStore } from "../../store/adminStore";
 
 function Settings() {
-  // Local state for form fields
+  // States for changing password
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const { changeAdminPassword, isChangingPassword } = useAdminStore();
+
+  // States for updating name
+  const [profileOldPassword, setProfileOldPassword] = useState("");
+  const [profileFirstName, setProfileFirstName] = useState("");
+  const [profileLastName, setProfileLastName] = useState("");
+
+  const { changeAdminPassword, isChangingPassword, changeAdminName } =
+    useAdminStore();
 
   // Handle password change
   const handlePasswordChange = async (e) => {
     e.preventDefault();
 
-    // Validate if new password and confirm password match
     if (newPassword !== confirmNewPassword) {
       alert("New password and confirm password do not match.");
       return;
@@ -22,18 +28,42 @@ function Settings() {
     try {
       await changeAdminPassword(oldPassword, newPassword);
       alert("Password changed successfully.");
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
     } catch (error) {
-      console.log("error is:", error);
       alert(
-        "Error changing password: " + error?.response?.data?.error ||
-          error.message
+        "Error changing password: " +
+          (error?.response?.data?.error || error.message)
       );
     }
   };
 
-  const handleProfileUpdate = (e) => {
+  // Handle profile name update
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
-    console.log("Profile update submitted");
+
+    if (!profileFirstName || !profileLastName || !profileOldPassword) {
+      alert("Please fill in all profile fields.");
+      return;
+    }
+
+    try {
+      await changeAdminName(
+        profileFirstName,
+        profileLastName,
+        profileOldPassword
+      );
+      alert("Name updated successfully.");
+      setProfileFirstName("");
+      setProfileLastName("");
+      setProfileOldPassword("");
+    } catch (error) {
+      alert(
+        "Error updating name: " +
+          (error?.response?.data?.error || error.message)
+      );
+    }
   };
 
   return (
@@ -41,13 +71,11 @@ function Settings() {
       <AdminNavbar />
 
       <div className="p-8 max-w-4xl mx-auto">
-        {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Administrator</h1>
           <h2 className="text-2xl font-semibold">Settings</h2>
         </div>
 
-        {/* Settings Content */}
         <div className="space-y-8">
           {/* Change Password Form */}
           <form
@@ -62,22 +90,20 @@ function Settings() {
                 </label>
                 <input
                   type="password"
-                  name="currentPassword"
                   className="input input-bordered w-full"
                   placeholder="Enter current password"
-                  onChange={(e) => setOldPassword(e.target.value)}
                   value={oldPassword}
+                  onChange={(e) => setOldPassword(e.target.value)}
                 />
               </div>
               <div>
                 <label className="block font-medium mb-1">New Password</label>
                 <input
                   type="password"
-                  name="newPassword"
                   className="input input-bordered w-full"
                   placeholder="Enter new password"
-                  onChange={(e) => setNewPassword(e.target.value)}
                   value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                 />
               </div>
               <div>
@@ -86,11 +112,10 @@ function Settings() {
                 </label>
                 <input
                   type="password"
-                  name="confirmNewPassword"
                   className="input input-bordered w-full"
                   placeholder="Confirm new password"
-                  onChange={(e) => setConfirmNewPassword(e.target.value)}
                   value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
                 />
               </div>
               <div className="flex justify-end">
@@ -116,27 +141,30 @@ function Settings() {
                 <label className="block font-medium mb-1">First Name</label>
                 <input
                   type="text"
-                  name="firstName"
                   className="input input-bordered w-full"
                   placeholder="Enter First Name"
+                  value={profileFirstName}
+                  onChange={(e) => setProfileFirstName(e.target.value)}
                 />
               </div>
               <div>
                 <label className="block font-medium mb-1">Last Name</label>
                 <input
                   type="text"
-                  name="lastName"
                   className="input input-bordered w-full"
                   placeholder="Enter Last Name"
+                  value={profileLastName}
+                  onChange={(e) => setProfileLastName(e.target.value)}
                 />
               </div>
               <div>
                 <label className="block font-medium mb-1">Password</label>
                 <input
                   type="password"
-                  name="profilePassword"
                   className="input input-bordered w-full"
-                  placeholder="Enter your password"
+                  placeholder="Enter your current password"
+                  value={profileOldPassword}
+                  onChange={(e) => setProfileOldPassword(e.target.value)}
                 />
               </div>
               <div className="flex justify-end">

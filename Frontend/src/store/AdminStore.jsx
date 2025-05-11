@@ -367,6 +367,24 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  //change Admin name
+  changeAdminName: async (firstName, lastName, oldPassword) => {
+    try {
+      const response = await axiosInstance.patch("/admin/settings/changename", {
+        first_name: firstName,
+        last_name: lastName,
+        oldPassword,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error changing name:",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
   // delete course
   deleteCourse: async (course_id) => {
     try {
