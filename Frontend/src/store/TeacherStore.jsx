@@ -5,6 +5,28 @@ export const useTeacherStore = create((set) => ({
   coursesForTeacher: [],
   course: [],
 
+  // add report
+  addReport: async (course_id, student_id, title, description, date) => {
+    try {
+      const response = await axiosInstance.post(
+        `/teacher/course/${course_id}/addnewreport`,
+        {
+          course_id,
+          student_id,
+          title,
+          description,
+          date,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error adding report from teacher: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
   getCoursesForTeacher: async () => {
     try {
       const response = await axiosInstance.get("/teacher/courses/");
@@ -38,6 +60,20 @@ export const useTeacherStore = create((set) => ({
     } catch (error) {
       console.log(
         "Error fetching course units: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  getStudentsInCourse: async (course_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/teacher/course/${course_id}/students`
+      );
+      return response.data.data.students;
+    } catch (error) {
+      console.log(
+        "Error fetching students in course: ",
         error.response?.data?.error || error.message
       );
     }

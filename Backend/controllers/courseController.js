@@ -256,12 +256,14 @@ exports.getStudentsInCourse = async (req, res) => {
 
 // add a report for a student in ✅
 exports.addReport = async (req, res) => {
-  const { course_id, student_id, title, date, description } = req?.body;
-  const role = req?.role;
-  const id = req?.user.id;
+  const { course_id, student_id, title, description, date } = req.body;
+  const role = req.role;
+  const id = req.user.id;
+  console.log(date);
   try {
     const formattedDate = new Date(date).toISOString().split("T")[0]; // Formats to YYYY-MM-DD
 
+    console.log("before report");
     const newReport = await new Report({
       instructor_id: id,
       instructor_type: role,
@@ -271,6 +273,7 @@ exports.addReport = async (req, res) => {
       description: description,
       date: formattedDate,
     }).save();
+    console.log("after report");
 
     res.status(201).json({
       status: "success",
