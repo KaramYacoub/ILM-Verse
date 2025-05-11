@@ -103,4 +103,7 @@ router.patch(
 // Absence functionality
 router.get("/absence/:date", authenticateUser, absenceController.getAbsence);
 
+// report functionality
+router.post("/course/:course_id/addnewreport", authenticateUser, courseController.addReport);
+
 module.exports = router;

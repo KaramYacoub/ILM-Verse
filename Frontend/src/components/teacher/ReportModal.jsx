@@ -1,8 +1,32 @@
 import { useState } from "react";
+import { useTeacherStore } from "../../store/TeacherStore";
+import { useLocation } from "react-router-dom";
 
-function ReportModal({ isOpen, onClose, student, course }) {
+function ReportModal({ isOpen, onClose, student }) {
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/").filter(Boolean);
+  const course_id = pathSegments[pathSegments.length - 2];
+  const { addReport } = useTeacherStore();
+
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+
+  const handleAddReport = async (title, date, description) => {
+    try {
+      console.log(course_id, student.id, title, description, date);
+      await addReport(course_id, student.id, title, description, date);
+      setTitle("");
+      setDescription("");
+      setDate(new Date().toISOString().split("T")[0]);
+      alert("Report added successfully!");
+    } catch (error) {
+      console.log(
+        "Error adding report from teacher in the modal: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -15,12 +39,19 @@ function ReportModal({ isOpen, onClose, student, course }) {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="font-medium">Course Name:</label>
-            <div className="bg-gray-200 p-2 rounded-md text-center">{course}</div>
+            <label className="font-medium">title:</label>
+            <input
+              className="input input-bordered w-full"
+              value={title}
+              required
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </div>
           <div>
             <label className="font-medium">Student Name:</label>
-            <div className="bg-gray-200 p-2 rounded-md text-center">{student}</div>
+            <div className="bg-gray-200 p-3 rounded-md text-center">
+              {student.name}
+            </div>
           </div>
         </div>
 
@@ -31,14 +62,9 @@ function ReportModal({ isOpen, onClose, student, course }) {
               type="date"
               className="input input-bordered w-full text-center"
               value={date}
+              required
               onChange={(e) => setDate(e.target.value)}
             />
-          </div>
-          <div>
-            <label className="invisible">Department name: </label>
-            <div className="bg-primary p-3 text-center text-base-100 rounded-md">
-              Primary
-            </div>
           </div>
         </div>
 
@@ -47,6 +73,7 @@ function ReportModal({ isOpen, onClose, student, course }) {
           <textarea
             className="textarea textarea-bordered w-full h-32"
             value={description}
+            required
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
@@ -61,7 +88,15 @@ function ReportModal({ isOpen, onClose, student, course }) {
           >
             Clear
           </button>
-          <button className="btn flex-1 bg-primary text-white">Generate</button>
+          <button
+            onClick={() => {
+              handleAddReport(title, date, description);
+              onClose();
+            }}
+            className="btn flex-1 bg-primary text-white"
+          >
+            Generate
+          </button>
         </div>
 
         <div className="text-right">
