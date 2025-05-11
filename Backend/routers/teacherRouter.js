@@ -32,7 +32,7 @@ router.get(
   authenticateUser,
   courseController.getAllAssigmentsForCourse
 );
-
+//done except ( real student )
 router.get(
   "/course/:course_id/assigments/:assignment_id",
   authenticateUser,
