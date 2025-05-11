@@ -15,6 +15,10 @@ const SubmissionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  mark: {
+    type: Number,
+    required: true,
+  },
   submissions: [
     {
       question_id: {

@@ -18,6 +18,7 @@ const {
 const Report = require("../models/NOSQL/Report");
 const CourseUnit = require("../models/NOSQL/CourseUnit");
 const Assigment = require("../models//NOSQL/Assigment.js");
+const Quiz = require("../models/NOSQL/Quiz.js");
 //get all courses(data is filtered) ✅
 exports.getAllCourses = async (req, res) => {
   try {
@@ -845,11 +846,148 @@ exports.updateSubmissionStatus = async (req, res) => {
 };
 
 // Quizes
-exports.addQuiz = async (req, res) => {};
-exports.deleteQuiz = async (req, res) => {};
-exports.getQuiz = async (req, res) => {};
-exports.editQuiz = async (req, res) => {};
-exports.getAllQuizes = async (req, res) => {};
+exports.addQuiz = async (req, res) => {
+  try {
+    const { course_id } = req.params;
+    console.log(course_id);
+    const {
+      title,
+      description,
+      start_date,
+      start_time,
+      duration,
+      total_points,
+      questions,
+    } = req.body;
+    let totalMarks = 0;
+    for (let question of questions) {
+      totalMarks += question.points;
+    }
+    if (totalMarks != total_points) {
+      return res.status(400).json({
+        error: "Total marks don't match the total points of the questions",
+      });
+    }
+
+    const newQuiz = await new Quiz({
+      course_id: course_id,
+      title: title,
+      description: description,
+      start_date: start_date,
+      start_time: start_time,
+      duration: duration,
+      total_points: total_points,
+      questions: questions,
+    }).save();
+
+    res.status(201).json({
+      status: "success",
+      data: newQuiz,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+exports.deleteQuiz = async (req, res) => {
+  try {
+    const { quiz_id } = req.params;
+    const deletedQuiz = await Quiz.findByIdAndDelete(quiz_id);
+    if (!deletedQuiz) {
+      return res.status(404).json({
+        status: "failure",
+        message: "Quiz not found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Quiz Deleted Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+exports.getAllQuizes = async (req, res) => {
+  try {
+    const { course_id } = req.params;
+    const allQuizes = await Quiz.findAll();
+    if (!allQuizes) {
+      return res.status(404).json({
+        status: "failure",
+        message: "this course doesn't have any quiz",
+      });
+    }
+    res.status(200).json({
+      status: "success",
+      data: allQuizes,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+exports.getQuiz = async (req, res) => {
+  try {
+    const { quiz_id } = req.params;
+    const quiz = await Quiz.findById(quiz_id);
+    if (!quiz) {
+      return res.status(404).json({
+        status: "failure",
+        message: "quiz not found",
+      });
+    }
+    res.status(200).json({
+      status: "success",
+      data: quiz,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+exports.editQuiz = async (req, res) => {
+  try {
+    const { quiz_id } = req.params;
+    const {
+      title,
+      description,
+      start_date,
+      start_time,
+      duration,
+      total_points,
+      questions,
+    } = req.body;
+    const updatedQuiz = await Quiz.findByIdAndUpdate(
+      quiz_id,
+      {
+        title,
+        description,
+        start_date,
+        start_time,
+        duration,
+        total_points,
+        questions,
+      },
+      { new: true }
+    );
+    res.status(200).json({
+      status: "success",
+      message: "quiz updated successfully",
+      data: updatedQuiz,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+exports.submitQuiz = async (req, res) => {};
 exports.showQuizSubmissions = async (req, res) => {};
 
 // marks
