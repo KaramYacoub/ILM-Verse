@@ -82,6 +82,24 @@ router.patch(
   courseController.updateSubmissionStatus
 );
 
+// quizes
+router.post(
+  "/course/:course_id/quiz",
+  authenticateUser,
+  courseController.addQuiz
+);
+router.delete(
+  "/course/deletequiz/:quiz_id",
+  authenticateUser,
+  courseController.deleteQuiz
+);
+router.get("/course/quiz/:quiz_id", authenticateUser, courseController.getQuiz);
+router.patch(
+  "/course/quiz/:quiz_id",
+  authenticateUser,
+  courseController.editQuiz
+);
+
 // Absence functionality
 router.get("/absence/:date", authenticateUser, absenceController.getAbsence);
 

@@ -36,6 +36,10 @@ const QuizSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
+      points: {
+        type: Number,
+        required: true,
+      },
       options: [
         {
           option_text: {
@@ -48,10 +52,6 @@ const QuizSchema = new mongoose.Schema({
           },
         },
       ],
-      points: {
-        type: Number,
-        required: true,
-      },
     },
   ],
 });
