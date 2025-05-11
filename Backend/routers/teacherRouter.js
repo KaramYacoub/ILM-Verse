@@ -4,8 +4,10 @@ const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
 const teacherController = require("../controllers/teacherController");
 const courseController = require("../controllers/courseController");
+const absenceController = require("../controllers/absenceController");
 const uploadContent = require("../controllers/upload/uploadContentMiddleWare");
 const uploadAssigment = require("../controllers/upload/uploadAssigment-Description");
+
 // login
 router.post("/teacherLogin", authController.TeacherLogin);
 
@@ -70,5 +72,8 @@ router.patch(
   authenticateUser,
   courseController.updateSubmissionStatus
 );
+
+// Absence functionality
+router.get("/absence/:date", authenticateUser, absenceController.getAbsence);
 
 module.exports = router;
