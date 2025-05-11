@@ -106,8 +106,12 @@ const Settings = lazy(() => import("./pages/admin/Settings"));
 const AdminEvents = lazy(() => import("./pages/admin/AdminEvents"));
 const Reports = lazy(() => import("./pages/admin/Reports"));
 const AddCourse = lazy(() => import("./pages/admin/AddCourse"));
-const AdminCourseOverview = lazy(() => import("./components/admin/courseThings/AdminCourseOverview"));
-const AdminUnitContent = lazy(() => import("./components/admin/courseThings/AdminUnitContent"));
+const AdminCourseOverview = lazy(() =>
+  import("./components/admin/courseThings/AdminCourseOverview")
+);
+const AdminUnitContent = lazy(() =>
+  import("./components/admin/courseThings/AdminUnitContent")
+);
 const TakeAbsence = lazy(() => import("./pages/admin/TakeAbsence"));
 
 function App() {
@@ -234,7 +238,7 @@ function App() {
               }
             />
             <Route
-              path="/student-course-content/"
+              path="/student-course-content/:course_id/"
               element={
                 authStudent ? <StudentCourseContent /> : <Navigate to="/" />
               }

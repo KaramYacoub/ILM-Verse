@@ -1,8 +1,16 @@
+import { useEffect } from "react";
 import StudentNavbar from "../../components/student/StudentNavbar";
 import CourseCard from "../../components/shared/CourseCard";
 import { Link } from "react-router-dom";
+import useStudentStore from "../../store/StudentStore";
 
 function StudentDashboard() {
+  const { courses, loading, error, fetchCourses } = useStudentStore();
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">
       <StudentNavbar />
@@ -23,9 +31,20 @@ function StudentDashboard() {
           </div>
         </div>
 
+        {/* Loading or error states */}
+        {loading && (
+          <p className="mt-6 text-lg text-primary">Loading courses...</p>
+        )}
+        {error && <p className="mt-6 text-red-500">{error}</p>}
+
+        {/* Courses Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 w-full">
-          {Array.from({ length: 6 }, (_, index) => (
-            <CourseCard key={index} />
+          {courses.map((course) => (
+            <CourseCard
+              key={course.id}
+              title={course.name}
+              to={`/student-course-content/${course.course_id}`}
+            />
           ))}
         </div>
       </div>
