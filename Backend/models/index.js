@@ -54,9 +54,10 @@ function initModels(sequelize) {
     foreignKey: "course_id",
   });
   student_marks.belongsTo(course_student, {
-    as: "course",
+    as: "course_student",
     foreignKey: "course_id",
   });
+
   course_student.hasMany(student_marks, {
     as: "student_marks",
     foreignKey: "course_id",

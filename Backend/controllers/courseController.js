@@ -696,6 +696,7 @@ exports.deleteAssigment = async (req, res) => {
 };
 exports.getAllAssigmentsForCourse = async (req, res) => {
   try {
+    console.log("hi");
     const { course_id } = req.params;
     const assigments = await Assigment.find({ course_id: course_id }).select(
       "-studentsSubmission"
