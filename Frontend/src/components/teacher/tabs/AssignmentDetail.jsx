@@ -1,31 +1,36 @@
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useTeacherStore } from "../../../store/TeacherStore";
 
 export default function AssignmentDetail() {
   const location = useLocation();
   const assignment = location.state?.assignment;
 
-  // Simulated submission data
-  const [submissions, setSubmissions] = useState([
-    {
-      id: "2021001",
-      name: "Ali Ahmad",
-      checked: false,
-      fileUrl: "/submissions/ali_ahmad_assignment.pdf",
-    },
-    {
-      id: "2021002",
-      name: "Lina Omar",
-      checked: true,
-      fileUrl: "/submissions/lina_omar_assignment.pdf",
-    },
-    {
-      id: "2021003",
-      name: "Khaled Naser",
-      checked: false,
-      fileUrl: "/submissions/khaled_naser_assignment.pdf",
-    },
-  ]);
+  const TeacherShowSubmition = useTeacherStore(
+    (state) => state.TeacherShowSubmition
+  );
+  const [submissions, setSubmissions] = useState([]);
+
+  useEffect(() => {
+    const fetchSubmissions = async () => {
+      if (assignment && assignment._id && assignment.course_id) {
+        const data = await TeacherShowSubmition(
+          assignment.course_id,
+          assignment._id
+        );
+        setSubmissions(
+          data?.map((student) => ({
+            id: student.student_id,
+            name: student.student_name,
+            checked: student.checked || false,
+            fileUrl: student.file_url,
+          })) || []
+        );
+      }
+    };
+
+    fetchSubmissions();
+  }, [assignment]);
 
   const toggleCheck = (id) => {
     setSubmissions((prev) =>
@@ -38,7 +43,7 @@ export default function AssignmentDetail() {
   const handleUpdate = () => {
     console.log("Updated submission statuses:", submissions);
     alert("Student submission statuses updated successfully!");
-    // TODO: send data to server or API
+    // TODO: send updated statuses to backend
   };
 
   if (!assignment) {
@@ -58,10 +63,9 @@ export default function AssignmentDetail() {
         <strong>Description:</strong> {assignment.description || "N/A"}
       </p>
       <p className="mb-6 text-lg">
-        <strong>Due Date:</strong> {assignment.dueDate}
+        <strong>Due Date:</strong> {assignment.end_at || "No due date"}
       </p>
 
-      {/* Header with Update Button */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-semibold text-primary">
           Submitted Students
@@ -71,7 +75,6 @@ export default function AssignmentDetail() {
         </button>
       </div>
 
-      {/* Student Submissions Table */}
       <div className="overflow-x-auto">
         <table className="table w-full border">
           <thead className="bg-gray-100">

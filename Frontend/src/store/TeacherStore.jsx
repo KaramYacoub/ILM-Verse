@@ -43,4 +43,18 @@ export const useTeacherStore = create((set) => ({
       throw error; // Re-throw the error
     }
   },
+
+  TeacherShowSubmition: async (course_id, assignment_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/teacher/course/${course_id}/assigments/${assignment_id}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error fetching submissions: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
 }));
