@@ -4,7 +4,7 @@ const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
 const teacherController = require("../controllers/teacherController");
 const courseController = require("../controllers/courseController");
-
+const uploadContent = require("../controllers/upload/uploadContentMiddleWare");
 const uploadAssigment = require("../controllers/upload/uploadAssigment-Description");
 // login
 router.post("/teacherLogin", authController.TeacherLogin);
@@ -13,11 +13,38 @@ router.post("/teacherLogin", authController.TeacherLogin);
 
 // course Functionalites
 router.get("/courses", authenticateUser, teacherController.getCourseByID);
+// get all students in specific course
 router.get(
   "/course/:course_id",
   authenticateUser,
   courseController.getStudentsInCourse
 );
+//get course units
+router.get(
+  "/course/:course_id/units",
+  authenticateUser,
+  courseController.getCourseUnits
+);
+//get unit content
+router.get(
+  "/course/media/:unit_id",
+  authenticateUser,
+  courseController.getUnitContent
+);
+// add unit content
+router.post(
+  "/course/:unit_id",
+  authenticateUser,
+  uploadContent,
+  courseController.addUnitContent
+);
+// delete content
+router.delete(
+  "/course/media/:unit_id/:media_id",
+  authenticateUser,
+  courseController.deleteMedia
+);
+
 // Assigments functionalites
 router.post(
   "/course/:course_id/addassigment",

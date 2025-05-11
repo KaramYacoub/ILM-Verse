@@ -756,16 +756,47 @@ exports.submitAssigment = async (req, res) => {
 exports.showAssigmentSubmission = async (req, res) => {
   try {
     const { assignment_id } = req.params; // Getting the assignment_id from params
-    console.log(assignment_id);
     // Find the assignment by its assignment_id (no need to exclude studentsSubmission)
     const assignment = await Assigment.findById(assignment_id);
-
     if (assignment) {
       // Check if the assignment has submissions
+      let studentsData = [];
       if (assignment.studentsSubmission) {
+        for (let OneStudent of assignment.studentsSubmission) {
+          const studentName = await student.findOne({
+            where: {
+              student_id: OneStudent.student_id,
+            },
+            attributes: ["student_id", "first_name", "last_name"],
+          });
+          if (studentName) {
+            OneStudent = {
+              student_id: OneStudent.student_id,
+              name: `${studentName.first_name} ${studentName.last_name}`,
+              submission_date: OneStudent.submission_date,
+              path: OneStudent.path,
+              type: OneStudent.type,
+            };
+            studentsData.push(OneStudent);
+          } else {
+            OneStudent.name = "Unknown";
+          }
+        }
         res.status(200).json({
           status: "success",
-          data: assignment, // Return the studentsSubmission data
+          data: {
+            assigmentdata: {
+              assignment_id: assignment._id,
+              course_id: assignment.course_id,
+              published_at: assignment.published_at,
+              end_at: assignment.end_at,
+              title: assignment.title,
+              description: assignment.description,
+              path: assignment.path,
+              type: assignment.type,
+            },
+            studentsSubmission: studentsData,
+          },
         });
       } else {
         res.status(400).json({
