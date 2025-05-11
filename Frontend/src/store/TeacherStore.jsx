@@ -15,6 +15,20 @@ export const useTeacherStore = create((set) => ({
       );
     }
   },
+  TeacherGetAssignment: async (course_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/teacher/course/${course_id}/assigments`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error fetching assignments: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
   TeacherAddAssignment: async (course_id, assignmentData) => {
     try {
       const response = await axiosInstance.post(
