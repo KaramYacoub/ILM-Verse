@@ -1,9 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/authController");
-const courseController = require("../controllers/courseController");
 const authenticateUser = require("../Middlewares/authMiddleware");
-
 const SQL = require("../models/Connections/SQL-Driver"); // your Sequelize instance
 const initModels = require("../models/index"); // path to index.js
 const models = initModels(SQL); // initialize models
@@ -19,7 +17,12 @@ const {
 
 exports.getCoursesForStudent = async (req, res) => {
   try {
-    const student_id = req.user.id;
+    let student_id;
+    if (req.role === "parent") {
+      student_id = req.params.student_id;
+    } else {
+      student_id = req.user.id;
+    }
 
     const coursesForStudent = await course_student.findAll({
       where: {
@@ -50,9 +53,14 @@ exports.getCoursesForStudent = async (req, res) => {
     });
   }
 };
-exports.getStudentGrades = async (req, res) => {
+exports.getStudentMarks = async (req, res) => {
   try {
-    const student_id = req.user.id;
+    let student_id;
+    if (req.role === "parent") {
+      student_id = req.params.student_id;
+    } else {
+      student_id = req.user.id;
+    }
     const studentCourses = await course_student.findAll({
       where: {
         student_id: student_id,

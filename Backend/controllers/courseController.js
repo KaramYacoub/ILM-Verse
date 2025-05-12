@@ -287,7 +287,7 @@ exports.addReport = async (req, res) => {
 
 // get all the units in a course ✅
 exports.getCourseUnits = async (req, res) => {
-  const { course_id } = req?.params;
+  const { course_id } = req.params;
   try {
     const units = await CourseUnit.find({ course_id: course_id })
       .select("unit_name unit_description") // Select specific fields to return
@@ -988,7 +988,17 @@ exports.editQuiz = async (req, res) => {
     });
   }
 };
-exports.submitQuiz = async (req, res) => {};
+exports.submitQuiz = async (req, res) => {
+  try {
+    const { quiz_id } = req.params;
+    const student_id = req.user.id;
+    const { answers } = req.body;
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
 exports.showQuizSubmissions = async (req, res) => {};
 
 // marks

@@ -44,5 +44,5 @@ router.post(
   courseController.submitAssigment
 );
 //show student Grades
-router.get("/grades", authenticateUser, studentController.getStudentGrades);
+router.get("/grades", authenticateUser, studentController.getStudentMarks);
 module.exports = router;
