@@ -7,6 +7,7 @@ const courseController = require("../controllers/courseController");
 const absenceController = require("../controllers/absenceController");
 const uploadContent = require("../controllers/upload/uploadContentMiddleWare");
 const uploadAssigment = require("../controllers/upload/uploadAssigment-Description");
+const checkFile = require("../Middlewares/checkFileMiddleware");
 
 // login
 router.post("/teacherLogin", authController.TeacherLogin);
@@ -47,6 +48,7 @@ router.post(
   "/course/:unit_id",
   authenticateUser,
   uploadContent,
+  checkFile,
   courseController.addUnitContent
 );
 // delete content
@@ -62,6 +64,7 @@ router.post(
   "/course/:course_id/addassigment",
   authenticateUser,
   uploadAssigment,
+  checkFile,
   courseController.addAssigment
 );
 //Done
@@ -104,6 +107,10 @@ router.patch(
 router.get("/absence/:date", authenticateUser, absenceController.getAbsence);
 
 // report functionality
-router.post("/course/:course_id/addnewreport", authenticateUser, courseController.addReport);
+router.post(
+  "/course/:course_id/addnewreport",
+  authenticateUser,
+  courseController.addReport
+);
 
 module.exports = router;

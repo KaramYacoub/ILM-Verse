@@ -65,6 +65,13 @@ exports.getStudentMarks = async (req, res) => {
       where: {
         student_id: student_id,
       },
+      include: [
+        {
+          model: course,
+          as: "course",
+          attributes: ["subject_name"],
+        },
+      ],
     });
 
     let coursesGrades = [];
@@ -117,7 +124,7 @@ exports.getStudentMarks = async (req, res) => {
           });
         } else {
           // If no mark exists for the type, push "Not Marked"
-          courseMarks.subject_name = courseMarks.subject_name || "Unknown";
+          courseMarks.subject_name = oneCourse.course.subject_name || "Unknown";
           courseMarks.marks.push({
             type: type,
             mark_value: "Not Marked",

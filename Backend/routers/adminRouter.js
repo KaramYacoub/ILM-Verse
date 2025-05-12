@@ -7,6 +7,8 @@ const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
 const uploadFiles = require("../controllers/upload/uploadEvent"); // Import the upload middleware for events
 const uploadContent = require("../controllers/upload/uploadContentMiddleWare"); //Import the upload middleware for courses
+const checkFile = require("../Middlewares/checkFileMiddleware");
+const checkFiles = require("../Middlewares/checkFilesMiddleware");
 
 // login
 router.post("/adminLogin", authController.adminLogin);
@@ -39,7 +41,13 @@ router.get(
 router.post("/addition/course", authenticateUser, adminController.addCourse);
 
 //Event 2 Post Conditions , first one for
-router.post("/events", authenticateUser, uploadFiles, adminController.addEvent);
+router.post(
+  "/events",
+  authenticateUser,
+  uploadFiles,
+  checkFiles,
+  adminController.addEvent
+);
 router.delete(
   "/events/:event_id",
   authenticateUser,
@@ -119,6 +127,7 @@ router.post(
   "/course/:unit_id",
   authenticateUser,
   uploadContent,
+  checkFile,
   courseController.addUnitContent
 );
 router.get(
@@ -184,6 +193,10 @@ router.get(
 );
 
 router.get("/depts", authenticateUser, adminController.getAllDepartments);
-router.get("/:dept_id/grades", authenticateUser, adminController.getGradesInDepartment);
+router.get(
+  "/:dept_id/grades",
+  authenticateUser,
+  adminController.getGradesInDepartment
+);
 
 module.exports = router;

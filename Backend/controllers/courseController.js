@@ -699,8 +699,33 @@ exports.deleteAssigment = async (req, res) => {
 };
 exports.getAllAssigmentsForCourse = async (req, res) => {
   try {
-    console.log("hi");
     const { course_id } = req.params;
+    console.log("before query");
+    const assigments = await Assigment.find({ course_id: course_id }).select(
+      "-studentsSubmission"
+    ); // Excluding studentsSubmission
+
+    if (assigments && assigments.length > 0) {
+      res.status(200).json({
+        status: "success",
+        data: assigments,
+      });
+    } else {
+      res.status(404).json({
+        status: "failure",
+        message: "No assignments found",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+exports.getAllAssigmentsForCourseForStudent = async (req, res) => {
+  try {
+    const { course_id } = req.params;
+    const student_id = req.id;
     const assigments = await Assigment.find({ course_id: course_id }).select(
       "-studentsSubmission"
     ); // Excluding studentsSubmission
@@ -730,13 +755,16 @@ exports.submitAssigment = async (req, res) => {
     const targetedAssigment = await Assigment.findById(assignment_id);
     const nowDate = new Date().toISOString().split("T")[0];
     console.log(nowDate);
+    console.log(targetedAssigment);
     if (targetedAssigment) {
+      console.log("in If");
       targetedAssigment.studentsSubmission.push({
         student_id: student_id,
         submission_date: nowDate,
         path: req.file.destination,
         type: req.file.mimetype,
       });
+
       await targetedAssigment.save();
       res.status(201).json({
         status: "status",

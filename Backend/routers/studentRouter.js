@@ -6,6 +6,7 @@ const studentController = require("../controllers/studentController");
 const uploadSolution = require("../controllers/upload/uploadSolution");
 const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
+const checkFile = require("../Middlewares/checkFileMiddleware");
 
 // login
 router.post("/studentLogin", authController.studentLogin);
@@ -31,16 +32,18 @@ router.get(
 // assignment functionalites
 
 // show assignments for speicific course
+//please don't change the url :)
 router.get(
   "/course/:course_id/assignments/getassignments",
   authenticateUser,
-  courseController.getAllAssigmentsForCourse
+  courseController.getAllAssigmentsForCourseForStudent
 );
 //submit assignment based on assignment_id
 router.post(
   "/course/:course_id/assigments/:assignment_id",
   authenticateUser,
   uploadSolution,
+  checkFile,
   courseController.submitAssigment
 );
 //show student Grades
