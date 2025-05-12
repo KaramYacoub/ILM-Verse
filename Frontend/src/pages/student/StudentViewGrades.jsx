@@ -1,80 +1,18 @@
+import { useEffect } from "react";
 import StudentNavbar from "../../components/student/StudentNavbar";
+import useStudentStore from "../../store/StudentStore";
+import { Loader2 } from "lucide-react";
 
 function StudentViewGrades() {
-  const student = {
-    gpa: 91.3,
-    classRank: { rank: 3, total: 28 },
-    name: "Ahmed Omar",
-    grade: 9,
-    courses: [
-      {
-        name: "Mathematics (Algebra II)",
-        teacher: "Mrs. Rodriguez",
-        term1: 37,
-        term2: 38,
-        term3: 39,
-        final: 76,
-        grade: 94,
-        classAvg: 85,
-        status: "Excellent",
-      },
-      {
-        name: "Physics",
-        teacher: "Mr. Johnson",
-        term1: 36,
-        term2: 37,
-        term3: 38,
-        final: 75,
-        grade: 92,
-        classAvg: 83,
-        status: "Excellent",
-      },
-      {
-        name: "English Literature",
-        teacher: "Ms. Williams",
-        term1: 35,
-        term2: 36,
-        term3: 37,
-        final: 74,
-        grade: 90,
-        classAvg: 82,
-        status: "Excellent",
-      },
-      {
-        name: "World History",
-        teacher: "Mr. Patel",
-        term1: 34,
-        term2: 35,
-        term3: 36,
-        final: 72,
-        grade: 88,
-        classAvg: 81,
-        status: "Good",
-      },
-      {
-        name: "Computer Science",
-        teacher: "Mrs. Kim",
-        term1: 38,
-        term2: 39,
-        term3: 40,
-        final: 78,
-        grade: 95,
-        classAvg: 79,
-        status: "Excellent",
-      },
-      {
-        name: "Physical Education",
-        teacher: "Coach Garcia",
-        term1: 35,
-        term2: 36,
-        term3: 37,
-        final: 71,
-        grade: 89,
-        classAvg: 86,
-        status: "Good",
-      },
-    ],
-  };
+  const { grades, loading, error, fetchShowGrades } = useStudentStore();
+
+  useEffect(() => {
+    fetchShowGrades();
+  }, []);
+
+  useEffect(() => {
+    console.log("Grades data:", grades); // For debugging structure
+  }, [grades]);
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">
@@ -84,66 +22,53 @@ function StudentViewGrades() {
       </h1>
 
       <div className="p-6 space-y-8 w-full max-w-4xl bg-base-100 rounded-lg shadow-md mt-5">
-        <h2 className="text-lg font-semibold bg-primary text-base-100 px-4 py-2 rounded-md w-fit">
-          Course Grades - {student.name} (Grade {student.grade})
-        </h2>
-        <div className="bg-base-100 rounded-lg shadow-sm p-6 flex justify-between gap-4">
-          <div className="flex-1 bg-base-200 p-4 rounded-lg text-center">
-            <p className="font-semibold text-gray-600">Current GPA</p>
-            <p className="text-2xl font-bold text-primary">{student.gpa}/100</p>
+        {loading && (
+          <div className="flex justify-center text-primary">
+            <Loader2 className="animate-spin" size={32} />
           </div>
-          <div className="flex-1 bg-base-200 p-4 rounded-lg text-center">
-            <p className="font-semibold text-gray-600">Class Rank</p>
-            <p className="text-2xl font-bold text-primary">
-              {student.classRank.rank}
-              <span className="text-sm text-gray-600">
-                {" "}
-                of {student.classRank.total}
-              </span>
-            </p>
-          </div>
-        </div>
+        )}
 
-        <div className="overflow-x-auto rounded-md shadow-md bg-base-300">
-          <table className="table w-full text-center">
-            <thead className="bg-primary text-base-100 text-base">
-              <tr>
-                <th>Course</th>
-                <th>Teacher</th>
-                <th>Term 1</th>
-                <th>Term 2</th>
-                <th>Term 3</th>
-                <th>Final</th>
-                <th>Grade</th>
-                <th>Class Avg</th>
-                {/* <th>Status</th> */}
-              </tr>
-            </thead>
-            <tbody>
-              {student.courses.map((course, i) => (
-                <tr key={i} className="hover">
-                  <td>{course.name}</td>
-                  <td>{course.teacher}</td>
-                  <td>{course.term1}/40</td>
-                  <td>{course.term2}/40</td>
-                  <td>{course.term3}/40</td>
-                  <td>{course.final}/80</td>
-                  <td className="text-primary font-bold">{course.grade}</td>
-                  <td>{course.classAvg}</td>
-                  {/* <td>
-                    <span
-                      className={`badge badge-sm ${
-                        course.status === "Excellent" ? "badge-success" : "badge-warning"
-                      }`}
-                    >
-                      {course.status}
-                    </span>
-                  </td> */}
+        {error && <p className="mt-6 text-red-500">{error}</p>}
+
+        {!loading && grades.length === 0 && (
+          <p className="text-center text-gray-500">No grades available.</p>
+        )}
+
+        {/* Grades Table */}
+        {!loading && grades.length > 0 && (
+          <div className="overflow-x-auto rounded-md shadow-md bg-base-300">
+            <table className="table w-full text-center">
+              <thead className="bg-primary text-base-100 text-base">
+                <tr>
+                  <th>Course</th>
+                  <th>Teacher</th>
+                  <th>Term 1</th>
+                  <th>Term 2</th>
+                  <th>Term 3</th>
+                  <th>Final</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {grades.map((course, index) => (
+                  <tr key={index}>
+                    <td>{course.subject_name || "Unknown"}</td>
+                    <td>{course.teacher || "Unknown"}</td>
+                    {["First", "Second", "Third", "Final"].map((type) => {
+                      const markObj = course.marks?.find(
+                        (m) => m.type === type
+                      );
+                      return (
+                        <td key={type}>
+                          {markObj?.mark_value || "Not Marked"}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

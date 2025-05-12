@@ -3,6 +3,7 @@ import StudentNavbar from "../../components/student/StudentNavbar";
 import CourseCard from "../../components/shared/CourseCard";
 import { Link } from "react-router-dom";
 import useStudentStore from "../../store/StudentStore";
+import { Loader2 } from "lucide-react";
 
 function StudentDashboard() {
   const { courses, loading, error, fetchCourses } = useStudentStore();
@@ -33,7 +34,9 @@ function StudentDashboard() {
 
         {/* Loading or error states */}
         {loading && (
-          <p className="mt-6 text-lg text-primary">Loading courses...</p>
+          <div className="flex text-primary items-center justify-center">
+            <Loader2 className="animate-spin" size={50} />
+          </div>
         )}
         {error && <p className="mt-6 text-red-500">{error}</p>}
 
@@ -41,9 +44,9 @@ function StudentDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 w-full">
           {courses.map((course) => (
             <CourseCard
-              key={course.id}
-              title={course.name}
-              to={`/student-course-content/${course.course_id}`}
+              key={course.course_id}
+              title={course.course.subject_name}
+              to={`/student-course-content/${course.course_id}/student-overview`}
             />
           ))}
         </div>
