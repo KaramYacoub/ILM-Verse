@@ -1,8 +1,7 @@
-// src/components/admin/ShowCourseStudents.jsx
 import { useEffect, useState } from "react";
 import { AlertCircle } from "lucide-react";
 import { useCourseStore } from "../../store/CourseStore";
-import StudentMarksModal from "../teacher/StudentMarksModal";
+import StudentMarksModal from "./StudentMarksModal";
 
 function ShowCourseStudents({ courseId, onClose, course }) {
   const { getStudentsInCourse } = useCourseStore();
