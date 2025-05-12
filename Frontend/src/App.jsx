@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 import { useAuthStore } from "./store/AuthStore";
 import { Loader2 } from "lucide-react";
+import StudentUnitDetails from "./components/student/tabs/StudentUnitDetails";
 
 const Error = lazy(() => import("./pages/shared/Error"));
 const Home = lazy(() => import("./pages/shared/Home"));
@@ -28,14 +29,11 @@ const StudentCourseContent = lazy(() =>
 const StudentOverviewTab = lazy(() =>
   import("./components/student/tabs/StudentOverviewTab")
 );
-const StudentLessonsTab = lazy(() =>
-  import("./components/student/tabs/StudentLessonsTab")
+const StudentUnitsTab = lazy(() =>
+  import("./components/student/tabs/StudentunitsTab")
 );
 const StudentAssignmentsTab = lazy(() =>
   import("./components/student/tabs/StudentAssignmentsTab")
-);
-const StudentResourcesTab = lazy(() =>
-  import("./components/student/tabs/StudentResourcesTab")
 );
 
 const TeacherDashboard = lazy(() => import("./pages/teacher/TeacherDashboard"));
@@ -215,9 +213,7 @@ function App() {
           <>
             <Route
               path="/student-dashboard"
-              element={
-                authStudent ? <StudentDashboard /> : <Navigate to={"/"} />
-              }
+              element={authStudent ? <StudentDashboard /> : <Navigate to="/" />}
             />
             <Route
               path="/student-view-grades"
@@ -237,8 +233,13 @@ function App() {
                 authStudent ? <StudentQuizDetails /> : <Navigate to="/" />
               }
             />
+
             <Route
-              path="/student-course-content/:course_id/"
+              path="units/:unit_id/content"
+              element={<StudentUnitDetails />}
+            />
+            <Route
+              path="/student-course-content/:course_id"
               element={
                 authStudent ? <StudentCourseContent /> : <Navigate to="/" />
               }
@@ -254,17 +255,18 @@ function App() {
                 }
               />
               <Route
-                path="student-lessons"
+                path="/student-course-content/:course_id/units/:unit_id/content"
                 element={
-                  authStudent ? <StudentLessonsTab /> : <Navigate to="/" />
+                  authStudent ? <StudentUnitDetails /> : <Navigate to="/" />
                 }
               />
+              {/* Other nested routes
               <Route
-                path="student-resources"
+                path="units/:unit_id/content"
                 element={
-                  authStudent ? <StudentResourcesTab /> : <Navigate to="/" />
+                  authStudent ? <StudentUnitDetails /> : <Navigate to="/" />
                 }
-              />
+              /> */}
               <Route
                 path="student-assignments"
                 element={

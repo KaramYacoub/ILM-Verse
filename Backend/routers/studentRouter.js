@@ -7,24 +7,31 @@ const uploadSolution = require("../controllers/upload/uploadSolution");
 const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
 
-// login
+// login  //done
 router.post("/studentLogin", authController.studentLogin);
 
-//course functionalites
+//course functionalites  //done
 router.get(
   "/courses",
   authenticateUser,
   studentController.getCoursesForStudent
 );
-//get units
+//get course by id //done
 router.get(
   "/course/:course_id",
+  authenticateUser,
+  courseController.getCourseByID
+);
+
+//get units //done
+router.get(
+  "/course/:course_id/units",
   authenticateUser,
   courseController.getCourseUnits
 );
 //get unit content
 router.get(
-  "/course/:course_id/:unit_id",
+  "/course/:course_id/:unit_id/content",
   authenticateUser,
   courseController.getUnitContent
 );
@@ -43,6 +50,6 @@ router.post(
   uploadSolution,
   courseController.submitAssigment
 );
-//show student Grades
+//show student Grades  //done
 router.get("/grades", authenticateUser, studentController.getStudentMarks);
 module.exports = router;
