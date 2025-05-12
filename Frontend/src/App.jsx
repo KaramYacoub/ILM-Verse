@@ -255,7 +255,7 @@ function App() {
                 }
               />
               <Route
-                path="/student-course-content/:course_id/units/:unit_id/content"
+                path="units/:unit_id"
                 element={
                   authStudent ? <StudentUnitDetails /> : <Navigate to="/" />
                 }
