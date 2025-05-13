@@ -15,43 +15,22 @@ router.post("/studentLogin", authController.parentLogin);
 router.get("/download", downloadController.downloadResource);
 
 // students for parent: //done
-router.get("/students", authenticateUser, parentController.getParentStudents);
+router.get("/students", parentController.getParentStudents);
 
 //getCoursesForStudent after choosing the student //done
-router.get(
-  "/courses/:student_id",
-
-  studentController.getCoursesForStudent
-);
+router.get("/courses/:student_id", studentController.getCoursesForStudent);
 //getCourseUnits
-router.get(
-  "/course/:course_id",
-
-  courseController.getCourseUnits
-);
+router.get("/course/:course_id", courseController.getCourseUnits);
 //getUnitContent
-router.get(
-  "/course/:course_id/:unit_id",
-
-  courseController.getUnitContent
-);
+router.get("/course/:course_id/:unit_id", courseController.getUnitContent);
 
 // get studentMarks(specific one) //done
-router.get(
-  "/marks/:student_id",
-
-  studentController.getStudentMarks
-);
+router.get("/marks/:student_id", studentController.getStudentMarks);
 // getStudentAbsences (specific one) //done
 router.get(
   "/absence/:student_id/:section_id",
-
   absenceController.getStudentAbsences
 );
-router.get(
-  "/reports/:student_id",
-
-  reportController.getStudentReports
-);
+router.get("/reports/:student_id", reportController.getStudentReports);
 
 module.exports = router;
