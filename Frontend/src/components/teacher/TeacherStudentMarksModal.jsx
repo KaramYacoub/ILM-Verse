@@ -1,12 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { useCourseStore } from "../../store/CourseStore";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTeacherStore } from "../../store/TeacherStore";
 
 function TeacherStudentMarksModal({ isOpen, onClose, student }) {
-  const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-  const course_id = pathSegments[pathSegments.length - 2];
+  const { course_id } = useParams();
   const { getCourseByID } = useTeacherStore();
 
   const [course, setCourse] = useState([]);

@@ -37,6 +37,8 @@ router.get(
   authenticateUser,
   courseController.getCourseUnits
 );
+// add new unit
+router.post("/course/:course_id/addunit", authenticateUser, courseController.addUnit);
 //get unit content
 router.get(
   "/course/media/:unit_id",

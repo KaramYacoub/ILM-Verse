@@ -4,6 +4,8 @@ import { axiosInstance } from "../lib/axios.js";
 export const useTeacherStore = create((set) => ({
   coursesForTeacher: [],
   course: [],
+  units: [],
+  unitContent: [],
 
   // add report
   addReport: async (course_id, student_id, title, description, date) => {
@@ -22,6 +24,25 @@ export const useTeacherStore = create((set) => ({
     } catch (error) {
       console.log(
         "Error adding report from teacher: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  addCourseUnit: async (course_id, { unit_name, unit_description }) => {
+    try {
+      const response = await axiosInstance.post(
+        `/teacher/course/${course_id}/addunit`,
+        {
+          course_id,
+          unit_name,
+          unit_description,
+        }
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error in add unit: ",
         error.response?.data?.error || error.message
       );
     }
@@ -56,10 +77,61 @@ export const useTeacherStore = create((set) => ({
       const response = await axiosInstance.get(
         `/teacher/course/${course_id}/units`
       );
+      set({ units: response.data.data });
       return response.data.data;
     } catch (error) {
       console.log(
         "Error fetching course units: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  getUnitContent: async (unit_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `teacher/course/media/${unit_id}`
+      );
+      set({ unitContent: response.data.data });
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error fetching course units: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  addUnitContent: async (unit_id, formData) => {
+    try {
+      const response = await axiosInstance.post(
+        `teacher/course/${unit_id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error adding media: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+  
+  deleteUnitContent: async (unit_id, media_id) => {
+    try {
+      const response = await axiosInstance.delete(
+        `teacher/course/media/${unit_id}/${media_id}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error deleting media from a unit: ",
         error.response?.data?.error || error.message
       );
     }
