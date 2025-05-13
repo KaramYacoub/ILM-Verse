@@ -260,13 +260,6 @@ function App() {
                   authStudent ? <StudentUnitDetails /> : <Navigate to="/" />
                 }
               />
-              {/* Other nested routes
-              <Route
-                path="units/:unit_id/content"
-                element={
-                  authStudent ? <StudentUnitDetails /> : <Navigate to="/" />
-                }
-              /> */}
               <Route
                 path="student-assignments"
                 element={

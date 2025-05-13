@@ -10,6 +10,7 @@ function StudentCourseContent() {
   const [error, setError] = useState(null);
 
   const { fetchCourseByID, course } = useStudentStore();
+  console.log("👀 course_id from useParams:", course_id);
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -59,67 +60,3 @@ function StudentCourseContent() {
 }
 
 export default StudentCourseContent;
-
-// import { useState, useEffect } from "react";
-// import { Outlet, useLocation, useParams } from "react-router-dom";
-// import StudentNavigationTabs from "../../components/student/StudentNavigationTabs";
-// import useStudentStore from "../../store/StudentStore";
-// import StudentNavbar from "../../components/student/StudentNavbar";
-
-// function StudentCourseContent() {
-//   const location = useLocation();
-//   const { course_id } = useParams(); // Better way to get params
-//   const [loading, setLoading] = useState(false);
-//   const [error, setError] = useState(null);
-
-//   const { fetchCourseByID, course, courseContent } = useStudentStore();
-
-//   useEffect(() => {
-//     const fetchCourse = async () => {
-//       try {
-//         setLoading(true);
-//         await fetchCourseByID(course_id);
-//       } catch (error) {
-//         setError("Failed to load course data");
-//         console.error("Fetch error:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchCourse();
-//   }, [course_id, fetchCourseByID]);
-
-//   if (loading)
-//     return <div className="p-4 text-center">Loading course data...</div>;
-//   if (error) return <div className="p-4 text-error">{error}</div>;
-//   if (!course) return <div className="p-4">No course data available</div>;
-
-//   return (
-//     <div className="min-h-screen bg-base-200 flex flex-col justify-start pb-5">
-//       <StudentNavbar />
-
-//       <div className="container mx-auto p-6 mt-16">
-//         {/* Course Header */}
-//         <div className="bg-primary flex flex-col items-center rounded-lg shadow-md p-6 mb-6">
-//           <h1 className="text-3xl text-accent font-bold mb-2">
-//             {course.subject_name || "Course Name Not Available"}
-//           </h1>
-//         </div>
-
-//         {/* NavigationTabs */}
-//         <StudentNavigationTabs courseId={course_id} />
-
-//         {/* Tab Content - Pass both course data and fetched content */}
-//         <Outlet
-//           context={{
-//             courseData: course,
-//             courseContent,
-//             courseId: course_id,
-//           }}
-//         />
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default StudentCourseContent;
