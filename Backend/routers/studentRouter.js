@@ -30,7 +30,7 @@ router.get(
   authenticateUser,
   courseController.getCourseUnits
 );
-//get unit content
+//get unit content //done
 router.get(
   "/course/:course_id/:unit_id/content",
   authenticateUser,
@@ -38,7 +38,7 @@ router.get(
 );
 // assignment functionalites
 
-// show assignments for speicific course
+// show assignments for speicific course   //done
 //please don't change the url :)
 router.get(
   "/course/:course_id/assignments/getassignments",

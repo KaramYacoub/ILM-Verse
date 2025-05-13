@@ -1,5 +1,4 @@
 import ParentNavBar from "../../components/parent/ParentNavBar";
-import { Link } from "react-router-dom";
 import { useState } from "react";
 
 function ParentViewGrades() {
@@ -70,8 +69,8 @@ function ParentViewGrades() {
           final: 71,
           grade: 89,
           classAvg: 86,
-        }
-      ]
+        },
+      ],
     },
     {
       id: 2,
@@ -139,8 +138,8 @@ function ParentViewGrades() {
           final: 73,
           grade: 91,
           classAvg: 88,
-        }
-      ]
+        },
+      ],
     },
     {
       id: 3,
@@ -208,71 +207,28 @@ function ParentViewGrades() {
           final: 80,
           grade: 99,
           classAvg: 84,
-        }
-      ]
-    }
+        },
+      ],
+    },
   ]);
 
   const [selectedChildId, setSelectedChildId] = useState(children[0].id);
-  const selectedChild = children.find(child => child.id === selectedChildId);
+  const selectedChild = children.find((child) => child.id === selectedChildId);
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">
       <ParentNavBar />
-      
+
       <div className="w-full flex justify-between items-center mt-10 px-5">
         <div className="flex items-center gap-6 ml-5">
           <h1 className="text-4xl font-bold text-primary">My Grades</h1>
-          <select 
-            value={selectedChildId}
-            onChange={(e) => setSelectedChildId(Number(e.target.value))}
-            className="select select-bordered w-64 max-w-xs text-lg font-medium
-                      border-2 border-primary/20 rounded-xl shadow-sm
-                      focus:outline-none focus:border-primary
-                      bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMzMzMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cG9seWxpbmUgcG9pbnRzPSI2IDkgMTIgMTUgMTggOSIvPjwvc3ZnPg==')]
-                      bg-no-repeat bg-[right_1rem_center] cursor-pointer"
-          >
-            {children.map(child => (
-              <option key={child.id} value={child.id}>{child.name}</option>
-            ))}
-          </select>
-        </div>
-        <div className="flex gap-4 mr-5">
-          <Link
-            to="/parent-show-absences"
-            className="btn btn-active btn-primary rounded-full h-16 w-48 font-semibold text-xl text-base-100"
-          >
-            Show Absences
-          </Link>
-          <Link
-            to="/parent-show-reports"
-            className="btn btn-active btn-primary rounded-full h-16 w-48 font-semibold text-xl text-base-100"
-          >
-            Show Reports
-          </Link>
         </div>
       </div>
 
       <div className="p-6 space-y-8 w-full max-w-4xl bg-base-100 rounded-lg shadow-md mt-5">
         <h2 className="text-lg font-semibold bg-primary text-base-100 px-4 py-2 rounded-md w-fit">
-          Course Grades - {selectedChild.name} (Grade {selectedChild.grade})
+          Course Grades - {selectedChild.name}
         </h2>
-        
-        <div className="bg-base-100 rounded-lg shadow-sm p-6 flex justify-between gap-4">
-          <div className="flex-1 bg-base-200 p-4 rounded-lg text-center">
-            <p className="font-semibold text-gray-600">Current GPA</p>
-            <p className="text-2xl font-bold text-primary">{selectedChild.gpa}/100</p>
-          </div>
-          <div className="flex-1 bg-base-200 p-4 rounded-lg text-center">
-            <p className="font-semibold text-gray-600">Class Rank</p>
-            <p className="text-2xl font-bold text-primary">
-              {selectedChild.classRank.rank}
-              <span className="text-sm text-gray-600">
-                {" "}of {selectedChild.classRank.total}
-              </span>
-            </p>
-          </div>
-        </div>
 
         <div className="overflow-x-auto rounded-md shadow-md bg-base-300">
           <table className="table w-full text-center">
@@ -284,8 +240,6 @@ function ParentViewGrades() {
                 <th>Term 2</th>
                 <th>Term 3</th>
                 <th>Final</th>
-                <th>Grade</th>
-                <th>Class Avg</th>
               </tr>
             </thead>
             <tbody>
@@ -297,8 +251,6 @@ function ParentViewGrades() {
                   <td>{course.term2}/40</td>
                   <td>{course.term3}/40</td>
                   <td>{course.final}/80</td>
-                  <td className="text-primary font-bold">{course.grade}</td>
-                  <td>{course.classAvg}</td>
                 </tr>
               ))}
             </tbody>

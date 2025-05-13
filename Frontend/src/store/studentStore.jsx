@@ -1,4 +1,3 @@
-// useStudentStore.js (Zustand store for student-related data)
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 
@@ -11,6 +10,7 @@ const useStudentStore = create((set) => ({
   unitContent: null,
   loading: false,
   error: null,
+  assignments: [],
 
   fetchCourses: async () => {
     set({ loading: true });
@@ -81,6 +81,37 @@ const useStudentStore = create((set) => ({
         error: error.response?.data?.message || "Failed to load grades",
         loading: false,
       });
+    }
+  },
+
+  fetchAssignments: async (courseId) => {
+    set({ loading: true, error: null });
+    try {
+      const res = await axiosInstance.get(
+        `/student/course/${courseId}/assignments/getassignments`
+      );
+      set({ assignments: res.data.data, loading: false });
+    } catch (err) {
+      set({ error: err.message, loading: false });
+    }
+  },
+
+  submitAssignment: async (courseId, assignmentId, formData) => {
+    set({ loading: true, error: null });
+    try {
+      const res = await axiosInstance.post(
+        `/student/course/${courseId}/assignments/${assignmentId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      set({ loading: false });
+      return res.data;
+    } catch (err) {
+      set({ error: err.message, loading: false });
     }
   },
 }));
