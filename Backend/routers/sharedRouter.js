@@ -6,7 +6,7 @@ const guestController = require("../controllers/GuestController");
 const downloadController = require("../controllers/download/downloadController");
 
 // check login
-router.get("/check", authController.checkLogin);
+router.get("/check", authenticateUser, authController.checkLogin);
 
 // logout
 router.post("/logout", authenticateUser, authController.logout);
