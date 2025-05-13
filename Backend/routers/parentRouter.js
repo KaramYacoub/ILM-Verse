@@ -7,7 +7,6 @@ const absenceController = require("../controllers/absenceController");
 const studentController = require("../controllers/studentController");
 const downloadController = require("../controllers/download/downloadController");
 const reportController = require("../controllers/reportController");
-const authenticateUser = require("../Middlewares/authMiddleware");
 
 // login
 router.post("/studentLogin", authController.parentLogin);
@@ -16,42 +15,42 @@ router.post("/studentLogin", authController.parentLogin);
 router.get("/download", downloadController.downloadResource);
 
 // students for parent:
-router.get("/students", authenticateUser, parentController.getParentStudents);
+router.get("/students", parentController.getParentStudents);
 
 //getCoursesForStudent after choosing the student
 router.get(
   "/courses/:student_id",
-  authenticateUser,
+
   studentController.getCoursesForStudent
 );
 //getCourseUnits
 router.get(
   "/course/:course_id",
-  authenticateUser,
+
   courseController.getCourseUnits
 );
 //getUnitContent
 router.get(
   "/course/:course_id/:unit_id",
-  authenticateUser,
+
   courseController.getUnitContent
 );
 
 // get studentMarks(specific one)
 router.get(
   "/marks/:student_id",
-  authenticateUser,
+
   studentController.getStudentMarks
 );
 // getStudentAbsences (specific one)
 router.get(
   "/absence/:student_id/:section_id",
-  authenticateUser,
+
   absenceController.getStudentAbsences
 );
 router.get(
   "/reports/:student_id",
-  authenticateUser,
+
   reportController.getStudentReports
 );
 

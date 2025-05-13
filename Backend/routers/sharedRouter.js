@@ -6,7 +6,7 @@ const guestController = require("../controllers/GuestController");
 const downloadController = require("../controllers/download/downloadController");
 
 // check login
-router.get("/check", authenticateUser, authController.checkLogin);
+router.get("/check", authController.checkLogin);
 
 // logout
 router.post("/logout", authenticateUser, authController.logout);
@@ -15,6 +15,12 @@ router.post("/logout", authenticateUser, authController.logout);
 router.get("/events/getEvents", guestController.getAllEvents);
 
 // download resources
-router.get("/download", downloadController.downloadResource);
+router.get("/download", authenticateUser, downloadController.downloadResource);
+
+//auth functions
+router.post("/login/adminLogin", authController.adminLogin);
+router.post("/login/teacherLogin", authController.TeacherLogin);
+router.post("/login/parentLogin", authController.parentLogin);
+router.post("/login/studentLogin", authController.studentLogin);
 
 module.exports = router;

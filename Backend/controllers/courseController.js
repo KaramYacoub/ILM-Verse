@@ -825,6 +825,7 @@ exports.showAssigmentSubmission = async (req, res) => {
               submission_date: OneStudent.submission_date,
               path: OneStudent.path,
               type: OneStudent.type,
+              isChecked: OneStudent.isChecked,
             };
             studentsData.push(OneStudent);
           } else {
@@ -958,7 +959,7 @@ exports.deleteQuiz = async (req, res) => {
 exports.getAllQuizes = async (req, res) => {
   try {
     const { course_id } = req.params;
-    const allQuizes = await Quiz.findAll();
+    const allQuizes = await Quiz.findAll({ course_id: course_id });
     if (!allQuizes) {
       return res.status(404).json({
         status: "failure",
@@ -1043,18 +1044,59 @@ exports.getQuizesForCourse = async (req, res) => {
         message: "no quizes found",
       });
     }
-    const nowDate = new Date().toISOString().split("T")[0]; // YEAR-MM-DAY
+    const nowDate = new Date().toISOString().split("T")[0]; // YEAR-MONTH-DAY
     const nowTime = new Date().toISOString().slice(11, 16); // HH:MM
 
-    console.log(nowDate);
-    console.log(nowTime);
+    let allQuizes = [];
+    for (let oneQuiz of quizes) {
+      const toPushQuiz = {
+        quiz_id: oneQuiz._id,
+        title: oneQuiz.title,
+        description: oneQuiz.description,
+        start_date: oneQuiz.start_date,
+        start_time: oneQuiz.start_time,
+        duration: oneQuiz.duration,
+        total_points: oneQuiz.total_points,
+        able_to_view: oneQuiz.able_to_view,
+        status: "",
+        end_time: "", // Add the end_time property
+      };
 
-    for (oneQuiz of quizes) {
-      let;
+      // Ensure the start_date is in string format (just YEAR-MONTH-DAY)
+      const startDate = new Date(oneQuiz.start_date);
+      const startDateStr = startDate.toISOString().split("T")[0]; // Extract only the "YEAR-MONTH-DAY" part
+
+      // Parsing the start_time (HH:MM) to Date object for easy manipulation
+      const [startHour, startMinute] = oneQuiz.start_time
+        .split(":")
+        .map((num) => parseInt(num, 10));
+      const startDateTime = new Date(startDate); // Start with the start_date
+      startDateTime.setHours(startHour, startMinute, 0, 0); // Set the start date with start time
+
+      // Calculate endTime by adding duration (in minutes)
+      const endTime = new Date(
+        startDateTime.getTime() + oneQuiz.duration * 60000
+      ); // duration in milliseconds
+      toPushQuiz.end_time = endTime.toISOString().slice(11, 16); // Format endTime as HH:MM
+
+      // Checking quiz status
+      if (nowDate > startDateStr) {
+        toPushQuiz.status = "ended";
+      } else if (
+        nowDate === startDateStr &&
+        new Date(nowDate + "T" + nowTime) > endTime
+      ) {
+        toPushQuiz.status = "ended";
+      } else {
+        toPushQuiz.status = "upcoming";
+      }
+
+      allQuizes.push(toPushQuiz);
     }
+
     res.status(200).json({
       status: "success",
-      data: quizes,
+      data: allQuizes,
     });
   } catch (error) {
     res.status(500).json({
