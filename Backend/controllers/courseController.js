@@ -1036,6 +1036,8 @@ exports.submitQuiz = async (req, res) => {
     const { quiz_id } = req.params;
     const student_id = req.user.id;
     const { answers } = req.body;
+    const quiz = await Quiz.findById(quiz_id);
+    console.log(quiz);
   } catch (error) {
     res.status(500).json({
       error: error.message,

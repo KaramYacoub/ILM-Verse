@@ -6,6 +6,7 @@ const SQL = require("../models/Connections/SQL-Driver"); // your Sequelize insta
 const initModels = require("../models/index"); // path to index.js
 const models = initModels(SQL); // initialize models
 const { parent, student, section, grade, department } = models;
+const { Sequelize } = require("sequelize");
 
 exports.getParentStudents = async (req, res) => {
   try {
@@ -14,7 +15,18 @@ exports.getParentStudents = async (req, res) => {
       where: {
         parent_id: parent_id,
       },
-      attributes: ["first_name", "last_name", "section_id"],
+      attributes: [
+        [
+          Sequelize.fn(
+            "concat",
+            Sequelize.col("first_name"),
+            " ",
+            Sequelize.col("last_name")
+          ),
+          "full_name",
+        ],
+        "section_id",
+      ],
       include: [
         {
           model: section,
@@ -37,7 +49,7 @@ exports.getParentStudents = async (req, res) => {
         },
       ],
     });
-    if (!students) {
+    if (!students || students.length === 0) {
       return res.status(404).json({
         status: "failure",
         data: "Parent doesn't have students",
