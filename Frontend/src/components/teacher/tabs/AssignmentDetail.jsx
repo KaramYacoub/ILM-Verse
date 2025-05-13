@@ -30,7 +30,7 @@ export default function AssignmentDetail() {
     };
 
     fetchSubmissions();
-  }, [assignment]);
+  }, [TeacherShowSubmition, assignment]);
 
   const toggleCheck = (id) => {
     setSubmissions((prev) =>

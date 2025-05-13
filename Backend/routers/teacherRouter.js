@@ -76,6 +76,12 @@ router.get(
   authenticateUser,
   courseController.getAllAssigmentsForCourse
 );
+// delete assignment
+router.delete(
+  "/course/:course_id/assigments/delete-assignment/:assignment_id",
+  authenticateUser,
+  courseController.deleteAssigment
+);
 //done except ( real student )
 router.get(
   "/course/:course_id/assigments/:assignment_id",

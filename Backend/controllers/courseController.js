@@ -633,8 +633,8 @@ exports.addAssigment = async (req, res) => {
 };
 exports.deleteAssigment = async (req, res) => {
   try {
-    const { assigment_id } = req.params;
-    const deletedAssigment = await Assigment.findById(assigment_id);
+    const { assignment_id } = req.params;
+    const deletedAssigment = await Assigment.findById(assignment_id);
     if (!deletedAssigment) {
       return res.status(404).json({
         status: "failure",
@@ -650,7 +650,7 @@ exports.deleteAssigment = async (req, res) => {
     } catch (error) {
       console.error(`Failed to delete file`);
     }
-    await Assigment.findByIdAndDelete(assigment_id);
+    await Assigment.findByIdAndDelete(assignment_id);
 
     res.status(204).json({
       status: "success",

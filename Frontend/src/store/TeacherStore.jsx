@@ -6,6 +6,7 @@ export const useTeacherStore = create((set) => ({
   course: [],
   units: [],
   unitContent: [],
+  assignments: [],
 
   // add report
   addReport: async (course_id, student_id, title, description, date) => {
@@ -122,7 +123,7 @@ export const useTeacherStore = create((set) => ({
       throw error;
     }
   },
-  
+
   deleteUnitContent: async (unit_id, media_id) => {
     try {
       const response = await axiosInstance.delete(
@@ -156,6 +157,7 @@ export const useTeacherStore = create((set) => ({
       const response = await axiosInstance.get(
         `/teacher/course/${course_id}/assigments`
       );
+      set({ assignments: response.data.data });
       return response.data.data;
     } catch (error) {
       console.log(
@@ -181,6 +183,20 @@ export const useTeacherStore = create((set) => ({
         error.response?.data?.error || error.message
       );
       throw error; // Re-throw the error
+    }
+  },
+
+  TeacherDelteAssignment: async (course_id, assignment_id) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/teacher/course/${course_id}/assigments/delete-assignment/${assignment_id}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error deleting assignment: ",
+        error.response?.data?.error || error.message
+      );
     }
   },
 

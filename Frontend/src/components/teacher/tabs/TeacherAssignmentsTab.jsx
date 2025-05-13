@@ -1,47 +1,49 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Calendar, FileText, Trash2, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTeacherStore } from "../../../store/TeacherStore";
 
 export default function TeacherAssignmentsTab() {
-  const location = useLocation();
+  const { course_id } = useParams();
   const navigate = useNavigate();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-  const courseID = pathSegments[pathSegments.length - 2];
-  const unit = location.state?.unit;
 
-  const TeacherAddAssignment = useTeacherStore(
-    (state) => state.TeacherAddAssignment
-  );
-  const TeacherGetAssignment = useTeacherStore(
-    (state) => state.TeacherGetAssignment
-  );
+  const {
+    assignments,
+    TeacherGetAssignment,
+    TeacherAddAssignment,
+    TeacherDelteAssignment,
+  } = useTeacherStore();
 
-  const [assignments, setAssignments] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [newAssignment, setNewAssignment] = useState({
     title: "",
     description: "",
     dueDate: "",
-    points: "",
   });
 
   useEffect(() => {
     const fetchAssignments = async () => {
       try {
-        const data = await TeacherGetAssignment(courseID);
-        setAssignments(data || []);
+        await TeacherGetAssignment(course_id);
       } catch (error) {
         console.error("Failed to load assignments:", error);
       }
     };
 
     fetchAssignments();
-  }, [courseID, TeacherGetAssignment]);
+  }, [course_id, TeacherGetAssignment]);
 
-  const handleDelete = (title) => {
-    setAssignments((prev) => prev.filter((a) => a.title !== title));
+  const handleDeleteAssignment = async (assignment_id) => {
+    try {
+      if (window.confirm("are you sure you want to delete this assignment?")) {
+        await TeacherDelteAssignment(course_id, assignment_id);
+        await TeacherGetAssignment(course_id);
+        alert("Assignment deleted successfully");
+      }
+    } catch (error) {
+      alert("Failed to deleting assignment", error);
+    }
   };
 
   const handleAddAssignment = () => {
@@ -50,7 +52,7 @@ export default function TeacherAssignmentsTab() {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setNewAssignment({ title: "", description: "", dueDate: "", points: "" });
+    setNewAssignment({ title: "", description: "", dueDate: "" });
     setSelectedFile(null);
   };
 
@@ -73,15 +75,13 @@ export default function TeacherAssignmentsTab() {
     const formData = new FormData();
     formData.append("title", newAssignment.title);
     formData.append("description", newAssignment.description);
-    formData.append("end_at", newAssignment.dueDate); // Backend expects end_at
-    formData.append("points", newAssignment.points);
+    formData.append("end_at", newAssignment.dueDate);
     formData.append("media", selectedFile);
 
     try {
-      const response = await TeacherAddAssignment(courseID, formData);
+      const response = await TeacherAddAssignment(course_id, formData);
       if (response.status === 200) {
-        const updatedAssignments = await TeacherGetAssignment(courseID);
-        setAssignments(updatedAssignments);
+        await TeacherGetAssignment(course_id);
         handleCloseModal();
       }
     } catch (error) {
@@ -101,7 +101,12 @@ export default function TeacherAssignmentsTab() {
         </p>
       ) : (
         <div className="grid gap-4 mb-6">
-          <h2 className="text-3xl text-primary font-semibold">Assignments</h2>
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-3xl text-primary font-semibold">Assignments</h2>
+            <button onClick={handleAddAssignment} className="btn btn-primary">
+              + Add Assignment
+            </button>
+          </div>
           {assignments.map((assignment, i) => (
             <div
               key={i}
@@ -131,7 +136,7 @@ export default function TeacherAssignmentsTab() {
                 <button
                   onClick={() =>
                     navigate(
-                      `/teacher-course-content/${courseID}/assignment-detail`,
+                      `/teacher-course-content/${course_id}/assignment-detail`,
                       {
                         state: { assignment },
                       }
@@ -142,7 +147,7 @@ export default function TeacherAssignmentsTab() {
                   Show submission
                 </button>
                 <button
-                  onClick={() => handleDelete(assignment.title)}
+                  onClick={() => handleDeleteAssignment(assignment._id)}
                   className="btn btn-sm btn-outline btn-error"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -153,13 +158,7 @@ export default function TeacherAssignmentsTab() {
         </div>
       )}
 
-      <div
-        onClick={handleAddAssignment}
-        className="mt-6 border-dashed border-2 border-red-400 text-center rounded-md py-4 cursor-pointer hover:bg-red-50 transition"
-      >
-        <button className="text-red-600 font-semibold">+ Add Assignment</button>
-      </div>
-
+      {/* add assignment modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
@@ -209,7 +208,7 @@ export default function TeacherAssignmentsTab() {
                   Deadline:
                 </label>
                 <input
-                  type="datetime-local"
+                  type="date"
                   name="dueDate"
                   value={newAssignment.dueDate}
                   onChange={handleInputChange}
