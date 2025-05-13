@@ -19,7 +19,7 @@ function ParentDashboard() {
         {/* Dropdown and Grades Button Container */}
         <div className="w-full flex justify-center mb-8 gap-4">
           <div className="relative w-full max-w-md">
-            <select 
+            <select
               value={selectedChild}
               onChange={(e) => setSelectedChild(e.target.value)}
               className="w-full px-6 py-3 text-lg font-medium text-gray-700 bg-white border-2 border-primary/20 rounded-xl shadow-sm 
@@ -30,9 +30,9 @@ function ParentDashboard() {
               <option disabled value="" className="text-gray-400">
                 Choose a Student
               </option>
-              {children.map(child => (
-                <option 
-                  key={child.id} 
+              {children.map((child) => (
+                <option
+                  key={child.id}
                   value={child.id}
                   className="text-gray-700 py-2"
                 >
@@ -47,6 +47,19 @@ function ParentDashboard() {
           >
             Show Grades
           </Link>
+
+          <Link
+            to="/parent-show-absences"
+            className="btn btn-active btn-primary rounded-full h-16 w-48 font-semibold text-xl text-base-100"
+          >
+            Show Absences
+          </Link>
+          <Link
+            to="/parent-show-reports"
+            className="btn btn-active btn-primary rounded-full h-16 w-48 font-semibold text-xl text-base-100"
+          >
+            Show Reports
+          </Link>
         </div>
 
         {/* Course Header Section */}
@@ -60,7 +73,7 @@ function ParentDashboard() {
         {/* Course Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 w-full">
           {Array.from({ length: 6 }, (_, index) => (
-            <CourseCard key={index} to='/parent-course-content'/>
+            <CourseCard key={index} to="/parent-course-content" />
           ))}
         </div>
       </div>

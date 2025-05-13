@@ -1,66 +1,78 @@
-import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Download } from "lucide-react";
+import useStudentStore from "../../../store/StudentStore";
 
 function StudentAssignmentsTab() {
-  const { courseData } = useOutletContext();
+  const { course_id } = useParams();
   const [selectedAssignment, setSelectedAssignment] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  const assignments = courseData.units.flatMap((unit, unitIndex) =>
-    unit.assignments.map((assignment, idx) => ({
-      id: `${unitIndex + 1}-${idx + 1}`,
-      name: assignment.title,
-      unit: unit.name,
-      dueDate: assignment.dueDate,
-      status: assignment.status,
-      grade: assignment.grade,
-    }))
-  );
+  const {
+    assignments = [],
+    fetchAssignments,
+    submitAssignment,
+    loading,
+    error,
+  } = useStudentStore();
 
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case "Submitted":
-        return (
-          <span className="badge badge-success text-base-100 w-full h-full">
-            {status}
-          </span>
-        );
-      case "Not Submitted":
-        return (
-          <span className="badge badge-error text-base-100 w-full h-full">
-            {status}
-          </span>
-        );
-      case "Pending":
-        return (
-          <span className="badge badge-warning text-base-100 w-full h-full">
-            {status}
-          </span>
-        );
-      default:
-        return <span className="badge">{status}</span>;
+  useEffect(() => {
+    if (course_id) {
+      fetchAssignments(course_id);
+    }
+  }, [course_id]);
+
+  const handleSubmit = async () => {
+    if (!selectedFile || !selectedAssignment) return;
+
+    const formData = new FormData();
+    formData.append("solution", selectedFile);
+
+    try {
+      await submitAssignment(course_id, selectedAssignment._id, formData);
+      document.getElementById("submit-modal").checked = false;
+      fetchAssignments(course_id); // refresh list
+      setSelectedAssignment(null);
+      setSelectedFile(null);
+    } catch (err) {
+      console.error("Submission failed:", err);
+      alert(err.response?.data?.message || "Upload failed.");
     }
   };
 
-  const getGradeButton = (assignment) => {
-    const { grade, status } = assignment;
-
-    if (status === "Not Submitted") {
-      return <span className="font-bold">-</span>;
-    } else if (grade === "submit") {
-      return (
-        <label
-          htmlFor="submit-modal"
-          className="btn btn-primary btn-sm w-full h-full"
-          onClick={() => setSelectedAssignment(assignment)}
-        >
-          View and Submit
-        </label>
-      );
-    } else {
-      return <span className="font-bold">{grade}</span>;
-    }
+  const getStatusBadge = (assignment) => {
+    return assignment.submission === "Not exist" ? (
+      <span className="badge badge-error text-base-100 w-full h-full">
+        Not Submitted
+      </span>
+    ) : (
+      <span className="badge badge-success text-base-100 w-full h-full">
+        Submitted
+      </span>
+    );
   };
+
+  const getActionButton = (assignment) => {
+    return assignment.submission === "Not exist" ? (
+      <label
+        htmlFor="submit-modal"
+        className="btn btn-primary btn-sm w-full h-full"
+        onClick={() => {
+          setSelectedAssignment(assignment);
+          setSelectedFile(null);
+        }}
+      >
+        View and Submit
+      </label>
+    ) : (
+      <span className="font-bold text-success">✓</span>
+    );
+  };
+
+  if (loading)
+    return <div className="text-center py-10">Loading assignments...</div>;
+  if (error)
+    return <div className="text-center text-red-500 py-10">{error}</div>;
 
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
@@ -71,71 +83,74 @@ function StudentAssignmentsTab() {
               <th>Assignment</th>
               <th>Due Date</th>
               <th>Status</th>
-              <th>Grade</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
             {assignments.map((assignment) => (
-              <tr key={assignment.id}>
+              <tr key={assignment._id}>
                 <td className="flex flex-col items-start">
-                  <div className="font-semibold">{assignment.name}</div>
-                  <div className="text-sm text-gray-500">{assignment.unit}</div>
+                  <div className="font-semibold">{assignment.title}</div>
+                  <div className="text-sm text-gray-500">
+                    {assignment.description}
+                  </div>
                 </td>
-                <td>{assignment.dueDate}</td>
-                <td>{getStatusBadge(assignment.status)}</td>
-                <td>{getGradeButton(assignment)}</td>
+                <td>{assignment.end_at}</td>
+                <td>{getStatusBadge(assignment)}</td>
+                <td>{getActionButton(assignment)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* MODAL for submission */}
+      {/* Modal for File Upload */}
       <input type="checkbox" id="submit-modal" className="modal-toggle" />
       <div className="modal">
         <div className="modal-box w-full max-w-2xl">
           {selectedAssignment && (
             <>
-              {/* Download Assignment Section */}
-              <div className="mb-6 pb-4">
-                <h3 className="font-bold text-lg mb-2">Download assignment:</h3>
-                <div className="flex items-center gap-2">
-                  <a
-                    href={`/assignments/${selectedAssignment.id}.pdf`}
-                    download={`${selectedAssignment.name}.pdf`}
-                    className="link link-primary font-medium flex gap-2 mt-2"
-                  >
-                    <Download />
-                    {selectedAssignment.name} Instructions (PDF)
-                  </a>
-                </div>
+              <div className="mb-6">
+                <h3 className="font-bold text-lg">Download Instructions</h3>
+                <a
+                  href={`/${selectedAssignment.path.replace("./", "")}`}
+                  download
+                  className="link link-primary flex items-center gap-2 mt-2"
+                >
+                  <Download /> {selectedAssignment.title}.pdf
+                </a>
               </div>
 
-              <div className="divider divider-primary m-0"></div>
+              <div className="divider divider-primary"></div>
 
-              {/* Submission Section */}
               <div>
                 <h3 className="font-bold text-lg mb-4">
-                  Submit: {selectedAssignment.name}
+                  Submit: {selectedAssignment.title}
                 </h3>
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  className="file-input file-input-bordered w-full"
+                  onChange={(e) => setSelectedFile(e.target.files[0])}
+                />
+                {selectedFile && (
+                  <p className="text-sm mt-2 text-gray-600">
+                    Selected: {selectedFile.name}
+                  </p>
+                )}
+              </div>
 
-                <div className="mb-4">
-                  <label className="label">
-                    <span className="label-text">Upload file (PDF, DOCX)</span>
-                  </label>
-                  <input
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    className="file-input file-input-bordered w-full"
-                  />
-                </div>
-
-                <div className="modal-action">
-                  <label htmlFor="submit-modal" className="btn btn-outline">
-                    Cancel
-                  </label>
-                  <button className="btn btn-primary">Submit Assignment</button>
-                </div>
+              <div className="modal-action mt-4">
+                <label htmlFor="submit-modal" className="btn btn-outline">
+                  Cancel
+                </label>
+                <button
+                  className="btn btn-primary"
+                  onClick={handleSubmit}
+                  disabled={!selectedFile}
+                >
+                  Submit Assignment
+                </button>
               </div>
             </>
           )}
