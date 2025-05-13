@@ -6,9 +6,7 @@ export default function AssignmentDetail() {
   const location = useLocation();
   const assignment = location.state?.assignment;
 
-  const TeacherShowSubmition = useTeacherStore(
-    (state) => state.TeacherShowSubmition
-  );
+  const { TeacherShowSubmition, TeacherUpdateSubmition } = useTeacherStore();
   const [submissions, setSubmissions] = useState([]);
 
   useEffect(() => {
@@ -18,14 +16,17 @@ export default function AssignmentDetail() {
           assignment.course_id,
           assignment._id
         );
-        setSubmissions(
-          data?.map((student) => ({
-            id: student.student_id,
-            name: student.student_name,
-            checked: student.checked || false,
-            fileUrl: student.file_url,
-          })) || []
+        const formattedSubmissions = data?.studentsSubmission.map(
+          (student) => ({
+            student_id: student.student_id,
+            name: student.name,
+            path: student.path,
+            type: student.type,
+            submission_date: student.submission_date,
+            isChecked: student.isChecked ?? false,
+          })
         );
+        setSubmissions(formattedSubmissions || []);
       }
     };
 
@@ -35,15 +36,22 @@ export default function AssignmentDetail() {
   const toggleCheck = (id) => {
     setSubmissions((prev) =>
       prev.map((student) =>
-        student.id === id ? { ...student, checked: !student.checked } : student
+        student.student_id === id
+          ? { ...student, isChecked: !student.isChecked }
+          : student
       )
     );
   };
 
-  const handleUpdate = () => {
-    console.log("Updated submission statuses:", submissions);
-    alert("Student submission statuses updated successfully!");
-    // TODO: send updated statuses to backend
+  const handleUpdate = async () => {
+    try {
+      await TeacherUpdateSubmition(assignment.course_id, assignment._id, {
+        studentsSubmissions: submissions,
+      });
+      alert("Student submission statuses updated successfully!");
+    } catch (error) {
+      console.log("error update submition: ", error);
+    }
   };
 
   if (!assignment) {
@@ -76,7 +84,7 @@ export default function AssignmentDetail() {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="table w-full border">
+        <table className="table w-full border text-center">
           <thead className="bg-gray-100">
             <tr>
               <th>Student ID</th>
@@ -87,20 +95,20 @@ export default function AssignmentDetail() {
           </thead>
           <tbody>
             {submissions.map((student) => (
-              <tr key={student.id} className="border-t">
-                <td>{student.id}</td>
+              <tr key={student.student_id} className="border-t">
+                <td>{student.student_id}</td>
                 <td>{student.name}</td>
                 <td>
                   <input
                     type="checkbox"
                     className="checkbox checkbox-primary"
-                    checked={student.checked}
-                    onChange={() => toggleCheck(student.id)}
+                    checked={student.isChecked}
+                    onChange={() => toggleCheck(student.student_id)}
                   />
                 </td>
                 <td>
                   <a
-                    href={student.fileUrl}
+                    href={student.path}
                     download
                     className="btn btn-sm btn-outline btn-primary"
                   >

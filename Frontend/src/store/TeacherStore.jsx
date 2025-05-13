@@ -213,4 +213,23 @@ export const useTeacherStore = create((set) => ({
       );
     }
   },
+
+  TeacherUpdateSubmition: async (
+    course_id,
+    assignment_id,
+    { studentsSubmissions }
+  ) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/teacher/course/${course_id}/assigments/update/${assignment_id}`,
+        { studentsSubmissions }
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error fetching submissions: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
 }));

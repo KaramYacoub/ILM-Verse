@@ -88,7 +88,7 @@ router.get(
   courseController.showAssigmentSubmission
 );
 router.patch(
-  "/course/:course_id/assigments/:assignment_id",
+  "/course/:course_id/assigments/update/:assignment_id",
 
   courseController.updateSubmissionStatus
 );

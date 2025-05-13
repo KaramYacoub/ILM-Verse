@@ -13,7 +13,7 @@ export const useAuthStore = create((set) => ({
   adminLogin: async (data) => {
     try {
       set({ isUserLoggingIn: true });
-      const response = await axiosInstance.post("admin/adminLogin", data);
+      const response = await axiosInstance.post("/shared/login/adminLogin", data);
       set({ authAdmin: response.data.data });
       return response.data;
     } catch (error) {
@@ -27,7 +27,7 @@ export const useAuthStore = create((set) => ({
   teacherLogin: async (data) => {
     try {
       set({ isUserLoggingIn: true });
-      const response = await axiosInstance.post("teacher/teacherLogin", data);
+      const response = await axiosInstance.post("/shared/login/teacherLogin", data);
       set({ authTeacher: response.data.data });
       return response.data;
     } catch (error) {
@@ -41,7 +41,7 @@ export const useAuthStore = create((set) => ({
   studentLogin: async (data) => {
     try {
       set({ isUserLoggingIn: true });
-      const response = await axiosInstance.post("student/studentLogin", data);
+      const response = await axiosInstance.post("/shared/login/studentLogin", data);
       set({ authStudent: response.data.data });
       return response.data;
     } catch (error) {
@@ -55,7 +55,7 @@ export const useAuthStore = create((set) => ({
   parentLogin: async (data) => {
     try {
       set({ isUserLoggingIn: true });
-      const response = await axiosInstance.post("parent/studentLogin", data);
+      const response = await axiosInstance.post("/shared/login/studentLogin", data);
       set({ authParent: response.data.data });
       return response.data;
     } catch (error) {
@@ -69,7 +69,7 @@ export const useAuthStore = create((set) => ({
   checkAuth: async () => {
     try {
       set({ isCheckingAuth: true });
-      const res = await axiosInstance.get("shared/check");
+      const res = await axiosInstance.get("/shared/check");
 
       if (res.data?.data && res.data?.role) {
         switch (res.data.role) {
