@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { useTeacherStore } from "../../store/TeacherStore";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function ReportModal({ isOpen, onClose, student }) {
-  const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-  const course_id = pathSegments[pathSegments.length - 2];
+  const { course_id } = useParams();
   const { addReport } = useTeacherStore();
 
   const [title, setTitle] = useState("");

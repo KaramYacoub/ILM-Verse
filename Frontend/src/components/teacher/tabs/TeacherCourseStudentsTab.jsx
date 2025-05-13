@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import StudentReportModal from "../ReportModal";
 import { MoreHorizontal, Loader2 } from "lucide-react";
 import { useTeacherStore } from "../../../store/TeacherStore";
@@ -7,14 +7,12 @@ import { useEffect } from "react";
 import TeacherStudentMarksModal from "../TeacherStudentMarksModal";
 
 function TeacherCourseStudentsTab() {
-  const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-  const course_id = pathSegments[pathSegments.length - 2];
+  const { course_id } = useParams();
   const { getStudentsInCourse } = useTeacherStore();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(true); // Added loading state
+  const [isLoading, setIsLoading] = useState(true);
 
   // Modal states
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -25,14 +23,14 @@ function TeacherCourseStudentsTab() {
   // fetch students
   useEffect(() => {
     const fetchStudents = async () => {
-      setIsLoading(true); // Set loading to true when fetch starts
+      setIsLoading(true);
       try {
         const allStudents = await getStudentsInCourse(course_id);
         setStudents(allStudents);
       } catch (error) {
         console.error("Error fetching students:", error);
       } finally {
-        setIsLoading(false); // Set loading to false when fetch completes
+        setIsLoading(false);
       }
     };
     fetchStudents();

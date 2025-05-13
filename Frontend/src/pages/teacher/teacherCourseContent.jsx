@@ -1,20 +1,18 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import TeacherNavbar from "../../components/teacher/TeacherNavbar";
 import TeacherNavigationTabs from "../../components/teacher/TeacherNavigationTabs";
 import { useEffect } from "react";
 import { useTeacherStore } from "../../store/TeacherStore";
 import { useState } from "react";
-import { Loader2 } from "lucide-react"; // Import the loading spinner
+import { Loader2, XCircle } from "lucide-react";
 
 function TeacherCourseContent() {
-  const location = useLocation();
-  const pathSegments = location.pathname.split("/").filter(Boolean);
-  const course_id = pathSegments[pathSegments.length - 2];
+  const { course_id } = useParams();
   const { getCourseByID } = useTeacherStore();
 
-  const [course, setCourse] = useState(null); // Changed to null for better loading state handling
-  const [isLoading, setIsLoading] = useState(true); // Added loading state
-  const [error, setError] = useState(null); // Added error state
+  const [course, setCourse] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchCourseContent = async () => {
@@ -46,19 +44,7 @@ function TeacherCourseContent() {
         ) : error ? (
           <div className="alert alert-error shadow-lg">
             <div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="stroke-current flex-shrink-0 h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <XCircle className="h-6 w-6 text-red-500" />
               <span>{error}</span>
             </div>
           </div>
@@ -75,7 +61,7 @@ function TeacherCourseContent() {
             <TeacherNavigationTabs to="teacher-course-content" />
 
             {/* Tab Content */}
-            <Outlet context={{ course }} />
+            <Outlet />
           </>
         )}
       </div>

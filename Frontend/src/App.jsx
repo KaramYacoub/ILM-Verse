@@ -286,7 +286,7 @@ function App() {
                 element={<Navigate replace to="teacher-course-students" />}
               />
               <Route
-                path="teacher-unit-content"
+                path="teacher-unit-content/:unit_id"
                 element={
                   authTeacher ? <TeacherUnitContentTab /> : <Navigate to="/" />
                 }
