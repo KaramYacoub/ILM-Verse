@@ -355,7 +355,7 @@ function App() {
               element={authParent ? <ParentViewGrades /> : <Navigate to="/" />}
             />
             <Route
-              path="/parent-show-reports"
+              path="/parent-show-reports/:student_id"
               element={authParent ? <ParentShowReports /> : <Navigate to="/" />}
             />
             <Route

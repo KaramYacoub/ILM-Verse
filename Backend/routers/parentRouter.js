@@ -15,10 +15,10 @@ router.post("/studentLogin", authController.parentLogin);
 // download resources
 router.get("/download", downloadController.downloadResource);
 
-// students for parent:
+// students for parent: //done
 router.get("/students", authenticateUser, parentController.getParentStudents);
 
-//getCoursesForStudent after choosing the student
+//getCoursesForStudent after choosing the student //done
 router.get(
   "/courses/:student_id",
   authenticateUser,
@@ -37,13 +37,13 @@ router.get(
   courseController.getUnitContent
 );
 
-// get studentMarks(specific one)
+// get studentMarks(specific one) //done
 router.get(
   "/marks/:student_id",
   authenticateUser,
   studentController.getStudentMarks
 );
-// getStudentAbsences (specific one)
+// getStudentAbsences (specific one) //done
 router.get(
   "/absence/:student_id/:section_id",
   authenticateUser,

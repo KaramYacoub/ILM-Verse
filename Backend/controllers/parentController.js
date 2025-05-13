@@ -26,6 +26,7 @@ exports.getParentStudents = async (req, res) => {
           "full_name",
         ],
         "section_id",
+        "student_id",
       ],
       include: [
         {
