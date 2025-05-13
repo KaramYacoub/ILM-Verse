@@ -13,6 +13,7 @@ const {
   department,
   student_marks,
   mark_type,
+  teacher,
 } = models;
 
 exports.getCoursesForStudent = async (req, res) => {
@@ -70,6 +71,13 @@ exports.getStudentMarks = async (req, res) => {
           model: course,
           as: "course",
           attributes: ["subject_name"],
+          include: [
+            {
+              model: teacher,
+              as: "teacher",
+              attributes: ["first_name", "last_name"],
+            },
+          ],
         },
       ],
     });
@@ -80,6 +88,7 @@ exports.getStudentMarks = async (req, res) => {
     for (let oneCourse of studentCourses) {
       let courseMarks = {
         course_id: oneCourse.course_id,
+        teacher: `${oneCourse.course.teacher.first_name} ${oneCourse.course.teacher.last_name}`,
         subject_name: "", // To hold the subject_name of the course
         marks: [],
       };

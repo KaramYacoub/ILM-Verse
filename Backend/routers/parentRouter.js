@@ -17,7 +17,7 @@ router.get("/download", downloadController.downloadResource);
 router.get("/students", authenticateUser, parentController.getParentStudents);
 // get studentMarks(specific one)
 router.get(
-  "/grades/:student_id",
+  "/marks/:student_id",
   authenticateUser,
   studentController.getStudentMarks
 );
