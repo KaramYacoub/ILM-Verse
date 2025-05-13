@@ -11,9 +11,9 @@ const authenticateUser = async (req, res, next) => {
 
     // Check if token exists
     if (!token) {
-      return res.status(401).json({
+      return res.status(403).json({
         status: "failed",
-        message: "Access denied. No token provided.",
+        message: "Unauthenticated.",
       });
     }
 
@@ -36,7 +36,7 @@ const authenticateUser = async (req, res, next) => {
 
     // If no user found
     if (!user) {
-      return res.status(401).json({
+      return res.status(403).json({
         status: "failed",
         message: "Unauthorized access. User not found.",
       });

@@ -35,6 +35,15 @@ app.use(
   },
   express.static(path.join(__dirname, "data/resources"))
 );
+// authentication middleware import: checks if the user authinticated or not
+const authenticateUser = require("./Middlewares/authMiddleware");
+//authurization middleware imports: check if the user authurized to do sth or not
+const {
+  checkAdmin,
+  checkTeacher,
+  checkParent,
+  checkStudent,
+} = require("./Middlewares/authrizationMiddleware");
 
 //---------------------------------------
 //Routes Imports
@@ -45,10 +54,10 @@ const parentRouter = require("./routers/parentRouter");
 const sharedRouter = require("./routers/sharedRouter");
 
 // routing
-app.use("/admin", adminRouter);
-app.use("/teacher", teacherRouter);
-app.use("/student", studentRouter);
-app.use("/parent", parentRouter);
+app.use("/admin", authenticateUser, checkAdmin, adminRouter);
+app.use("/teacher", authenticateUser, checkTeacher, teacherRouter);
+app.use("/student", authenticateUser, checkStudent, studentRouter);
+app.use("/parent", authenticateUser, checkParent, parentRouter);
 app.use("/shared", sharedRouter);
 
 //--------------------------------------

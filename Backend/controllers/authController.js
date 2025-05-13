@@ -277,9 +277,9 @@ exports.parentLogin = async (req, res) => {
 exports.checkLogin = (req, res) => {
   try {
     if (!req.user) {
-      return res.status(401).json({
+      return res.status(403).json({
         status: "failed",
-        message: "Unauthorized",
+        message: "Unuthenticated",
       });
     }
 
