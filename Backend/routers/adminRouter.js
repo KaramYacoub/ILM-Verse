@@ -3,6 +3,7 @@ const router = express.Router();
 const adminController = require("../controllers/adminController");
 const courseController = require("../controllers/courseController");
 const absenceController = require("../controllers/absenceController");
+const reportController = require("../controllers/reportController");
 const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
 const uploadFiles = require("../controllers/upload/uploadEvent"); // Import the upload middleware for events
@@ -111,7 +112,7 @@ router.get(
   authenticateUser,
   courseController.getStudentsInCourse
 );
-router.post("/course/addreport", authenticateUser, courseController.addReport);
+router.post("/course/addreport", authenticateUser, reportController.addReport);
 router.post("/course/addunit", authenticateUser, courseController.addUnit);
 router.get(
   "/course/:course_id",

@@ -129,3 +129,36 @@ exports.getAbsence = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+exports.getStudentAbsences = async (req, res) => {
+  try {
+    const { student_id, section_id } = req.params;
+
+    // Find the absence reports for the specific section
+    const absenceReports = await AbsenceReport.find({ section_id });
+
+    // Initialize variables to store the count and dates
+    let absenceCount = 0;
+    let absenceDates = [];
+
+    // Loop through all reports and check if the student was absent
+    absenceReports.forEach((report) => {
+      report.students.forEach((student) => {
+        if (student.student_id === student_id && student.isAbsence) {
+          absenceCount++; // Increment the absence count
+          absenceDates.push(report.date); // Add the date to the array
+        }
+      });
+    });
+
+    // Send the response with count and dates
+    res.status(200).json({
+      absenceCount,
+      absenceDates,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};

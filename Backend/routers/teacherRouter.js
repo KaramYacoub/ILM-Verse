@@ -5,6 +5,7 @@ const authenticateUser = require("../Middlewares/authMiddleware");
 const teacherController = require("../controllers/teacherController");
 const courseController = require("../controllers/courseController");
 const absenceController = require("../controllers/absenceController");
+const reportController = require("../controllers/reportController");
 const uploadContent = require("../controllers/upload/uploadContentMiddleWare");
 const uploadAssigment = require("../controllers/upload/uploadAssigment-Description");
 const checkFile = require("../Middlewares/checkFileMiddleware");
@@ -110,7 +111,7 @@ router.get("/absence/:date", authenticateUser, absenceController.getAbsence);
 router.post(
   "/course/:course_id/addnewreport",
   authenticateUser,
-  courseController.addReport
+  reportController.addReport
 );
 
 module.exports = router;

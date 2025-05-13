@@ -15,7 +15,6 @@ const {
   mark_type,
   student_marks,
 } = models;
-const Report = require("../models/NOSQL/Report");
 const CourseUnit = require("../models/NOSQL/CourseUnit");
 const Assigment = require("../models//NOSQL/Assigment.js");
 const Quiz = require("../models/NOSQL/Quiz.js");
@@ -249,33 +248,6 @@ exports.getStudentsInCourse = async (req, res) => {
         students,
         count: students.length || "0",
       },
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-// add a report for a student in ✅
-exports.addReport = async (req, res) => {
-  const { course_id, student_id, title, description, date } = req.body;
-  const role = req.role;
-  const id = req.user.id;
-  try {
-    const formattedDate = new Date(date).toISOString().split("T")[0]; // Formats to YYYY-MM-DD
-
-    const newReport = await new Report({
-      instructor_id: id,
-      instructor_type: role,
-      course_id: course_id, // Optional field, can be left out if not needed
-      student_id: student_id,
-      title: title,
-      description: description,
-      date: formattedDate,
-    }).save();
-
-    res.status(201).json({
-      status: "success",
-      message: "Report Added Successfully",
     });
   } catch (error) {
     res.status(400).json({ error: error.message });

@@ -14,6 +14,7 @@ exports.getParentStudents = async (req, res) => {
       where: {
         parent_id: parent_id,
       },
+      attributes: ["first_name", "last_name", "section_id"],
       include: [
         {
           model: section,
