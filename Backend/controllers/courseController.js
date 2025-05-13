@@ -1031,6 +1031,37 @@ exports.editQuiz = async (req, res) => {
     });
   }
 };
+exports.getQuizesForCourse = async (req, res) => {
+  try {
+    const { course_id } = req.params;
+    const quizes = await Quiz.find({ course_id: course_id }).select(
+      "-questions"
+    );
+    if (!quizes) {
+      return res.status(404).json({
+        status: "failure",
+        message: "no quizes found",
+      });
+    }
+    const nowDate = new Date().toISOString().split("T")[0]; // YEAR-MM-DAY
+    const nowTime = new Date().toISOString().slice(11, 16); // HH:MM
+
+    console.log(nowDate);
+    console.log(nowTime);
+
+    for (oneQuiz of quizes) {
+      let;
+    }
+    res.status(200).json({
+      status: "success",
+      data: quizes,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
 exports.submitQuiz = async (req, res) => {
   try {
     const { quiz_id } = req.params;

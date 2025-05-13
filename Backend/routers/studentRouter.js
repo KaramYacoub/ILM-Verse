@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const courseController = require("../controllers/courseController");
 const studentController = require("../controllers/studentController");
-
 const uploadSolution = require("../controllers/upload/uploadSolution");
 const authController = require("../controllers/authController");
 const authenticateUser = require("../Middlewares/authMiddleware");
@@ -55,4 +54,12 @@ router.post(
 );
 //show student Grades  //done
 router.get("/grades", authenticateUser, studentController.getStudentMarks);
+
+// quiz functionalites
+//getQuizesForCourse
+router.get(
+  "/course/:course_id/quizes",
+  authenticateUser,
+  courseController.getQuizesForCourse
+);
 module.exports = router;

@@ -24,12 +24,14 @@ exports.updateAbsence = async (req, res) => {
         });
       }
     } else {
-      section_id = req.params;
+      section_id = req.body.section_id;
     }
+    console.log(section_id);
     // Check if an AbsenceReport exists for the same section_id and date
     const existingReport = await AbsenceReport.findOne({ section_id, date });
-
     if (existingReport) {
+      console.log("in existing Report");
+      console.log(existingReport);
       // If the report exists, update the students data
       existingReport.students = students;
       await existingReport.save();
@@ -40,6 +42,7 @@ exports.updateAbsence = async (req, res) => {
       });
     } else {
       // If no report exists, create a new one
+      console.log("in no report exisitng");
       const newAbsenceReport = new AbsenceReport({
         section_id: section_id,
         date: date,
@@ -61,6 +64,7 @@ exports.getAbsence = async (req, res) => {
   try {
     const { date } = req.params;
     let section_id;
+    console.log("in GetAbsence");
     if (req.role === "teacher") {
       const foundedTeacher = await teacher.findOne({
         where: {
@@ -76,7 +80,7 @@ exports.getAbsence = async (req, res) => {
         });
       }
     } else {
-      section_id = req.params;
+      section_id = req.params.section_id;
     }
     // Step 1: Fetch all students in the specific section
     const studentsInSection = await student.findAll({
