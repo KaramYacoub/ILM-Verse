@@ -8,7 +8,7 @@ function StudentNavigationTabs() {
   // Determine active tab
   const pathSegments = location.pathname.split("/").filter(Boolean);
   const lastSegment = pathSegments[pathSegments.length - 1];
-  const isUnitsTabActive = pathSegments.includes("student-units");
+  const isUnitsTabActive = pathSegments.includes("units");
   const isAssignmentsTabActive = lastSegment === "student-assignments";
 
   return (
@@ -27,10 +27,9 @@ function StudentNavigationTabs() {
       </button>
       <button
         onClick={() =>
-          navigate(
-            `/student-course-content/${course_id}/units/${unit_id}/content`,
-            { state: { unit } }
-          )
+          navigate(`/student-course-content/${course_id}/units/${unit_id}`, {
+            state: { unit },
+          })
         }
         className={`w-full h-14 text-lg tab ${
           isUnitsTabActive ? "bg-accent text-primary" : "text-gray-600"

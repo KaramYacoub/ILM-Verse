@@ -42,12 +42,13 @@ function StudentOverviewTab() {
                 </div>
                 <button
                   className="btn btn-primary text-lg btn-md"
-                  onClick={() =>
+                  onClick={() => {
+                    // console.log("unit: ", unit);
                     navigate(
-                      `/student-course-content/${course_id}/units/${unit_id}/content`,
+                      `/student-course-content/${course_id}/units/${unit.unit_id}/`,
                       { state: { unit } }
-                    )
-                  }
+                    );
+                  }}
                 >
                   View Unit
                 </button>
