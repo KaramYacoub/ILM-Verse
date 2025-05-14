@@ -34,6 +34,10 @@ function QuestionItem({ question, index, updateQuestion, removeQuestion }) {
             </h3>
             <div className="flex items-center">
               <span className="mr-4">Points: {question.points}</span>
+              <span className="mr-4">
+                Correct Answer:{" "}
+                {question.choices[question.correctAnswerIndex] || "Not set"}
+              </span>
               <button
                 type="button"
                 className="btn btn-sm btn-ghost mr-2"
@@ -60,8 +64,18 @@ function QuestionItem({ question, index, updateQuestion, removeQuestion }) {
                   type="radio"
                   name={`question-${question.id}`}
                   className="radio radio-primary mr-2"
+                  checked={choiceIndex === question.correctAnswerIndex}
+                  readOnly
                 />
-                <span>{choice || `(Option ${choiceIndex + 1})`}</span>
+                <span
+                  className={
+                    choiceIndex === question.correctAnswerIndex
+                      ? "font-bold text-green-600"
+                      : ""
+                  }
+                >
+                  {choice || `(Option ${choiceIndex + 1})`}
+                </span>
               </div>
             ))}
           </div>

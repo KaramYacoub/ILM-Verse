@@ -65,9 +65,10 @@ router.patch(
 );
 
 // quizes
+router.get("/course/:course_id/allQuizes", courseController.getAllQuizes);
+router.get("/course/quiz/:quiz_id", courseController.getQuiz);
 router.post("/course/:course_id/quiz", courseController.addQuiz);
 router.delete("/course/deletequiz/:quiz_id", courseController.deleteQuiz);
-router.get("/course/quiz/:quiz_id", courseController.getQuiz);
 router.patch("/course/quiz/:quiz_id", courseController.editQuiz);
 
 // Absence functionality

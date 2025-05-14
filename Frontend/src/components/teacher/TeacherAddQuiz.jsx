@@ -3,18 +3,46 @@ import { Plus } from "lucide-react";
 import TeacherNavbar from "../../components/teacher/TeacherNavbar";
 import QuizDetailsForm from "./quiz/QuizDetailsForm";
 import QuestionItem from "./quiz/QuestionItem";
+import { useTeacherStore } from "../../store/TeacherStore";
+import { useLocation, useParams } from "react-router-dom";
 
 function TeacherAddQuiz() {
-  const [quizData, setQuizData] = useState({
-    quizTitle: "",
-    description: "",
-    startDate: "2025-04-20",
-    startTime: "14:30",
-    duration: "15",
-    totalPoints: "5",
-    questions: [],
-    editingQuestionID: null,
-  });
+  const { course_id } = useParams();
+  const { addQuiz, editQuiz } = useTeacherStore();
+  const location = useLocation();
+  const existingQuiz = location.state?.quiz;
+
+  const [quizData, setQuizData] = useState(
+    existingQuiz
+      ? {
+          quizTitle: existingQuiz.title,
+          description: existingQuiz.description,
+          startDate: existingQuiz.start_date.split("T")[0],
+          startTime: existingQuiz.start_time,
+          duration: existingQuiz.duration.toString(),
+          totalPoints: existingQuiz.total_points.toString(),
+          questions: existingQuiz.questions.map((q) => ({
+            id: q._id,
+            question: q.question_text,
+            choices: q.options.map((opt) => opt.option_text),
+            points: q.points,
+            correctAnswerIndex: q.options.findIndex(
+              (opt) => opt.isCorrectAnswer
+            ),
+          })),
+          editingQuestionID: null,
+        }
+      : {
+          quizTitle: "",
+          description: "",
+          startDate: "",
+          startTime: "",
+          duration: "",
+          totalPoints: "",
+          questions: [],
+          editingQuestionID: null,
+        }
+  );
 
   const updateQuizDetails = (field, value) => {
     setQuizData({
@@ -24,10 +52,7 @@ function TeacherAddQuiz() {
   };
 
   const addQuestion = () => {
-    const newID =
-      quizData.questions.length > 0
-        ? Math.max(...quizData.questions.map((q) => q.id)) + 1
-        : 1;
+    const newID = Date.now().toString();
 
     setQuizData({
       ...quizData,
@@ -38,6 +63,7 @@ function TeacherAddQuiz() {
           question: "",
           choices: ["", "", "", ""],
           points: 5,
+          correctAnswerIndex: 0,
         },
       ],
     });
@@ -59,10 +85,18 @@ function TeacherAddQuiz() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log(quizData);
+    try {
+      if (existingQuiz) {
+        await editQuiz(existingQuiz._id, quizData);
+      } else {
+        await addQuiz(course_id, quizData);
+      }
+      window.history.back();
+    } catch (error) {
+      console.error("Error saving quiz:", error);
+    }
   };
 
   return (
@@ -81,10 +115,9 @@ function TeacherAddQuiz() {
               updateQuizDetails={updateQuizDetails}
             />
 
-            {/* Questions */}
             {quizData.questions.length === 0 ? (
               <div className="py-8">
-                <p className="text-gray-500 mb-4 text-center ">
+                <p className="text-gray-500 mb-4 text-center">
                   No questions added yet
                 </p>
                 <button
@@ -126,13 +159,7 @@ function TeacherAddQuiz() {
               >
                 Cancel
               </button>
-              <button
-                onClick={() => {
-                  window.history.back();
-                }}
-                type="submit"
-                className="btn btn-primary"
-              >
+              <button type="submit" className="btn btn-primary">
                 Save
               </button>
             </div>

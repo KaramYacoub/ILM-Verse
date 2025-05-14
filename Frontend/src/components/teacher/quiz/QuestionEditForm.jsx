@@ -5,6 +5,7 @@ function QuestionEditForm({ question, onSave, onCancel }) {
   const [editFormData, setEditFormData] = useState({
     ...question,
     choices: [...question.choices],
+    correctAnswerIndex: question.correctAnswerIndex || 0,
   });
 
   const handleEditFormChange = (e) => {
@@ -28,6 +29,13 @@ function QuestionEditForm({ question, onSave, onCancel }) {
     setEditFormData({
       ...editFormData,
       choices: [...editFormData.choices, ""],
+    });
+  };
+
+  const handleCorrectAnswerChange = (index) => {
+    setEditFormData({
+      ...editFormData,
+      correctAnswerIndex: index,
     });
   };
 
@@ -105,8 +113,10 @@ function QuestionEditForm({ question, onSave, onCancel }) {
           <div key={choiceIndex} className="flex items-center mb-2">
             <input
               type="radio"
-              name={`edit-question-${question.id}`}
+              name={`correct-answer-${question.id}`}
               className="radio radio-primary mr-2"
+              checked={choiceIndex === editFormData.correctAnswerIndex}
+              onChange={() => handleCorrectAnswerChange(choiceIndex)}
             />
             <input
               type="text"

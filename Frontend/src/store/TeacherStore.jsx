@@ -318,4 +318,120 @@ export const useTeacherStore = create((set) => ({
       );
     }
   },
+
+  // Get all quizzes for a course
+  getQuizzesForCourse: async (course_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/teacher/course/${course_id}/allQuizes`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error fetching quizzes: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
+  // Get a single quiz by ID
+  getQuizById: async (quiz_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/teacher/course/quiz/${quiz_id}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error fetching quiz: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
+  // Add a new quiz
+  addQuiz: async (course_id, quizData) => {
+    try {
+      const questions = quizData.questions.map((question) => ({
+        question_text: question.question,
+        points: question.points,
+        options: question.choices.map((choice, index) => ({
+          option_text: choice,
+          isCorrectAnswer: index === question.correctAnswerIndex,
+        })),
+      }));
+
+      const response = await axiosInstance.post(
+        `/teacher/course/${course_id}/quiz`,
+        {
+          title: quizData.quizTitle,
+          description: quizData.description,
+          start_date: quizData.startDate,
+          start_time: quizData.startTime,
+          duration: quizData.duration,
+          total_points: quizData.totalPoints,
+          questions: questions,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error adding quiz: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
+  // Edit an existing quiz
+  editQuiz: async (quiz_id, quizData) => {
+    try {
+      const questions = quizData.questions.map((question) => ({
+        question_text: question.question,
+        points: question.points,
+        options: question.choices.map((choice, index) => ({
+          option_text: choice,
+          isCorrectAnswer: index === question.correctAnswerIndex,
+        })),
+      }));
+
+      const response = await axiosInstance.patch(
+        `/teacher/course/quiz/${quiz_id}`,
+        {
+          title: quizData.quizTitle,
+          description: quizData.description,
+          start_date: quizData.startDate,
+          start_time: quizData.startTime,
+          duration: quizData.duration,
+          total_points: quizData.totalPoints,
+          questions: questions,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error editing quiz: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
+  // Delete a quiz
+  deleteQuiz: async (quiz_id) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/teacher/course/deletequiz/${quiz_id}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error deleting quiz: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
 }));
