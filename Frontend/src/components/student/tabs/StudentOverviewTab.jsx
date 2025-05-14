@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { useOutletContext, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useStudentStore from "../../../store/StudentStore";
 
 function StudentOverviewTab() {
-  const { courseData } = useOutletContext();
   const navigate = useNavigate();
-  const { course_id, unit_id } = useParams();
+  const { course_id } = useParams();
 
   const { fetchCourseUnits, courseContent } = useStudentStore();
   const [loading, setLoading] = useState(false);
@@ -32,7 +31,7 @@ function StudentOverviewTab() {
       <h2 className="text-3xl text-primary font-bold mb-6">Course Units</h2>
 
       <div className="space-y-4">
-        {courseContent.map((unit) => (
+        {courseContent?.map((unit) => (
           <div key={unit.unit_id} className="card bg-base-200 shadow-md">
             <div className="card-body">
               <div className="flex justify-between items-center sm:flex-row flex-col">
@@ -43,7 +42,6 @@ function StudentOverviewTab() {
                 <button
                   className="btn btn-primary text-lg btn-md"
                   onClick={() => {
-                    // console.log("unit: ", unit);
                     navigate(
                       `/student-course-content/${course_id}/units/${unit.unit_id}/`,
                       { state: { unit } }

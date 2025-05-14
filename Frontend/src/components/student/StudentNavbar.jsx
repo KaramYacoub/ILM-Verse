@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   FaHome,
-  FaClipboardList,
   FaCalendarAlt,
   FaComments,
   FaSignOutAlt,
@@ -59,13 +58,6 @@ function StudentNavbar() {
             <span>Dashboard</span>
           </Link>
           <Link
-            to="/student-show-quizzes"
-            className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
-          >
-            <FaClipboardList color="#fff" />
-            <span>Quizzes</span>
-          </Link>
-          <Link
             to="/events"
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
           >
@@ -114,14 +106,6 @@ function StudentNavbar() {
             >
               <FaHome color="#fff" />
               <span>Dashboard</span>
-            </Link>
-            <Link
-              to="/student-show-quizzes"
-              className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
-              onClick={toggleMenu}
-            >
-              <FaClipboardList color="#fff" />
-              <span>Quizzes</span>
             </Link>
             <Link
               to="/events"

@@ -18,9 +18,6 @@ const StudentDashboard = lazy(() => import("./pages/student/StudentDashboard"));
 const StudentViewGrades = lazy(() =>
   import("./pages/student/StudentViewGrades")
 );
-const StudentShowQuizzes = lazy(() =>
-  import("./pages/student/StudentShowQuizzes")
-);
 const StudentQuizDetails = lazy(() =>
   import("./pages/student/StudentQuizDetails")
 );
@@ -30,15 +27,15 @@ const StudentCourseContent = lazy(() =>
 const StudentOverviewTab = lazy(() =>
   import("./components/student/tabs/StudentOverviewTab")
 );
-const StudentUnitsTab = lazy(() =>
-  import("./components/student/tabs/StudentunitsTab")
-);
 const StudentAssignmentsTab = lazy(() =>
   import("./components/student/tabs/StudentAssignmentsTab")
 );
 const StudentUnitDetails = lazy(() =>
   import("./components/student/tabs/StudentUnitDetails")
-); // Import StudentUnitDetails
+);
+const StudentShowQuizzes = lazy(() =>
+  import("./components/student/tabs/StudentShowQuizzes")
+);
 
 // Teacher Components/Pages
 const TeacherDashboard = lazy(() => import("./pages/teacher/TeacherDashboard"));
@@ -236,7 +233,7 @@ function App() {
               }
             />
             <Route
-              path="/Student-Quiz-Details"
+              path="/Student-Quiz-Details/:quiz_id"
               element={
                 authStudent ? <StudentQuizDetails /> : <Navigate to="/" />
               }
@@ -272,6 +269,12 @@ function App() {
                 path="student-assignments"
                 element={
                   authStudent ? <StudentAssignmentsTab /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="student-quizzes"
+                element={
+                  authStudent ? <StudentShowQuizzes /> : <Navigate to="/" />
                 }
               />
             </Route>

@@ -10,6 +10,7 @@ function StudentNavigationTabs() {
   const lastSegment = pathSegments[pathSegments.length - 1];
   const isUnitsTabActive = pathSegments.includes("units");
   const isAssignmentsTabActive = lastSegment === "student-assignments";
+  const isQuizzesTabActive = lastSegment === "student-quizzes";
 
   return (
     <div className="tabs tabs-boxed items-center bg-base-100 mb-6 shadow-md overflow-x-auto">
@@ -18,7 +19,7 @@ function StudentNavigationTabs() {
           navigate(`/student-course-content/${course_id}/student-overview`)
         }
         className={`w-full h-14 text-lg tab ${
-          !isUnitsTabActive && !isAssignmentsTabActive
+          !isUnitsTabActive && !isAssignmentsTabActive && !isQuizzesTabActive
             ? "bg-accent text-primary"
             : "text-gray-600"
         }`}
@@ -42,6 +43,16 @@ function StudentNavigationTabs() {
         }`}
       >
         Assignments
+      </button>
+      <button
+        onClick={() =>
+          navigate(`/student-course-content/${course_id}/student-quizzes`)
+        }
+        className={`w-full h-14 text-lg tab ${
+          isQuizzesTabActive ? "bg-accent text-primary" : "text-gray-600"
+        }`}
+      >
+        Quizzes
       </button>
     </div>
   );

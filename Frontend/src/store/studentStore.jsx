@@ -6,6 +6,7 @@ const useStudentStore = create((set) => ({
   course: [],
   courseContent: [],
   grades: [],
+  quizzes: [],
   unitDetails: null,
   unitContent: null,
   loading: false,
@@ -131,6 +132,19 @@ const useStudentStore = create((set) => ({
       );
       set({ loading: false });
       return res.data;
+    } catch (err) {
+      set({ error: err.response.data.message || err.message, loading: false });
+    }
+  },
+
+  getQuizzes: async (course_id) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await axiosInstance.get(
+        `/student/course/${course_id}/quizes`
+      );
+      set({ quizzes: response.data.data, loading: false });
+      return response.data.data;
     } catch (err) {
       set({ error: err.response.data.message || err.message, loading: false });
     }
