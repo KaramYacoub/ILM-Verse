@@ -31,6 +31,6 @@ router.get(
   "/absence/:student_id/:section_id",
   absenceController.getStudentAbsences
 );
-router.get("/reports/:student_id", reportController.getStudentReports);
+router.get("/reports/:student_id", reportController.getStudentReports); //done
 
 module.exports = router;
