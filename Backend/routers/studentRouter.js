@@ -5,6 +5,7 @@ const studentController = require("../controllers/studentController");
 const uploadSolution = require("../controllers/upload/uploadSolution");
 const authController = require("../controllers/authController");
 const checkFile = require("../Middlewares/checkFileMiddleware");
+const downloadController = require("../controllers/download/downloadController");
 
 // login  //done
 router.post("/studentLogin", authController.studentLogin);
@@ -45,8 +46,7 @@ router.get(
 );
 //submit assignment based on assignment_id
 router.post(
-  "/course/:course_id/assigments/:assignment_id",
-
+  "/course/:course_id/assignments/:assignment_id",
   uploadSolution,
   checkFile,
   courseController.submitAssigment
@@ -61,4 +61,8 @@ router.get(
 
   courseController.getQuizesForCourse
 );
+
+
+// download assignments
+router.get("/download/submissions", downloadController.downloadAssignments);
 module.exports = router;

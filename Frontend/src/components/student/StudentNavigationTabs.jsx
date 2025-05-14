@@ -26,16 +26,12 @@ function StudentNavigationTabs() {
         Overview
       </button>
       <button
-        onClick={() =>
-          navigate(`/student-course-content/${course_id}/units/${unit_id}`, {
-            state: { unit },
-          })
-        }
+        disabled={!isUnitsTabActive}
         className={`w-full h-14 text-lg tab ${
           isUnitsTabActive ? "bg-accent text-primary" : "text-gray-600"
         }`}
       >
-        Units
+        Resources
       </button>
       <button
         onClick={() =>

@@ -236,7 +236,7 @@ export const useTeacherStore = create((set) => ({
 
   downloadAssignments: async (filePath, fileName) => {
     try {
-      const url = `http://localhost:8001/teacher/download/submissions?path=${encodeURIComponent(
+      const url = `http://localhost:8001/teacher/download/assignments?path=${encodeURIComponent(
         filePath
       )}&filename=${encodeURIComponent(fileName)}`;
 

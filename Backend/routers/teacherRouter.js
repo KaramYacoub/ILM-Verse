@@ -84,7 +84,7 @@ router.post(
 );
 
 // download assignments
-router.get("/download/submissions", downloadController.downloadAssignments);
+router.get("/download/assignments", downloadController.downloadAssignments);
 
 // download submissions
 router.get("/download/submissions", downloadController.downloadSubmissions);
