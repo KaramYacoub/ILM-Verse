@@ -19,10 +19,15 @@ router.get("/students", parentController.getParentStudents);
 
 //getCoursesForStudent after choosing the student //done
 router.get("/courses/:student_id", studentController.getCoursesForStudent);
+//get course by id
+router.get("/course/:course_id", courseController.getCourseByID);
 //getCourseUnits
-router.get("/course/:course_id", courseController.getCourseUnits);
+router.get("/course/:course_id/allunits", courseController.getCourseUnits);
 //getUnitContent
-router.get("/course/:course_id/:unit_id", courseController.getUnitContent);
+router.get(
+  "/course/:course_id/:unit_id/unit/content",
+  courseController.getUnitContent
+);
 // git student assignment
 router.get(
   "/coures/:course_id/assignment/:student_id",

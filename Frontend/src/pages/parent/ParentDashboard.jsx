@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ParentNavBar from "../../components/parent/ParentNavBar";
-import CourseCard from "../../components/shared/CourseCard";
+import CourseCard from "../../components/shared/CourseCard"; // Assuming this path
 import useParentsStore from "../../store/ParentStore";
 
 function ParentDashboard() {
@@ -15,20 +15,15 @@ function ParentDashboard() {
   } = useParentsStore();
 
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchStudents();
-    };
-    fetchData();
+    fetchStudents();
   }, [fetchStudents]);
 
   useEffect(() => {
     if (selectedStudent) {
-      const fetchCourses = async () => {
-        await getCoursesForStudent(selectedStudent.student_id);
-      };
-      fetchCourses();
+      getCoursesForStudent(selectedStudent.student_id);
     }
   }, [selectedStudent, getCoursesForStudent]);
 
@@ -45,6 +40,10 @@ function ParentDashboard() {
     }
   };
 
+  const handleCourseClick = (course_id) => {
+    navigate(`/parent-course-content/${course_id}/parent-overview`);
+  };
+
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">
       <ParentNavBar />
@@ -56,7 +55,7 @@ function ParentDashboard() {
             <select
               value={selectedStudent?.student_id || ""}
               onChange={handleStudentChange}
-              className="w-full px-6 py-3 text-lg font-medium text-gray-700 bg-white border-2 border-primary/20 rounded-xl shadow-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 appearance-none bg-[url('data:image/svg+xml;base64,...')] bg-no-repeat bg-[right_1rem_center] cursor-pointer transition-all duration-200"
+              className="w-full px-6 py-3 text-lg font-medium text-gray-700 bg-white border-2 border-primary/20 rounded-xl shadow-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 appearance-none cursor-pointer transition-all duration-200"
             >
               <option disabled value="" className="text-gray-400">
                 Choose a Student
@@ -106,11 +105,16 @@ function ParentDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 w-full">
           {!loading && courses.length > 0 ? (
             courses.map((course, index) => (
-              <CourseCard
+              <div
                 key={index}
-                title={course.course.subject_name}
-                to="/parent-course-content"
-              />
+                className="cursor-pointer"
+                onClick={() => handleCourseClick(course.course_id)}
+              >
+                <CourseCard
+                  title={course.course.subject_name}
+                  // Removed the direct 'to' prop here, navigation is handled by onClick
+                />
+              </div>
             ))
           ) : (
             <p className="text-lg text-gray-500 mt-4">

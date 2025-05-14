@@ -34,24 +34,15 @@ function ParentNavigationTabs() {
         Overview
       </button>
       <button
-        onClick={handleNavigation("parent-lessons")}
+        onClick={handleNavigation("parent-units")}
         disabled={isOverviewActive || currentTab === "parent-assignments"}
         className={`w-full h-14 text-lg tab ${
-          currentTab === "parent-lessons" ? "bg-accent text-primary" : "text-gray-600"
-        }`}
-      >
-        Lessons
-      </button>
-      <button
-        onClick={handleNavigation("parent-resources")}
-        disabled={isOverviewActive || currentTab === "parent-assignments"}
-        className={`w-full h-14 text-lg tab ${
-          currentTab === "parent-resources"
+          currentTab === "parent-units"
             ? "bg-accent text-primary"
             : "text-gray-600"
         }`}
       >
-        Resources
+        Units
       </button>
       <button
         onClick={handleNavigation("parent-assignments")}

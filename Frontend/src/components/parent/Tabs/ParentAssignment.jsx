@@ -13,7 +13,6 @@ function ParentAssignment() {
       unit: unit.name,
       dueDate: assignment.dueDate,
       status: assignment.status,
-      
     }))
   );
 

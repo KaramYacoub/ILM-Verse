@@ -1,4 +1,3 @@
-// src/store/ParentsStore.js
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 
@@ -8,6 +7,10 @@ const useParentsStore = create((set) => ({
   grades: [],
   absence: [],
   reports: [],
+  courseContent: [],
+  course: [],
+  unitDetails: null,
+  unitContent: null,
   count: 0,
   dates: [],
   loading: false,
@@ -38,6 +41,39 @@ const useParentsStore = create((set) => ({
     } catch (error) {
       set({
         error: error.response?.data?.message || "Failed to fetch courses",
+        loading: false,
+      });
+    }
+  },
+
+  fetchCourseByID: async (course_id) => {
+    set({ loading: true });
+    try {
+      const response = await axiosInstance.get(`/parent/course/${course_id}`);
+      set({ course: response.data.data, loading: false });
+    } catch (error) {
+      set({
+        error: error.response?.data?.message || "Failed to load course",
+        loading: false,
+      });
+    }
+  },
+
+  fetchCourseAllUnits: async (course_id) => {
+    if (!course_id) {
+      set({ error: "Course ID is missing", loading: false });
+      console.error("Course ID is undefined");
+      return;
+    }
+    try {
+      set({ loading: true });
+      const response = await axiosInstance.get(
+        `/parent/course/${course_id}/allunits`
+      );
+      set({ courseContent: response.data.data, loading: false });
+    } catch (error) {
+      set({
+        error: error.response?.data?.message || "Failed to load units",
         loading: false,
       });
     }

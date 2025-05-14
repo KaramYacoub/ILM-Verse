@@ -2,8 +2,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, lazy, Suspense } from "react";
 import { useAuthStore } from "./store/AuthStore";
 import { Loader2 } from "lucide-react";
-import StudentUnitDetails from "./components/student/tabs/StudentUnitDetails";
 
+// Shared Components/Pages
 const Error = lazy(() => import("./pages/shared/Error"));
 const Home = lazy(() => import("./pages/shared/Home"));
 const Footer = lazy(() => import("./components/shared/Footer"));
@@ -13,6 +13,7 @@ const AboutUs = lazy(() => import("./pages/shared/AboutUs"));
 const ContactUs = lazy(() => import("./pages/shared/ContactUs"));
 const SharedEvents = lazy(() => import("./pages/shared/SharedEvents"));
 
+// Student Components/Pages
 const StudentDashboard = lazy(() => import("./pages/student/StudentDashboard"));
 const StudentViewGrades = lazy(() =>
   import("./pages/student/StudentViewGrades")
@@ -35,7 +36,11 @@ const StudentUnitsTab = lazy(() =>
 const StudentAssignmentsTab = lazy(() =>
   import("./components/student/tabs/StudentAssignmentsTab")
 );
+const StudentUnitDetails = lazy(() =>
+  import("./components/student/tabs/StudentUnitDetails")
+); // Import StudentUnitDetails
 
+// Teacher Components/Pages
 const TeacherDashboard = lazy(() => import("./pages/teacher/TeacherDashboard"));
 const TeacherCourseContent = lazy(() =>
   import("./pages/teacher/teacherCourseContent")
@@ -68,6 +73,7 @@ const QuizSubmitStatus = lazy(() =>
   import("./components/teacher/tabs/QuizSubmitStatus")
 );
 
+// Parent Components/Pages
 const ParentDashboard = lazy(() => import("./pages/parent/ParentDashboard"));
 const ParentAssignment = lazy(() =>
   import("./components/parent/Tabs/ParentAssignment")
@@ -78,11 +84,11 @@ const ParentOverview = lazy(() =>
 const ParentCourseContent = lazy(() =>
   import("./pages/parent/ParentCourseContent")
 );
-const ParentLessons = lazy(() =>
-  import("./components/parent/Tabs/ParentLessons")
+const ParentUnitsTab = lazy(() =>
+  import("./components/parent/Tabs/ParentUnitsTab")
 );
-const ParentResourcesTab = lazy(() =>
-  import("./components/parent/Tabs/ParentResourcesTap")
+const ParentUnitDetails = lazy(() =>
+  import("./components/parent/Tabs/ParentUnitDetails")
 );
 const ParentViewGrades = lazy(() => import("./pages/parent/ParentViewGrades"));
 const ParentShowReports = lazy(() =>
@@ -95,6 +101,7 @@ const ParentShowAbsences = lazy(() =>
   import("./pages/parent/ParentShowAbsences")
 );
 
+// Admin Components/Pages
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AddUser = lazy(() => import("./pages/admin/AddUser"));
 const DeleteUser = lazy(() => import("./pages/admin/DeleteUser"));
@@ -143,6 +150,7 @@ function App() {
       </div>
     );
   }
+
   return (
     <Suspense
       fallback={
@@ -369,35 +377,19 @@ function App() {
               element={authParent ? <ParentShowQuizzes /> : <Navigate to="/" />}
             />
             <Route
-              path="/parent-course-content"
+              path="/parent-course-content/:course_id"
               element={
                 authParent ? <ParentCourseContent /> : <Navigate to="/" />
               }
             >
               <Route
                 index
-                element={<Navigate replace to="parent-overview" />}
+                element={<Navigate to="parent-overview" replace />}
               />
-              <Route
-                path="parent-overview"
-                element={authParent ? <ParentOverview /> : <Navigate to="/" />}
-              />
-              <Route
-                path="parent-lessons"
-                element={authParent ? <ParentLessons /> : <Navigate to="/" />}
-              />
-              <Route
-                path="parent-resources"
-                element={
-                  authParent ? <ParentResourcesTab /> : <Navigate to="/" />
-                }
-              />
-              <Route
-                path="parent-assignments"
-                element={
-                  authParent ? <ParentAssignment /> : <Navigate to="/" />
-                }
-              />
+              <Route path="parent-overview" element={<ParentOverview />} />
+              <Route path="parent-units" element={<ParentUnitsTab />} />
+              <Route path="units/:unit_id" element={<ParentUnitDetails />} />
+              <Route path="parent-assignments" element={<ParentAssignment />} />
             </Route>
           </>
 
