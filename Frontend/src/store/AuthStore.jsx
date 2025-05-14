@@ -55,7 +55,7 @@ export const useAuthStore = create((set) => ({
   parentLogin: async (data) => {
     try {
       set({ isUserLoggingIn: true });
-      const response = await axiosInstance.post("/shared/login/studentLogin", data);
+      const response = await axiosInstance.post("/shared/login/parentLogin", data);
       set({ authParent: response.data.data });
       return response.data;
     } catch (error) {

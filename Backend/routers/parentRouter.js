@@ -9,7 +9,7 @@ const downloadController = require("../controllers/download/downloadController")
 const reportController = require("../controllers/reportController");
 
 // login
-router.post("/studentLogin", authController.parentLogin);
+router.post("parentLogin", authController.parentLogin);
 
 // download resources
 router.get("/download", downloadController.downloadResource);
