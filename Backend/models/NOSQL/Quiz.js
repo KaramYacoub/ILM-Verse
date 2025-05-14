@@ -15,7 +15,7 @@ const QuizSchema = new mongoose.Schema({
     required: true,
   },
   start_date: {
-    type: Date,
+    type: String,
     required: true,
   },
   start_time: {

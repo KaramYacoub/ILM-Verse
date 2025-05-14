@@ -1140,6 +1140,7 @@ exports.getQuizesForCourseForStudent = async (req, res) => {
         status: "", // Start with an empty status
       };
 
+      console.log(nowDate, startDate, nowTime, endTime);
       // Check if the current date and time are past the start and end times of the quiz
       if (nowDate > startDate || (nowDate === startDate && nowTime > endTime)) {
         toPushQuiz.status = "finished"; // If quiz time is finished
@@ -1156,6 +1157,8 @@ exports.getQuizesForCourseForStudent = async (req, res) => {
       ) {
         // If the quiz is upcoming
         toPushQuiz.status = "Upcoming";
+      } else {
+        toPushQuiz.status = "hi";
       }
 
       allQuizes.push(toPushQuiz);
