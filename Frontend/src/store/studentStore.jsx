@@ -57,7 +57,7 @@ const useStudentStore = create((set) => ({
     set({ loading: true });
     try {
       const response = await axiosInstance.get(
-        `/course/${courseId}/${unitId}/content`
+        `/student/course/${courseId}/${unitId}/content`
       );
       set({
         unitContent: response.data.data,
@@ -96,11 +96,32 @@ const useStudentStore = create((set) => ({
     }
   },
 
-  submitAssignment: async (courseId, assignmentId, formData) => {
+  downloadAssignments: async (filePath, fileName) => {
+    try {
+      const url = `http://localhost:8001/student/download/submissions?path=${encodeURIComponent(
+        filePath
+      )}&filename=${encodeURIComponent(fileName)}`;
+
+      // For direct download (better approach)
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error(
+        "Download error:",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  submitAssignment: async (course_id, assignment_id, formData) => {
     set({ loading: true, error: null });
     try {
       const res = await axiosInstance.post(
-        `/student/course/${courseId}/assignments/${assignmentId}`,
+        `/student/course/${course_id}/assignments/${assignment_id}`,
         formData,
         {
           headers: {
@@ -111,7 +132,7 @@ const useStudentStore = create((set) => ({
       set({ loading: false });
       return res.data;
     } catch (err) {
-      set({ error: err.message, loading: false });
+      set({ error: err.response.data.message || err.message, loading: false });
     }
   },
 }));

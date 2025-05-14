@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Outlet, useLocation, useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import StudentNavigationTabs from "../../components/student/StudentNavigationTabs";
 import useStudentStore from "../../store/StudentStore";
 import StudentNavbar from "../../components/student/StudentNavbar";
@@ -10,7 +10,6 @@ function StudentCourseContent() {
   const [error, setError] = useState(null);
 
   const { fetchCourseByID, course } = useStudentStore();
-  console.log("👀 course_id from useParams:", course_id);
 
   useEffect(() => {
     const fetchCourse = async () => {

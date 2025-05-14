@@ -1,9 +1,10 @@
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useStudentStore from "../../../store/StudentStore";
 
 function StudentUnitsTab() {
   const { course_id, unit_id } = useParams();
+  const navigate = useNavigate();
   const location = useLocation();
   const { fetchCourseUnits, fetchUnitContent, courseContent, unitContent } =
     useStudentStore();

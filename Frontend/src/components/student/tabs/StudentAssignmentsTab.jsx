@@ -1,62 +1,93 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Download } from "lucide-react";
+import { CheckCircle2, Download, XCircle } from "lucide-react";
 import useStudentStore from "../../../store/StudentStore";
 
 function StudentAssignmentsTab() {
   const { course_id } = useParams();
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [submissionError, setSubmissionError] = useState(null);
 
   const {
     assignments = [],
     fetchAssignments,
     submitAssignment,
+    downloadAssignments,
     loading,
-    error,
   } = useStudentStore();
 
   useEffect(() => {
     if (course_id) {
       fetchAssignments(course_id);
     }
-  }, [course_id]);
+  }, [course_id, fetchAssignments]);
+
+  // Check if due date has passed
+  const isPastDue = (dueDateString) => {
+    const dueDate = new Date(dueDateString);
+    const currentDate = new Date();
+    return currentDate > dueDate;
+  };
+
+  // Format date for display
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   const handleSubmit = async () => {
     if (!selectedFile || !selectedAssignment) return;
 
     const formData = new FormData();
-    formData.append("solution", selectedFile);
+    formData.append("media", selectedFile);
+    setSubmissionError(null);
 
     try {
       await submitAssignment(course_id, selectedAssignment._id, formData);
       document.getElementById("submit-modal").checked = false;
-      fetchAssignments(course_id); // refresh list
+      fetchAssignments(course_id);
       setSelectedAssignment(null);
       setSelectedFile(null);
     } catch (err) {
       console.error("Submission failed:", err);
-      alert(err.response?.data?.message || "Upload failed.");
+      setSubmissionError(
+        err.response?.data?.message || "Upload failed. Please try again."
+      );
     }
   };
 
   const getStatusBadge = (assignment) => {
+    if (isPastDue(assignment.end_at)) {
+      return (
+        <span className="badge badge-error text-base-100">Deadline Passed</span>
+      );
+    }
+
     return assignment.submission === "Not exist" ? (
-      <span className="badge badge-error text-base-100 w-full h-full">
-        Not Submitted
-      </span>
+      <span className="badge badge-warning text-base-100">Not Submitted</span>
     ) : (
-      <span className="badge badge-success text-base-100 w-full h-full">
-        Submitted
-      </span>
+      <span className="badge badge-success text-base-100">Submitted</span>
     );
   };
 
   const getActionButton = (assignment) => {
+    if (isPastDue(assignment.end_at)) {
+      return (
+        <span className="text-error font-bold flex justify-center items-center gap-1">
+          <XCircle className="h-5 w-5" />
+          Deadline Passed
+        </span>
+      );
+    }
+
     return assignment.submission === "Not exist" ? (
       <label
         htmlFor="submit-modal"
-        className="btn btn-primary btn-sm w-full h-full"
+        className="btn btn-primary btn-sm"
         onClick={() => {
           setSelectedAssignment(assignment);
           setSelectedFile(null);
@@ -65,14 +96,32 @@ function StudentAssignmentsTab() {
         View and Submit
       </label>
     ) : (
-      <span className="font-bold text-success">✓</span>
+      <span className="flex items-center gap-1 justify-center font-bold text-success">
+        <CheckCircle2  className="h-5 w-5"/> Submitted successfully
+      </span>
+    );
+  };
+
+  const getFileType = (mimeType) => {
+    if (mimeType.includes("video")) return "Video";
+    if (mimeType.includes("pdf")) return "PDF";
+    if (mimeType.includes("word") || mimeType.includes("msword")) return "DOC";
+    return mimeType.split("/")[1]?.toUpperCase() || "File";
+  };
+
+  const handleDownload = (media) => {
+    downloadAssignments(
+      media.path.split("/").pop(),
+      `${media.title}.${getFileType(media.type).toLowerCase()}`
     );
   };
 
   if (loading)
     return <div className="text-center py-10">Loading assignments...</div>;
-  if (error)
-    return <div className="text-center text-red-500 py-10">{error}</div>;
+  if (submissionError)
+    return (
+      <div className="text-center text-red-500 py-10">{submissionError}</div>
+    );
 
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
@@ -89,13 +138,13 @@ function StudentAssignmentsTab() {
           <tbody>
             {assignments.map((assignment) => (
               <tr key={assignment._id}>
-                <td className="flex flex-col items-start">
+                <td className="flex flex-col text-start">
                   <div className="font-semibold">{assignment.title}</div>
                   <div className="text-sm text-gray-500">
                     {assignment.description}
                   </div>
                 </td>
-                <td>{assignment.end_at}</td>
+                <td>{formatDate(assignment.end_at)}</td>
                 <td>{getStatusBadge(assignment)}</td>
                 <td>{getActionButton(assignment)}</td>
               </tr>
@@ -104,7 +153,7 @@ function StudentAssignmentsTab() {
         </table>
       </div>
 
-      {/* Modal for File Upload */}
+      {/* Submission Modal */}
       <input type="checkbox" id="submit-modal" className="modal-toggle" />
       <div className="modal">
         <div className="modal-box w-full max-w-2xl">
@@ -112,13 +161,12 @@ function StudentAssignmentsTab() {
             <>
               <div className="mb-6">
                 <h3 className="font-bold text-lg">Download Instructions</h3>
-                <a
-                  href={`/${selectedAssignment.path.replace("./", "")}`}
-                  download
+                <button
+                  onClick={() => handleDownload(selectedAssignment)}
                   className="link link-primary flex items-center gap-2 mt-2"
                 >
                   <Download /> {selectedAssignment.title}.pdf
-                </a>
+                </button>
               </div>
 
               <div className="divider divider-primary"></div>

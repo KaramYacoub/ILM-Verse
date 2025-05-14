@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Calendar, FileText, Trash2, Pencil } from "lucide-react";
+import { Calendar, FileText, Trash2, Pencil, BarChart2 } from "lucide-react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useTeacherStore } from "../../../store/TeacherStore";
@@ -39,9 +39,21 @@ function TeacherQuizzesTab() {
   return (
     <div className="p-4 bg-gray-50 rounded-lg shadow-md">
       {quizzes.length === 0 ? (
-        <p className="text-primary font-bold text-2xl text-center">
-          No quizzes available.
-        </p>
+        <div className="flex flex-col gap-5">
+          <p className="text-primary font-bold text-2xl text-center">
+            No quizzes available.
+          </p>
+          <button
+            onClick={() =>
+              navigate(
+                `/teacher-course-content/${course_id}/teacher-quizzes/teacher-add-quiz`
+              )
+            }
+            className="btn btn-primary"
+          >
+            + Add Quiz
+          </button>
+        </div>
       ) : (
         <div className="grid gap-4 mb-6">
           <div className="flex justify-between items-center mb-2">
@@ -91,25 +103,38 @@ function TeacherQuizzesTab() {
                 </div>
               </div>
 
-              <div className="flex gap-2 items-center mt-1">
-                <button
-                  onClick={() => handleEdit(quiz)}
-                  className="btn btn-sm btn-outline"
-                >
-                  <Pencil className="w-4 h-4" />
-                </button>
-                <button
-                  // onClick={() => handleShowSubmit(quiz)}
-                  className="btn btn-sm btn-outline btn-info"
-                >
-                  Show Quiz Submit
-                </button>
-                <button
-                  onClick={() => handleDelete(quiz._id)}
-                  className="btn btn-sm btn-outline btn-error"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+              <div className="space-y-3 self-center">
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => handleEdit(quiz)}
+                    className="btn btn-sm btn-outline btn-primary gap-2"
+                  >
+                    <Pencil className="w-4 h-4" />
+                    Edit
+                  </button>
+                  <button
+                    // onClick={() => handleShowSubmit(quiz)}
+                    className="btn btn-sm btn-outline btn-info gap-2"
+                  >
+                    <BarChart2 className="w-4 h-4" />
+                    Submissions
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => handleDelete(quiz._id)}
+                    className="btn btn-sm btn-outline btn-error gap-2"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Delete
+                  </button>
+                  <button
+                    // onClick={() => handlePublishMarks(quiz)}
+                    className="btn btn-sm btn-outline btn-success gap-2"
+                  >
+                    Publish Marks
+                  </button>
+                </div>
               </div>
             </div>
           ))}
