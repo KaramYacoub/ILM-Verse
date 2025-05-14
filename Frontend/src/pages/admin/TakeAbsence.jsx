@@ -143,10 +143,12 @@ function TakeAbsence() {
       <div className="p-8 max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-6 text-primary">Take Absence</h1>
 
-        {message.text && (
-          <div className={`alert alert-${message.type} mb-4`}>
-            {message.text}
-          </div>
+        {message.text && message.type == "success" && (
+          <div className={`alert alert-success mb-4`}>{message.text}</div>
+        )}
+
+        {message.text && message.type == "error" && (
+          <div className={`alert alert-error mb-4`}>{message.text}</div>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">

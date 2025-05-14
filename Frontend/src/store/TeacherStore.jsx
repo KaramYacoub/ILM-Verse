@@ -3,6 +3,7 @@ import { axiosInstance } from "../lib/axios.js";
 
 export const useTeacherStore = create((set) => ({
   coursesForTeacher: [],
+  studentsInSection: [],
   course: [],
   units: [],
   unitContent: [],
@@ -270,6 +271,49 @@ export const useTeacherStore = create((set) => ({
     } catch (error) {
       console.error(
         "Download error:",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  getStudentsInSection: async (section_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/teacher/students/${section_id}`
+      );
+      set({ studentsInSection: response.data.data });
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error fetching students:",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
+  getAbsenceForTeacher: async (date) => {
+    try {
+      const response = await axiosInstance.get(`/teacher/absence/${date}`);
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error updating absence: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  updateAbsenceForTeacher: async (students, date) => {
+    try {
+      const response = await axiosInstance.post("/teacher/absence", {
+        students,
+        date,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error updating absence: ",
         error.response?.data?.error || error.message
       );
     }
