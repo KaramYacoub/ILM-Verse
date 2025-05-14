@@ -70,7 +70,11 @@ router.get("/course/quiz/:quiz_id", courseController.getQuiz);
 router.post("/course/:course_id/quiz", courseController.addQuiz);
 router.delete("/course/deletequiz/:quiz_id", courseController.deleteQuiz);
 router.patch("/course/quiz/:quiz_id", courseController.editQuiz);
-
+router.patch("/course/quiz/:quiz_id/view", courseController.publicQuizMarks);
+router.get(
+  "/course/:course_id/:quiz_id/submissions",
+  courseController.showQuizSubmissions
+);
 // Absence functionality
 router.get("/students/:section_id", courseController.getStudentInSection);
 router.get("/absence/:date", absenceController.getAbsence);

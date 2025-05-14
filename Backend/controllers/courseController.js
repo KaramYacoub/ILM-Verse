@@ -890,7 +890,17 @@ exports.updateSubmissionStatus = async (req, res) => {
     });
   }
 };
+function getCurrentTime() {
+  let now = new Date();
+  let hours = now.getHours();
+  let minutes = now.getMinutes();
 
+  // Pad hours and minutes with leading zeros if necessary
+  hours = hours < 10 ? "0" + hours : hours;
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+
+  return `${hours}:${minutes}`;
+}
 // Quizes
 exports.addQuiz = async (req, res) => {
   try {
@@ -904,6 +914,27 @@ exports.addQuiz = async (req, res) => {
       total_points,
       questions,
     } = req.body;
+
+    const nowDate = new Date().toISOString().split("T")[0];
+    const nowTime = getCurrentTime(); // HH:MM
+    console.log(nowDate, nowTime);
+    console.log(start_date, start_time);
+    console.log(nowDate > start_date);
+    if (nowDate > start_date) {
+      return res.status(400).json({
+        status: "failure",
+        message: "You can't make a past quiz",
+      });
+    } else if (
+      nowDate === start_date &&
+      nowTime.toString() > start_time.toString()
+    ) {
+      return res.status(400).json({
+        status: "failure",
+        message: "You can't make a past quiz",
+      });
+    }
+
     let totalMarks = 0;
     for (let question of questions) {
       totalMarks += question.points;
@@ -1008,6 +1039,30 @@ exports.editQuiz = async (req, res) => {
       total_points,
       questions,
     } = req.body;
+    // check
+    const nowDate = new Date().toISOString().split("T")[0];
+    const nowTime = getCurrentTime(); // HH:MM
+
+    if (nowDate > start_date) {
+      return res.status(400).json({
+        status: "failure",
+        message: "You can't make a past quiz",
+      });
+    } else if (nowDate === start_date && nowTime > start_time) {
+      return res.status(400).json({
+        status: "failure",
+        message: "You can't make a past quiz",
+      });
+    }
+    let totalMarks = 0;
+    for (let question of questions) {
+      totalMarks += question.points;
+    }
+    if (totalMarks != total_points) {
+      return res.status(400).json({
+        error: "Total marks don't match the total points of the questions",
+      });
+    }
     const updatedQuiz = await Quiz.findByIdAndUpdate(
       quiz_id,
       {
@@ -1032,63 +1087,75 @@ exports.editQuiz = async (req, res) => {
     });
   }
 };
-exports.getQuizesForCourse = async (req, res) => {
+function timeToMinutes(timeStr) {
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
+function minutesToTime(minutes) {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return `${hours < 10 ? "0" + hours : hours}:${mins < 10 ? "0" + mins : mins}`;
+}
+exports.getQuizesForCourseForStudent = async (req, res) => {
   try {
     const { course_id } = req.params;
     const quizes = await Quiz.find({ course_id: course_id }).select(
-      "-questions"
+      "-questions -Submissions"
     );
+
     if (!quizes) {
       return res.status(404).json({
         status: "failure",
         message: "no quizes found",
       });
     }
+
     const nowDate = new Date().toISOString().split("T")[0]; // YEAR-MONTH-DAY
-    const nowTime = new Date().toISOString().slice(11, 16); // HH:MM
+    const nowTime = getCurrentTime(); // HH:MM
 
     let allQuizes = [];
     for (let oneQuiz of quizes) {
+      const startDate = oneQuiz.start_date;
+      const startTime = oneQuiz.start_time; // HH:MM
+      const duration = oneQuiz.duration; // in minutes
+
+      // Convert start_time to minutes
+      const startTimeInMinutes = timeToMinutes(startTime);
+
+      // Calculate the end time by adding duration to start time
+      const endTimeInMinutes = startTimeInMinutes + duration;
+      const endTime = minutesToTime(endTimeInMinutes); // Convert back to HH:MM format
+
       const toPushQuiz = {
         quiz_id: oneQuiz._id,
         title: oneQuiz.title,
         description: oneQuiz.description,
         start_date: oneQuiz.start_date,
         start_time: oneQuiz.start_time,
+        end_time: endTime, // Add the calculated end time
         duration: oneQuiz.duration,
         total_points: oneQuiz.total_points,
         able_to_view: oneQuiz.able_to_view,
-        status: "",
-        end_time: "", // Add the end_time property
+        status: "", // Start with an empty status
       };
 
-      // Ensure the start_date is in string format (just YEAR-MONTH-DAY)
-      const startDate = new Date(oneQuiz.start_date);
-      const startDateStr = startDate.toISOString().split("T")[0]; // Extract only the "YEAR-MONTH-DAY" part
-
-      // Parsing the start_time (HH:MM) to Date object for easy manipulation
-      const [startHour, startMinute] = oneQuiz.start_time
-        .split(":")
-        .map((num) => parseInt(num, 10));
-      const startDateTime = new Date(startDate); // Start with the start_date
-      startDateTime.setHours(startHour, startMinute, 0, 0); // Set the start date with start time
-
-      // Calculate endTime by adding duration (in minutes)
-      const endTime = new Date(
-        startDateTime.getTime() + oneQuiz.duration * 60000
-      ); // duration in milliseconds
-      toPushQuiz.end_time = endTime.toISOString().slice(11, 16); // Format endTime as HH:MM
-
-      // Checking quiz status
-      if (nowDate > startDateStr) {
-        toPushQuiz.status = "ended";
+      // Check if the current date and time are past the start and end times of the quiz
+      if (nowDate > startDate || (nowDate === startDate && nowTime > endTime)) {
+        toPushQuiz.status = "finished"; // If quiz time is finished
       } else if (
-        nowDate === startDateStr &&
-        new Date(nowDate + "T" + nowTime) > endTime
+        nowDate === startDate &&
+        nowTime >= startTime &&
+        nowTime <= endTime
       ) {
-        toPushQuiz.status = "ended";
-      } else {
-        toPushQuiz.status = "upcoming";
+        // If current time is between start_time and end_time
+        toPushQuiz.status = "able to start";
+      } else if (
+        nowDate < startDate ||
+        (nowDate === startDate && nowTime < startTime)
+      ) {
+        // If the quiz is upcoming
+        toPushQuiz.status = "Upcoming";
       }
 
       allQuizes.push(toPushQuiz);
@@ -1104,20 +1171,240 @@ exports.getQuizesForCourse = async (req, res) => {
     });
   }
 };
-exports.submitQuiz = async (req, res) => {
+exports.getQuizToStart = async (req, res) => {
   try {
     const { quiz_id } = req.params;
-    const student_id = req.user.id;
-    const { answers } = req.body;
-    const quiz = await Quiz.findById(quiz_id);
-    console.log(quiz);
+    console.log(quiz_id);
+    const startedQuiz = await Quiz.find({ _id: quiz_id }).select(
+      "-able_to_view -Submissions"
+    );
+
+    res.status(200).json({
+      status: "success",
+      data: startedQuiz,
+    });
   } catch (error) {
     res.status(500).json({
       error: error.message,
     });
   }
 };
-exports.showQuizSubmissions = async (req, res) => {};
+exports.submitQuiz = async (req, res) => {
+  try {
+    const { quiz_id } = req.params;
+    const student_id = req.user?.id;
+
+    if (!student_id) {
+      return res
+        .status(400)
+        .json({ status: "failure", message: "Student ID missing" });
+    }
+
+    const { answers } = req.body;
+    const quiz = await Quiz.findById(quiz_id);
+    if (!quiz) {
+      return res
+        .status(404)
+        .json({ status: "failure", message: "Quiz not found" });
+    }
+
+    let totalPoint = 0;
+
+    // Map questions by ID for quick lookup
+    const questionsMap = {};
+    for (const q of quiz.questions) {
+      questionsMap[q._id.toString()] = q;
+    }
+
+    // Function to check correctness of chosen answers
+    function isAnswerCorrect(question, choosedAnswer) {
+      if (Array.isArray(choosedAnswer)) {
+        return choosedAnswer.some((ans) => {
+          return question.options.some(
+            (opt) =>
+              opt._id.toString() === ans._id && opt.isCorrectAnswer === true
+          );
+        });
+      } else {
+        return question.options.some(
+          (opt) =>
+            opt._id.toString() === choosedAnswer._id &&
+            opt.isCorrectAnswer === true
+        );
+      }
+    }
+
+    // Calculate total points
+    for (const oneAnswer of answers) {
+      const questionId = oneAnswer._id;
+      const choosedAnswer = oneAnswer.choosed_answer;
+      const question = questionsMap[questionId];
+      if (!question) continue;
+
+      if (isAnswerCorrect(question, choosedAnswer)) {
+        totalPoint += question.points;
+      }
+    }
+
+    const submission = {
+      student_id: student_id,
+      mark: totalPoint,
+      questions_submission: answers.map((ans) => {
+        let choosedAnswerText = "";
+
+        if (Array.isArray(ans.choosed_answer)) {
+          choosedAnswerText = ans.choosed_answer
+            .map((a) => a.choosed_answer)
+            .filter((text) => text)
+            .join(", ");
+        } else if (ans.choosed_answer && ans.choosed_answer.choosed_answer) {
+          choosedAnswerText = ans.choosed_answer.choosed_answer;
+        }
+
+        if (!choosedAnswerText) choosedAnswerText = "No answer";
+
+        return {
+          question_text: ans.question_text || "No question text",
+          choosed_answer: choosedAnswerText,
+        };
+      }),
+      submited_at: new Date().toISOString().split("T")[0],
+    };
+    console.log(submission.student_id);
+    quiz.Submissions.push({
+      student_id: submission.student_id,
+      questions_submission: submission.questions_submission,
+      mark: totalPoint,
+    });
+    console.log(quiz.Submissions);
+    await quiz.save();
+
+    res.status(201).json({
+      status: "success",
+      totalPoints: totalPoint,
+      data: submission,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.showQuizMark = async (req, res) => {
+  try {
+    const { quiz_id } = req.params;
+    let student_id;
+    if (req.role === "parent") {
+      student_id = req.params.student_id;
+    } else {
+      student_id = req.role.id;
+    }
+    const quiz = await Quiz.findById(quiz_id);
+
+    const submission = quiz.Submissions.find(
+      (sub) => sub.student_id === student_id
+    );
+    console.log(quiz.Submissions);
+    if (submission) {
+      return res.status(200).json({
+        status: "success",
+        data: {
+          submited_at: submission.submited_at,
+          mark: submission.mark,
+        },
+      });
+    } else {
+      return res.status(200).json({
+        status: "success",
+        data: {
+          submited_at: "Not submitted",
+          mark: "Don't have mark",
+        },
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+exports.showQuizSubmissions = async (req, res) => {
+  try {
+    const { quiz_id } = req.params;
+    const findedCourse = await Quiz.findById(quiz_id);
+    const StudentsInCourse = await course_student.findAll({
+      where: {
+        course_id: findedCourse.course_id,
+      },
+      attributes: [],
+      include: {
+        model: student,
+        as: "student",
+        attributes: ["student_id", "first_name", "last_name"],
+      },
+    });
+    let finalSubmisions = [];
+    for (const oneStudent of StudentsInCourse) {
+      const studentData = oneStudent.student;
+      const fullName = `${studentData.first_name} ${studentData.last_name}`;
+
+      // Find the student's submission in the quiz submissions
+      const submission = findedCourse.Submissions.find(
+        (sub) => sub.student_id === studentData.student_id
+      );
+
+      if (submission) {
+        // If submission exists, add submission data
+        finalSubmisions.push({
+          fullName,
+          submited_at: submission.submited_at,
+          mark: submission.mark,
+        });
+      } else {
+        // If no submission, add default values
+        finalSubmisions.push({
+          fullName,
+          submited_at: "Not submitted",
+          mark: "Not marked",
+        });
+      }
+    }
+
+    res.status(200).json({
+      status: "sucess",
+      data: finalSubmisions,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+exports.publicQuizMarks = async (req, res) => {
+  try {
+    const { quiz_id } = req.params;
+    const { able_to_view } = req.body; // true false
+    const updatedQuiz = await Quiz.findById(quiz_id);
+
+    if (!updatedQuiz) {
+      return res.status(400).json({
+        status: "failure",
+        message: "the quiz not found",
+      });
+    }
+
+    updatedQuiz.able_to_view = able_to_view;
+    await updatedQuiz.save();
+
+    res.status(201).json({
+      status: "sucess",
+      message: `the Ability to view marks is ${able_to_view}`,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
 
 // marks
 // here we should meet at discord ok karam?>

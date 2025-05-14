@@ -58,7 +58,18 @@ router.get("/grades", studentController.getStudentMarks);
 //getQuizesForCourse
 router.get(
   "/course/:course_id/quizes",
-
-  courseController.getQuizesForCourse
+  courseController.getQuizesForCourseForStudent
+);
+// getQuizToStart
+router.get(
+  "/course/:course_id/quizes/:quiz_id",
+  courseController.getQuizToStart
+);
+// submitAnswer
+router.post("/course/:course_id/quizes/:quiz_id", courseController.submitQuiz);
+//show quiz Mark
+router.get(
+  "/course/:course_id/quizes/:quiz_id/mark",
+  courseController.showQuizMark
 );
 module.exports = router;

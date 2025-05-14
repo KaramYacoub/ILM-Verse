@@ -58,6 +58,34 @@ const QuizSchema = new mongoose.Schema({
       ],
     },
   ],
+  Submissions: [
+    {
+      student_id: {
+        type: String,
+        required: true,
+      },
+      questions_submission: [
+        {
+          question_text: {
+            type: String,
+            required: true,
+          },
+          choosed_answer: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
+      submited_at: {
+        type: String,
+        default: new Date().toISOString().split("T")[0],
+      },
+      mark: {
+        type: Number,
+        required: false,
+      },
+    },
+  ],
 });
 
 // Create the Quiz model
