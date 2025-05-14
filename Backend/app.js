@@ -46,24 +46,30 @@ const {
 } = require("./Middlewares/authrizationMiddleware");
 
 //---------------------------------------
-//Routes Imports
+//Routers Imports (HTTP)
 const adminRouter = require("./routers/adminRouter");
 const teacherRouter = require("./routers/teacherRouter");
 const studentRouter = require("./routers/studentRouter");
 const parentRouter = require("./routers/parentRouter");
 const sharedRouter = require("./routers/sharedRouter");
 
-// routing
+// routing (HTTP RESTFULL)
 app.use("/admin", authenticateUser, checkAdmin, adminRouter);
 app.use("/teacher", authenticateUser, checkTeacher, teacherRouter);
 app.use("/student", authenticateUser, checkStudent, studentRouter);
 app.use("/parent", authenticateUser, checkParent, parentRouter);
 app.use("/shared", sharedRouter);
 
+//Routers Imports (Socket)
+const messagingRouter = require("./routers/chat/messagingRouter");
+
+// routing (Socket)
+app.use("/messaging", messagingRouter);
 //--------------------------------------
 // Prevents Data Folder from entry from any user:
 app.use("/Data", (req, res, next) => {
   res.status(403).send("Access Forbidden");
+  next();
 });
 
 module.exports = app;
