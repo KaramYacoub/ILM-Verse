@@ -8,6 +8,7 @@ const reportController = require("../controllers/reportController");
 const uploadContent = require("../controllers/upload/uploadContentMiddleWare");
 const uploadAssigment = require("../controllers/upload/uploadAssigment-Description");
 const checkFile = require("../Middlewares/checkFileMiddleware");
+const downloadController = require("../controllers/download/downloadController");
 
 // login
 router.post("/teacherLogin", authController.TeacherLogin);
@@ -120,5 +121,11 @@ router.post(
 
   reportController.addReport
 );
+
+// download assignments
+router.get("/download/submissions", downloadController.downloadAssignments);
+
+// download submissions
+router.get("/download/submissions", downloadController.downloadSubmissions);
 
 module.exports = router;

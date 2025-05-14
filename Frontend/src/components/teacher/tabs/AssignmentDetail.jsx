@@ -6,7 +6,9 @@ export default function AssignmentDetail() {
   const location = useLocation();
   const assignment = location.state?.assignment;
 
-  const { TeacherShowSubmition, TeacherUpdateSubmition } = useTeacherStore();
+  const { TeacherShowSubmition, TeacherUpdateSubmition, downloadRSubmissions } =
+    useTeacherStore();
+
   const [submissions, setSubmissions] = useState([]);
 
   useEffect(() => {
@@ -52,6 +54,20 @@ export default function AssignmentDetail() {
     } catch (error) {
       console.log("error update submition: ", error);
     }
+  };
+
+  const getFileType = (mimeType) => {
+    if (mimeType.includes("video")) return "Video";
+    if (mimeType.includes("pdf")) return "PDF";
+    if (mimeType.includes("word") || mimeType.includes("msword")) return "DOC";
+    return mimeType.split("/")[1]?.toUpperCase() || "File";
+  };
+
+  const handleDownload = (student) => {
+    downloadRSubmissions(
+      student.path.split("/").pop(),
+      `${student.name}.${getFileType(student.type).toLowerCase()}`
+    );
   };
 
   if (!assignment) {
@@ -107,13 +123,12 @@ export default function AssignmentDetail() {
                   />
                 </td>
                 <td>
-                  <a
-                    href={student.path}
-                    download
+                  <button
+                    onClick={() => handleDownload(student)}
                     className="btn btn-sm btn-outline btn-primary"
                   >
                     Download
-                  </a>
+                  </button>
                 </td>
               </tr>
             ))}

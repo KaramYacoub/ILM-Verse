@@ -12,6 +12,7 @@ export default function TeacherAssignmentsTab() {
     TeacherGetAssignment,
     TeacherAddAssignment,
     TeacherDelteAssignment,
+    downloadAssignments,
   } = useTeacherStore();
 
   const [showModal, setShowModal] = useState(false);
@@ -93,6 +94,20 @@ export default function TeacherAssignmentsTab() {
     }
   };
 
+  const getFileType = (mimeType) => {
+    if (mimeType.includes("video")) return "Video";
+    if (mimeType.includes("pdf")) return "PDF";
+    if (mimeType.includes("word") || mimeType.includes("msword")) return "DOC";
+    return mimeType.split("/")[1]?.toUpperCase() || "File";
+  };
+
+  const handleDownload = (assigment) => {
+    downloadAssignments(
+      assigment.path.split("/").pop(),
+      `${assigment.title}.${getFileType(assigment.type).toLowerCase()}`
+    );
+  };
+
   return (
     <div className="p-4 bg-gray-50 rounded-lg shadow-md">
       {assignments.length === 0 ? (
@@ -113,14 +128,13 @@ export default function TeacherAssignmentsTab() {
               className="border border-base-300 p-4 rounded-lg shadow-sm bg-base-100 flex justify-between items-center"
             >
               <div className="space-y-1 cursor-pointer">
-                <a
-                  href={`/assignments/${assignment.title || `file${i}`}.pdf`}
-                  download={`${assignment.title || `file${i}`}.pdf`}
+                <button
+                  onClick={() => handleDownload(assignment)}
                   className="text-lg font-bold flex items-center gap-2 text-primary hover:underline"
                 >
                   <FileText className="w-5 h-5" />
                   {assignment.title || `Untitled`}
-                </a>
+                </button>
                 <p className="text-gray-700">
                   {assignment.description || "No description available."}
                 </p>

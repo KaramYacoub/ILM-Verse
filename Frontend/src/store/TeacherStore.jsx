@@ -232,4 +232,46 @@ export const useTeacherStore = create((set) => ({
       );
     }
   },
+
+  downloadAssignments: async (filePath, fileName) => {
+    try {
+      const url = `http://localhost:8001/teacher/download/submissions?path=${encodeURIComponent(
+        filePath
+      )}&filename=${encodeURIComponent(fileName)}`;
+
+      // For direct download (better approach)
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error(
+        "Download error:",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
+  downloadRSubmissions: async (filePath, fileName) => {
+    try {
+      const url = `http://localhost:8001/teacher/download/submissions?path=${encodeURIComponent(
+        filePath
+      )}&filename=${encodeURIComponent(fileName)}`;
+
+      // For direct download (better approach)
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error(
+        "Download error:",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
 }));
