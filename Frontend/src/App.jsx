@@ -397,7 +397,10 @@ function App() {
               <Route path="parent-overview" element={<ParentOverview />} />
               {/* <Route path="parent-units" element={<ParentUnitsTab />} /> */}
               <Route path=":unit_id/content" element={<ParentUnitDetails />} />
-              <Route path="parent-assignments" element={<ParentAssignment />} />
+              <Route
+                path="parent-assignments/:student_id"
+                element={<ParentAssignment />}
+              />
             </Route>
           </>
 

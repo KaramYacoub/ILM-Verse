@@ -23,12 +23,12 @@ router.get("/courses/:student_id", studentController.getCoursesForStudent);
 router.get("/course/:course_id", courseController.getCourseByID);
 //getCourseUnits  //DONE
 router.get("/course/:course_id/allunits", courseController.getCourseUnits);
-//getUnitContent
+//getUnitContent //Done
 router.get(
   "/course/:course_id/:unit_id/content",
   courseController.getUnitContent
 );
-// git student assignment
+// get student assignment
 router.get(
   "/coures/:course_id/assignment/:student_id",
   courseController.getAllAssigmentsForCourseForStudent

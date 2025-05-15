@@ -113,21 +113,15 @@ function ParentShowQuizzes() {
     switch (status) {
       case "Not Started":
         return (
-          <span className="badge badge-warning text-base-100">
-            {status}
-          </span>
+          <span className="badge badge-warning text-base-100">{status}</span>
         );
       case "Not available":
         return (
-          <span className="badge badge-error text-base-100">
-            {status}
-          </span>
+          <span className="badge badge-error text-base-100">{status}</span>
         );
       case "Completed":
         return (
-          <span className="badge badge-success text-base-100">
-            {status}
-          </span>
+          <span className="badge badge-success text-base-100">{status}</span>
         );
       default:
         return <span className="badge">{status}</span>;
@@ -140,9 +134,7 @@ function ParentShowQuizzes() {
 
       <div className="w-full max-w-6xl px-5 mt-10">
         <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
-          <h1 className="text-4xl font-bold text-primary">
-            Student Quizzes
-          </h1>
+          <h1 className="text-4xl font-bold text-primary">Student Quizzes</h1>
           <select
             value={selectedChildId}
             onChange={(e) => setSelectedChildId(Number(e.target.value))}
@@ -186,11 +178,11 @@ function ParentShowQuizzes() {
                     <td>{quiz.title}</td>
                     <td>{quiz.points}</td>
                     <td>{quiz.Date}</td>
-                    <td>{quiz.startAt} - {quiz.endAt}</td>
-                    <td>{getStatusBadge(quiz.status)}</td>
                     <td>
-                      {quiz.grad || "N/A"}
+                      {quiz.startAt} - {quiz.endAt}
                     </td>
+                    <td>{getStatusBadge(quiz.status)}</td>
+                    <td>{quiz.grad || "N/A"}</td>
                     <td>
                       <button
                         onClick={() => openQuizModal(quiz)}
@@ -232,7 +224,9 @@ function ParentShowQuizzes() {
               </div>
               <div>
                 <h4 className="font-semibold">Time:</h4>
-                <p>{selectedQuiz?.startAt} - {selectedQuiz?.endAt}</p>
+                <p>
+                  {selectedQuiz?.startAt} - {selectedQuiz?.endAt}
+                </p>
               </div>
               <div>
                 <h4 className="font-semibold">Total Points:</h4>

@@ -9,6 +9,7 @@ const useParentsStore = create((set) => ({
   reports: [],
   courseContent: [],
   course: [],
+  assignments: [],
   unitDetails: null,
   unitContent: null,
   count: 0,
@@ -93,6 +94,25 @@ const useParentsStore = create((set) => ({
     } catch (error) {
       set({
         error: error.response?.data?.message || "Failed to load unit content",
+      });
+    }
+  },
+
+  fetchAssignments: async (course_id, student_id) => {
+    if (!course_id || !student_id) {
+      set({ error: "Course ID or Student ID is missing", loading: false });
+      console.error("Course ID or Student ID is undefined");
+      return;
+    }
+    try {
+      const response = await axiosInstance.get(
+        `/parent/coures/${course_id}/assignment/${student_id}`
+      );
+      set({ assignments: response.data.data });
+      return response.data.data;
+    } catch (error) {
+      set({
+        error: error.response?.data?.message || "Failed to load assignments",
       });
     }
   },
