@@ -233,7 +233,7 @@ function App() {
               }
             />
             <Route
-              path="/Student-Quiz-Details/:quiz_id"
+              path="/Student-Quiz-Details/:course_id/:quiz_id"
               element={
                 authStudent ? <StudentQuizDetails /> : <Navigate to="/" />
               }

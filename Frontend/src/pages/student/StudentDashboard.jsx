@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import StudentNavbar from "../../components/student/StudentNavbar";
 import CourseCard from "../../components/shared/CourseCard";
 import { Link } from "react-router-dom";
-import useStudentStore from "../../store/StudentStore";
+import useStudentStore from "../../store/studentStore";
 import { Loader2 } from "lucide-react";
 
 function StudentDashboard() {
@@ -10,7 +10,7 @@ function StudentDashboard() {
 
   useEffect(() => {
     fetchCourses();
-  }, []);
+  }, [fetchCourses]);
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">

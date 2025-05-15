@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import useStudentStore from "../../../store/StudentStore";
-import { Video, File, X } from "lucide-react";
+import useStudentStore from "../../../store/studentStore";
+import { Video, File, X, Loader2 } from "lucide-react";
 import { useCourseStore } from "../../../store/CourseStore";
 
 function StudentOverviewTab() {
@@ -57,7 +57,14 @@ function StudentOverviewTab() {
     setIsModalOpen(false);
   };
 
-  if (loading) return <div>Loading...</div>;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin" size={50} />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
