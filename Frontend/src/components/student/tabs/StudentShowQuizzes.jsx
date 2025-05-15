@@ -55,13 +55,14 @@ function StudentShowQuizzes() {
             </tr>
           </thead>
           <tbody>
-            {quizzes.length === 0 ? (
+            {Array.isArray(quizzes) && quizzes.length === 0 ? (
               <tr>
                 <td colSpan="7" className="py-8 text-center text-gray-500">
                   No quizzes available for this course
                 </td>
               </tr>
             ) : (
+              Array.isArray(quizzes) &&
               quizzes.map((quiz) => {
                 const status = quiz.status.toLowerCase();
                 return (
@@ -99,7 +100,7 @@ function StudentShowQuizzes() {
                     <td>
                       {status === "able to start" ? (
                         <Link
-                          to={`/student-quiz-details/${quiz.quiz_id}`}
+                          to={`/student-quiz-details/${course_id}/${quiz.quiz_id}`}
                           className="btn btn-sm btn-primary"
                         >
                           Start Quiz

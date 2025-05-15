@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { CheckCircle2, Download, XCircle } from "lucide-react";
-import useStudentStore from "../../../store/StudentStore";
+import { CheckCircle2, Download, Loader2, XCircle } from "lucide-react";
+import useStudentStore from "../../../store/studentStore";
 
 function StudentAssignmentsTab() {
   const { course_id } = useParams();
@@ -116,8 +116,15 @@ function StudentAssignmentsTab() {
     );
   };
 
-  if (loading)
-    return <div className="text-center py-10">Loading assignments...</div>;
+  
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin" size={50} />
+      </div>
+    );
+  }
   if (submissionError)
     return (
       <div className="text-center text-red-500 py-10">{submissionError}</div>

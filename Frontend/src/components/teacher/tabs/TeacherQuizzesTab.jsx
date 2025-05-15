@@ -1,5 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Calendar, FileText, Trash2, Pencil, BarChart2 } from "lucide-react";
+import {
+  Calendar,
+  FileText,
+  Trash2,
+  Pencil,
+  BarChart2,
+  Loader2,
+} from "lucide-react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useTeacherStore } from "../../../store/TeacherStore";
@@ -8,14 +15,22 @@ function TeacherQuizzesTab() {
   const navigate = useNavigate();
   const { course_id } = useParams();
 
-  const { getQuizzesForCourse, deleteQuiz } = useTeacherStore();
+  const { getQuizzesForCourse, deleteQuiz, publishMarks } = useTeacherStore();
 
   const [quizzes, setQuizzes] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      const quizzes = await getQuizzesForCourse(course_id);
-      setQuizzes(quizzes);
+      try {
+        setLoading(true);
+        const quizzes = await getQuizzesForCourse(course_id);
+        setQuizzes(quizzes);
+      } catch (error) {
+        console.log(error.message);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchQuizzes();
   }, [course_id, getQuizzesForCourse]);
@@ -35,6 +50,39 @@ function TeacherQuizzesTab() {
       console.error("Error deleting quiz:", error);
     }
   };
+
+  const handleShowSubmit = (quiz) => {
+    console.log(quiz);
+    navigate(
+      `/teacher-course-content/${course_id}/quiz-submit-status/${quiz._id}`,
+      {
+        state: { quiz },
+      }
+    );
+  };
+
+  const handlePublishMarks = async (quiz) => {
+    try {
+      const updatedAbleToView = !quiz.able_to_view;
+      await publishMarks(quiz._id, updatedAbleToView);
+      // Update local state after successful response
+      setQuizzes((prev) =>
+        prev.map((q) =>
+          q._id === quiz._id ? { ...q, able_to_view: updatedAbleToView } : q
+        )
+      );
+    } catch (error) {
+      console.error("Error publishing marks:", error);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin" size={50} />
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 bg-gray-50 rounded-lg shadow-md">
@@ -113,7 +161,7 @@ function TeacherQuizzesTab() {
                     Edit
                   </button>
                   <button
-                    // onClick={() => handleShowSubmit(quiz)}
+                    onClick={() => handleShowSubmit(quiz)}
                     className="btn btn-sm btn-outline btn-info gap-2"
                   >
                     <BarChart2 className="w-4 h-4" />
@@ -129,10 +177,14 @@ function TeacherQuizzesTab() {
                     Delete
                   </button>
                   <button
-                    // onClick={() => handlePublishMarks(quiz)}
+                    onClick={() => handlePublishMarks(quiz)}
                     className="btn btn-sm btn-outline btn-success gap-2"
                   >
-                    Publish Marks
+                    {quiz.able_to_view ? (
+                      <span>Hide Marks</span>
+                    ) : (
+                      <span>Publish Marks</span>
+                    )}
                   </button>
                 </div>
               </div>

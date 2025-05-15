@@ -27,15 +27,19 @@ const StudentCourseContent = lazy(() =>
 const StudentOverviewTab = lazy(() =>
   import("./components/student/tabs/StudentOverviewTab")
 );
+const StudentUnitsTab = lazy(() =>
+  import("./components/student/tabs/StudentunitsTab")
+);
 const StudentAssignmentsTab = lazy(() =>
   import("./components/student/tabs/StudentAssignmentsTab")
 );
 const StudentUnitDetails = lazy(() =>
   import("./components/student/tabs/StudentUnitDetails")
-);
+); // Import StudentUnitDetails
+
 const StudentShowQuizzes = lazy(() =>
   import("./components/student/tabs/StudentShowQuizzes")
-);
+); // Import StudentUnitDetails
 
 // Teacher Components/Pages
 const TeacherDashboard = lazy(() => import("./pages/teacher/TeacherDashboard"));
@@ -69,6 +73,7 @@ const AssignmentDetail = lazy(() =>
 const QuizSubmitStatus = lazy(() =>
   import("./components/teacher/tabs/QuizSubmitStatus")
 );
+const QuizReview = lazy(() => import("./components/teacher/quiz/QuizReview"));
 
 // Parent Components/Pages
 const ParentDashboard = lazy(() => import("./pages/parent/ParentDashboard"));
@@ -227,13 +232,7 @@ function App() {
               }
             />
             <Route
-              path="/student-show-quizzes"
-              element={
-                authStudent ? <StudentShowQuizzes /> : <Navigate to="/" />
-              }
-            />
-            <Route
-              path="/Student-Quiz-Details/:quiz_id"
+              path="/Student-Quiz-Details/:course_id/:quiz_id"
               element={
                 authStudent ? <StudentQuizDetails /> : <Navigate to="/" />
               }
@@ -335,17 +334,23 @@ function App() {
                 }
               />
               <Route
-                path="/teacher-course-content/:course_id/quiz-submit-status"
+                path="quiz-submit-status/:quiz_id"
                 element={
                   authTeacher ? <QuizSubmitStatus /> : <Navigate to="/" />
                 }
               />
             </Route>
+
             <Route
               path="/teacher-course-content/:course_id/teacher-quizzes/teacher-add-quiz"
               element={
                 authTeacher ? <TeacherAddQuizzes /> : <Navigate to="/" />
               }
+            />
+            {/* /course/${course_id}/quizes/${quiz._id}/review/${student_id}` */}
+            <Route
+              path="/course/:course_id/quizes/:quiz_id/review/:student_id"
+              element={authTeacher ? <QuizReview /> : <Navigate to="/" />}
             />
             <Route
               path="/teacher-take-absence"
@@ -390,9 +395,12 @@ function App() {
                 element={<Navigate to="parent-overview" replace />}
               />
               <Route path="parent-overview" element={<ParentOverview />} />
-              <Route path="parent-units" element={<ParentUnitsTab />} />
-              <Route path="units/:unit_id" element={<ParentUnitDetails />} />
-              <Route path="parent-assignments" element={<ParentAssignment />} />
+              {/* <Route path="parent-units" element={<ParentUnitsTab />} /> */}
+              <Route path=":unit_id/content" element={<ParentUnitDetails />} />
+              <Route
+                path="parent-assignments/:student_id"
+                element={<ParentAssignment />}
+              />
             </Route>
           </>
 

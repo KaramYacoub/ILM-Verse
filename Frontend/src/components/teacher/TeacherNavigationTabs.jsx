@@ -58,7 +58,7 @@ function TeacherNavigationTabs() {
       <button
         onClick={() => navigate(`${basePath}/teacher-quizzes`)}
         className={`w-full h-14 text-lg tab ${
-          isTabActive("teacher-quizzes")
+          isTabActive("teacher-quizzes") || isTabActive("quiz-submit-status")
             ? "bg-accent text-primary"
             : "text-gray-600"
         }`}

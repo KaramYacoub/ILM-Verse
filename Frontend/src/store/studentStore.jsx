@@ -149,6 +149,35 @@ const useStudentStore = create((set) => ({
       set({ error: err.response.data.message || err.message, loading: false });
     }
   },
+
+  getQuizToStart: async (course_id, quiz_id) => {
+    try {
+      set({ loading: true, error: null });
+      const response = await axiosInstance.get(
+        `/student/course/${course_id}/quizes/${quiz_id}`
+      );
+      set({ quizzes: response.data.data, loading: false });
+      return response.data.data;
+    } catch (err) {
+      set({ error: err.response.data.message || err.message, loading: false });
+    }
+  },
+
+  submitQuiz: async (course_id, quiz_id, { answers }) => {
+    try {
+      set({ error: null });
+      const response = await axiosInstance.post(
+        `/student/course/${course_id}/quizes/${quiz_id}`,
+        {
+          answers,
+        }
+      );
+      set({ quizzes: response.data.data });
+      return response.data.data;
+    } catch (err) {
+      set({ error: err.response.data.message || err.message });
+    }
+  },
 }));
 
 export default useStudentStore;

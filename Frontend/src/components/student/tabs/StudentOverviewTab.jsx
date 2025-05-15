@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import useStudentStore from "../../../store/StudentStore";
+import useStudentStore from "../../../store/studentStore";
+import { Loader2 } from "lucide-react";
 
 function StudentOverviewTab() {
   const navigate = useNavigate();
@@ -24,8 +25,13 @@ function StudentOverviewTab() {
     fetcheUnits();
   }, [course_id, fetchCourseUnits]);
 
-  if (loading) return <div>Loading...</div>;
-
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin" size={50} />
+      </div>
+    );
+  }
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
       <h2 className="text-3xl text-primary font-bold mb-6">Course Units</h2>

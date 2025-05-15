@@ -434,4 +434,71 @@ export const useTeacherStore = create((set) => ({
       throw error;
     }
   },
+
+  // get a student asnwers for a quiz
+  getStudentQuizMark: async (course_id, quiz_id, student_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/teacher/course/${course_id}/${quiz_id}/${student_id}/submit`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error getting a student asnwers for a quiz: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
+  publishMarks: async (quiz_id, able_to_view) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/teacher/course/quiz/${quiz_id}/view`,
+        { able_to_view }
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error publish quiz marks: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
+  getMark: async (course_id, student_id, mark_type) => {
+    try {
+      const response = await axiosInstance.get(
+        `/teacher/course/${course_id}/mark/${student_id}/${mark_type}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error getting mark:",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
+  addMark: async (course_id, { student_id, mark_type, mark_value }) => {
+    try {
+      const response = await axiosInstance.post(
+        `/teacher/course/${course_id}/mark`,
+        {
+          student_id,
+          mark_type,
+          mark_value,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error adding mark:",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
 }));

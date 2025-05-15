@@ -75,6 +75,10 @@ router.get(
   "/course/:course_id/:quiz_id/submissions",
   courseController.showQuizSubmissions
 );
+router.get(
+  "/course/:course_id/:quiz_id/:student_id/submit",
+  courseController.showQuizMark
+);
 // Absence functionality
 router.get("/students/:section_id", courseController.getStudentInSection);
 router.get("/absence/:date", absenceController.getAbsence);
@@ -92,5 +96,16 @@ router.get("/download/assignments", downloadController.downloadAssignments);
 
 // download submissions
 router.get("/download/submissions", downloadController.downloadSubmissions);
+
+router.post(
+  "/course/:course_id/mark",
+
+  courseController.addMark
+);
+router.get(
+  "/course/:course_id/mark/:student_id/:mark_type",
+
+  courseController.getMark
+);
 
 module.exports = router;

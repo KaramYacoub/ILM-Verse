@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import StudentNavbar from "../../components/student/StudentNavbar";
-import useStudentStore from "../../store/StudentStore";
+import useStudentStore from "../../store/studentStore";
 import { Loader2 } from "lucide-react";
 
 function StudentViewGrades() {
@@ -8,7 +8,7 @@ function StudentViewGrades() {
 
   useEffect(() => {
     fetchShowGrades();
-  }, []);
+  }, [fetchShowGrades]);
 
   useEffect(() => {
     console.log("Grades data:", grades); // For debugging structure

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Outlet, useParams } from "react-router-dom";
 import StudentNavigationTabs from "../../components/student/StudentNavigationTabs";
-import useStudentStore from "../../store/StudentStore";
+import useStudentStore from "../../store/studentStore";
 import StudentNavbar from "../../components/student/StudentNavbar";
+import { Loader2 } from "lucide-react";
 
 function StudentCourseContent() {
   const { course_id } = useParams();
@@ -26,8 +27,14 @@ function StudentCourseContent() {
     fetchCourse();
   }, [course_id, fetchCourseByID]);
 
-  if (loading)
-    return <div className="p-4 text-center">Loading course data...</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin" size={50} />
+      </div>
+    );
+  }
+
   if (error) return <div className="p-4 text-error">{error}</div>;
   if (!course) return <div className="p-4">No course data available</div>;
 
