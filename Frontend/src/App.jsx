@@ -27,15 +27,15 @@ const StudentCourseContent = lazy(() =>
 const StudentOverviewTab = lazy(() =>
   import("./components/student/tabs/StudentOverviewTab")
 );
+const StudentUnitsTab = lazy(() =>
+  import("./components/student/tabs/StudentunitsTab")
+);
 const StudentAssignmentsTab = lazy(() =>
   import("./components/student/tabs/StudentAssignmentsTab")
 );
 const StudentUnitDetails = lazy(() =>
   import("./components/student/tabs/StudentUnitDetails")
-);
-const StudentShowQuizzes = lazy(() =>
-  import("./components/student/tabs/StudentShowQuizzes")
-);
+); // Import StudentUnitDetails
 
 // Teacher Components/Pages
 const TeacherDashboard = lazy(() => import("./pages/teacher/TeacherDashboard"));
@@ -234,7 +234,7 @@ function App() {
               }
             />
             <Route
-              path="/Student-Quiz-Details/:course_id/:quiz_id"
+              path="/Student-Quiz-Details"
               element={
                 authStudent ? <StudentQuizDetails /> : <Navigate to="/" />
               }
@@ -270,12 +270,6 @@ function App() {
                 path="student-assignments"
                 element={
                   authStudent ? <StudentAssignmentsTab /> : <Navigate to="/" />
-                }
-              />
-              <Route
-                path="student-quizzes"
-                element={
-                  authStudent ? <StudentShowQuizzes /> : <Navigate to="/" />
                 }
               />
             </Route>
@@ -397,8 +391,8 @@ function App() {
                 element={<Navigate to="parent-overview" replace />}
               />
               <Route path="parent-overview" element={<ParentOverview />} />
-              <Route path="parent-units" element={<ParentUnitsTab />} />
-              <Route path="units/:unit_id" element={<ParentUnitDetails />} />
+              {/* <Route path="parent-units" element={<ParentUnitsTab />} /> */}
+              <Route path=":unit_id/content" element={<ParentUnitDetails />} />
               <Route path="parent-assignments" element={<ParentAssignment />} />
             </Route>
           </>

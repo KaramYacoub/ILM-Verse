@@ -78,6 +78,24 @@ const useParentsStore = create((set) => ({
       });
     }
   },
+  fetchUnitContent: async (course_id, unit_id) => {
+    if (!course_id || !unit_id) {
+      set({ error: "Course ID or Unit ID is missing", loading: false });
+      console.error("Course ID or Unit ID is undefined");
+      return;
+    }
+    try {
+      const response = await axiosInstance.get(
+        `/parent/course/${course_id}/${unit_id}/content`
+      );
+      set({ unitContent: response.data.data });
+      return response.data.data;
+    } catch (error) {
+      set({
+        error: error.response?.data?.message || "Failed to load unit content",
+      });
+    }
+  },
 
   fetchShowGrades: async (studentId) => {
     set({ loading: true });

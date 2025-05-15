@@ -52,9 +52,12 @@ function ParentOverview() {
                 <button
                   className="btn btn-primary text-lg btn-md"
                   onClick={() =>
-                    navigate("/parent-course-content/parent-lessons", {
-                      state: { unit: unit },
-                    })
+                    navigate(
+                      `/parent-course-content/${course_id}/${unit.unit_id}/content`,
+                      {
+                        state: { unit: unit },
+                      }
+                    )
                   }
                 >
                   View unit
