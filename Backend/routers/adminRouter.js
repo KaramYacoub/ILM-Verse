@@ -109,7 +109,6 @@ router.get(
 
   courseController.getStudentsInCourse
 );
-router.post("/course/addreport", reportController.addReport);
 router.post("/course/addunit", courseController.addUnit);
 router.get(
   "/course/:course_id",
@@ -197,4 +196,8 @@ router.get(
   adminController.getGradesInDepartment
 );
 
+//Reports
+router.post("/course/addreport", reportController.addReport);
+
+router.get("/reports/:student_id", reportController.getStudentReports);
 module.exports = router;

@@ -61,10 +61,11 @@ app.use("/parent", authenticateUser, checkParent, parentRouter);
 app.use("/shared", sharedRouter);
 
 //Routers Imports (Socket)
-const messagingRouter = require("./routers/chat/messagingRouter");
+const messagingRouter = require("./routers/messagingRouter");
 
 // routing (Socket)
-app.use("/messaging", messagingRouter);
+app.use("/meessages", authenticateUser, messagingRouter);
+
 //--------------------------------------
 // Prevents Data Folder from entry from any user:
 app.use("/Data", (req, res, next) => {

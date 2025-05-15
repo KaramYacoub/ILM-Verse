@@ -2,7 +2,6 @@ const AbsenceReport = require("../models/NOSQL/AbsenceReport");
 const sequelize = require("sequelize");
 const SQL = require("../models/Connections/SQL-Driver"); // your Sequelize instance
 const initModels = require("../models/index"); // path to index.js
-const { response } = require("express");
 const models = initModels(SQL); // initialize models
 const { student, teacher } = models;
 exports.updateAbsence = async (req, res) => {
