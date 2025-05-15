@@ -69,6 +69,7 @@ const AssignmentDetail = lazy(() =>
 const QuizSubmitStatus = lazy(() =>
   import("./components/teacher/tabs/QuizSubmitStatus")
 );
+const QuizReview = lazy(() => import("./components/teacher/quiz/QuizReview"));
 
 // Parent Components/Pages
 const ParentDashboard = lazy(() => import("./pages/parent/ParentDashboard"));
@@ -335,17 +336,23 @@ function App() {
                 }
               />
               <Route
-                path="/teacher-course-content/:course_id/quiz-submit-status"
+                path="quiz-submit-status/:quiz_id"
                 element={
                   authTeacher ? <QuizSubmitStatus /> : <Navigate to="/" />
                 }
               />
             </Route>
+
             <Route
               path="/teacher-course-content/:course_id/teacher-quizzes/teacher-add-quiz"
               element={
                 authTeacher ? <TeacherAddQuizzes /> : <Navigate to="/" />
               }
+            />
+            {/* /course/${course_id}/quizes/${quiz._id}/review/${student_id}` */}
+            <Route
+              path="/course/:course_id/quizes/:quiz_id/review/:student_id"
+              element={authTeacher ? <QuizReview /> : <Navigate to="/" />}
             />
             <Route
               path="/teacher-take-absence"

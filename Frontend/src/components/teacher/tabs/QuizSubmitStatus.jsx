@@ -1,8 +1,68 @@
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useTeacherStore } from "../../../store/TeacherStore";
+import { Loader2 } from "lucide-react";
 
 export default function QuizSubmitStatus() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { course_id } = useParams();
+  const { getStudentsInCourse } = useTeacherStore();
+
   const quiz = location.state?.quiz;
+  const submissions = quiz?.Submissions || [];
+
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        setLoading(true);
+        const studentList = await getStudentsInCourse(course_id);
+        setStudents(studentList);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, [course_id, getStudentsInCourse]);
+
+  // Create a map of submissions by student_id for quick lookup
+  const submissionsMap = submissions.reduce((acc, submission) => {
+    acc[submission.student_id] = submission;
+    return acc;
+  }, {});
+
+  // Calculate submission statistics
+  const totalStudents = students.length;
+  const submittedCount = submissions.length;
+  const submissionRate =
+    totalStudents > 0 ? Math.round((submittedCount / totalStudents) * 100) : 0;
+
+  // Compile student data with submission status and marks
+  const compiledStudentData = students.map((student) => {
+    const submission = submissionsMap[student.student_id];
+    const hasSubmitted = !!submission;
+
+    return {
+      student_id: student.student_id,
+      student_name: `${student.first_name} ${student.last_name}`,
+      status: hasSubmitted ? "Submitted" : "Not Submitted",
+      mark: hasSubmitted ? submission.mark : null,
+      submitted_at: hasSubmitted ? submission.submited_at : null,
+    };
+  });
+
+  const handleReview = (student_id) => {
+    const submission = submissionsMap[student_id];
+    navigate(`/course/${course_id}/quizes/${quiz._id}/review/${student_id}`, {
+      state: { quiz, submission },
+    });
+  };
 
   if (!quiz) {
     return (
@@ -12,59 +72,120 @@ export default function QuizSubmitStatus() {
     );
   }
 
-  // Dummy data (replace this with actual API data)
-  const submittedStudents = [
-    { student_id: "S001", student_name: "Ali Ahmad", status: true, marks: 18 },
-    {
-      student_id: "S002",
-      student_name: "Lina Saeed",
-      status: false,
-      marks: null,
-    },
-    { student_id: "S003", student_name: "Omar Zaid", status: true, marks: 15 },
-  ];
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin" size={50} />
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-md mt-6">
-      <h1 className="text-3xl font-bold text-primary mb-4">{quiz.title}</h1>
-      <p className="text-lg mb-6">
-        <strong>Status:</strong>{" "}
-        <span className={quiz.published ? "text-green-600" : "text-red-600"}>
-          {quiz.published ? "Published" : "Not Published"}
-        </span>
-      </p>
+    <div className="p-4 bg-gray-50 rounded-lg shadow-md">
+      {/* Quiz Information Section */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-primary mb-2">{quiz.title}</h1>
+        <p className="text-lg mb-2">{quiz.description}</p>
 
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          <div className="bg-white p-4 rounded-lg shadow-sm">
+            <h3 className="font-semibold text-gray-700">Quiz Date</h3>
+            <p>
+              {new Date(
+                `${quiz.start_date}T${quiz.start_time}`
+              ).toLocaleString()}
+            </p>
+          </div>
+
+          <div className="bg-white p-4 rounded-lg shadow-sm">
+            <h3 className="font-semibold text-gray-700">Duration</h3>
+            <p>{quiz.duration} minutes</p>
+          </div>
+
+          <div className="bg-white p-4 rounded-lg shadow-sm">
+            <h3 className="font-semibold text-gray-700">Total Points</h3>
+            <p>{quiz.total_points}</p>
+          </div>
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-white p-4 rounded-lg shadow-sm">
+            <h3 className="font-semibold text-gray-700">Submission Status</h3>
+            <div className="flex items-center mt-2">
+              <div className="w-full bg-gray-200 rounded-full h-4">
+                <div
+                  className="bg-green-600 h-4 rounded-full"
+                  style={{ width: `${submissionRate}%` }}
+                ></div>
+              </div>
+              <span className="ml-2 font-medium">
+                {submittedCount}/{totalStudents} ({submissionRate}%)
+              </span>
+            </div>
+          </div>
+
+          <div className="bg-white p-4 rounded-lg shadow-sm">
+            <h3 className="font-semibold text-gray-700">Quiz Visibility</h3>
+            <p
+              className={quiz.able_to_view ? "text-green-600" : "text-red-600"}
+            >
+              {quiz.able_to_view
+                ? "Visible to students"
+                : "Not visible to students"}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Student Submissions Table */}
       <h2 className="text-xl font-semibold text-gray-800 mb-4">
-        Submitted Students
+        Student Submissions
       </h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm">
-          <thead className="bg-gray-100">
+      <div className="overflow-x-auto rounded-lg">
+        <table className="table table-zebra shadow-sm text-center">
+          <thead className="bg-primary text-base-100 text-base">
             <tr>
-              <th className="py-2 px-4 border-b text-left">Student ID</th>
-              <th className="py-2 px-4 border-b text-left">Student Name</th>
-              <th className="py-2 px-4 border-b text-left">Status</th>
-              <th className="py-2 px-4 border-b text-left">Marks</th>
+              <th>Student ID</th>
+              <th>Student Name</th>
+              <th>Status</th>
+              <th>Marks</th>
+              <th>Submitted At</th>
+              <th>Review</th>
             </tr>
           </thead>
           <tbody>
-            {submittedStudents.map((student) => (
+            {compiledStudentData.map((student) => (
               <tr key={student.student_id} className="hover:bg-gray-50">
-                <td className="py-2 px-4 border-b">{student.student_id}</td>
-                <td className="py-2 px-4 border-b">{student.student_name}</td>
-                <td className="py-2 px-4 border-b">
+                <td>{student.student_id}</td>
+                <td>{student.student_name}</td>
+                <td>
                   <span
                     className={
-                      student.status
+                      student.status === "Submitted"
                         ? "text-green-600 font-medium"
                         : "text-red-600 font-medium"
                     }
                   >
-                    {student.status ? "Submitted" : "Not Submitted"}
+                    {student.status}
                   </span>
                 </td>
-                <td className="py-2 px-4 border-b">
-                  {student.status ? `${student.marks} / ${quiz.points}` : "—"}
+                <td>
+                  {student.mark !== null
+                    ? `${student.mark} / ${quiz.total_points}`
+                    : "—"}
+                </td>
+                <td>{student.submitted_at ? student.submitted_at : "—"}</td>
+                <td>
+                  {student.status === "Submitted" ? (
+                    <button
+                      onClick={() => handleReview(student.student_id)}
+                      className="btn btn-primary btn-sm"
+                    >
+                      Review
+                    </button>
+                  ) : (
+                    <span className="text-gray-600">Not Submitted</span>
+                  )}
                 </td>
               </tr>
             ))}

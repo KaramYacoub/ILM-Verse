@@ -3,6 +3,7 @@ import { Outlet, useParams } from "react-router-dom";
 import StudentNavigationTabs from "../../components/student/StudentNavigationTabs";
 import useStudentStore from "../../store/studentStore";
 import StudentNavbar from "../../components/student/StudentNavbar";
+import { Loader2 } from "lucide-react";
 
 function StudentCourseContent() {
   const { course_id } = useParams();

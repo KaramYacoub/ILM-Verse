@@ -75,6 +75,10 @@ router.get(
   "/course/:course_id/:quiz_id/submissions",
   courseController.showQuizSubmissions
 );
+router.get(
+  "/course/:course_id/:quiz_id/submissions/:student_id",
+  courseController.showQuizMark
+);
 // Absence functionality
 router.get("/students/:section_id", courseController.getStudentInSection);
 router.get("/absence/:date", absenceController.getAbsence);

@@ -434,4 +434,20 @@ export const useTeacherStore = create((set) => ({
       throw error;
     }
   },
+
+  // get a student asnwers for a quiz 
+  getStudentQuizMark: async (course_id, quiz_id, student_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/teacher/course/${course_id}/${quiz_id}/submissions/${student_id}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error getting a student asnwers for a quiz: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
 }));

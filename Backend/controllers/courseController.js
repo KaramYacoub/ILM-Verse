@@ -1310,8 +1310,10 @@ exports.showQuizMark = async (req, res) => {
     let student_id;
     if (req.role === "parent") {
       student_id = req.params.student_id;
-    } else {
+    } else if (req.role === "student") {
       student_id = req.user.id;
+    } else {
+      student_id = req.params.student_id;
     }
     console.log("student_id:", student_id);
 
