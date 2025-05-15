@@ -74,6 +74,7 @@ const QuizSchema = new mongoose.Schema({
             type: String,
             required: true,
           },
+          correct_answer: { type: String, required: false },
         },
       ],
       submited_at: {
