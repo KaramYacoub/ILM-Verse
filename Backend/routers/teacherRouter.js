@@ -76,7 +76,7 @@ router.get(
   courseController.showQuizSubmissions
 );
 router.get(
-  "/course/:course_id/:quiz_id/submissions/:student_id",
+  "/course/:course_id/:quiz_id/:student_id/submit",
   courseController.showQuizMark
 );
 // Absence functionality

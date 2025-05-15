@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useTeacherStore } from "../../../store/TeacherStore";
 import TeacherNavbar from "../TeacherNavbar";
 import { Loader2 } from "lucide-react";
@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 export default function QuizReview() {
   const { course_id, quiz_id, student_id } = useParams();
   const location = useLocation();
+
   const { getQuizById, getStudentQuizMark } = useTeacherStore();
 
   const [quiz, setQuiz] = useState(null);
@@ -14,26 +15,26 @@ export default function QuizReview() {
   const [studentSubmission, setStudentSubmission] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (location.state?.quiz) {
+      setQuiz(location.state.quiz);
+    }
+  }, [location.state]);
+
   // Load quiz data and student submission
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
         setLoading(true);
-        const quizData = await getQuizById(quiz_id);
 
-        if (quizData && quizData.length > 0) {
-          setQuiz(quizData);
+        const submission = await getStudentQuizMark(
+          course_id,
+          quiz_id,
+          student_id
+        );
 
-          // Find the student's submission
-          const submission = await getStudentQuizMark(
-            course_id,
-            quiz_id,
-            student_id
-          );
-
-          if (submission) {
-            setStudentSubmission(submission);
-          }
+        if (submission) {
+          setStudentSubmission(submission);
         }
       } catch (err) {
         console.error("Error fetching quiz data:", err);
@@ -44,16 +45,6 @@ export default function QuizReview() {
 
     fetchQuizData();
   }, [course_id, quiz_id, student_id, getQuizById, getStudentQuizMark]);
-
-  // If coming from navigation state
-  useEffect(() => {
-    if (location.state?.submission) {
-      setStudentSubmission(location.state.submission);
-    }
-    if (location.state?.quiz) {
-      setQuiz(location.state.quiz);
-    }
-  }, [location.state]);
 
   const handleNext = () => {
     if (currentQuestionIndex < quiz.questions.length - 1) {
@@ -85,9 +76,7 @@ export default function QuizReview() {
 
   const totalQuestions = quiz.questions.length;
   const currentQuestion = quiz.questions[currentQuestionIndex];
-  const currentSubmission = studentSubmission.questions_submission.find(
-    (qs) => qs._id === currentQuestion._id
-  );
+  const currentSubmission = studentSubmission.questions[currentQuestionIndex];
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col justify-start pb-5">
@@ -136,7 +125,7 @@ export default function QuizReview() {
           <div className="flex gap-2 flex-wrap">
             {quiz.questions.map((q, index) => (
               <button
-                key={q._id}
+                key={index}
                 onClick={() => handleNavigateTo(index)}
                 className={`w-10 h-10 rounded-full font-bold ${
                   currentQuestionIndex === index
@@ -170,7 +159,7 @@ export default function QuizReview() {
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
           <div className="flex items-center gap-4 mb-4">
             <p className="text-lg font-semibold">
-              {currentQuestion.question_text}
+              {currentSubmission?.question_text}
             </p>
             <span className="badge badge-primary">
               {currentQuestion.points} points
@@ -183,19 +172,19 @@ export default function QuizReview() {
               <h3 className="font-medium text-gray-700 mb-2">
                 Student's Answer:
               </h3>
-              <div className="bg-blue-50 p-4 rounded-lg">
+              <div
+                className={`${
+                  currentSubmission.choosed_answer ===
+                  currentSubmission.correct_answer
+                    ? "bg-success"
+                    : "bg-error"
+                } p-4 rounded-lg`}
+              >
                 <p className="font-medium">
                   {currentSubmission?.choosed_answer || "No answer provided"}
                 </p>
                 {currentSubmission?.choosed_answer && (
-                  <p
-                    className={`mt-2 ${
-                      currentSubmission.choosed_answer ===
-                      currentSubmission.correct_answer
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
+                  <p className={`mt-2 text-base-100`}>
                     {currentSubmission.choosed_answer ===
                     currentSubmission.correct_answer
                       ? "Correct Answer"

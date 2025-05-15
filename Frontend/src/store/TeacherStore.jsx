@@ -435,11 +435,11 @@ export const useTeacherStore = create((set) => ({
     }
   },
 
-  // get a student asnwers for a quiz 
+  // get a student asnwers for a quiz
   getStudentQuizMark: async (course_id, quiz_id, student_id) => {
     try {
       const response = await axiosInstance.get(
-        `/teacher/course/${course_id}/${quiz_id}/submissions/${student_id}`
+        `/teacher/course/${course_id}/${quiz_id}/${student_id}/submit`
       );
       return response.data.data;
     } catch (error) {
