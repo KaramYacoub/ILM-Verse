@@ -444,7 +444,7 @@ exports.deleteUnit = async (req, res) => {
 
       try {
         // Asynchronously delete the media file
-        await fs.promises.unlink(filePath);
+        await fs.promises.unlink(`./Data/${filePath}`);
         console.log(`Deleted file: ${filePath}`);
       } catch (error) {
         console.error(`Failed to delete file`);
@@ -1213,13 +1213,13 @@ exports.submitQuiz = async (req, res) => {
 
     let totalPoint = 0;
 
-    // Map questions by ID for quick lookup
+    // Map questions by ID or text for quick lookup
     const questionsMap = {};
     for (const q of quiz.questions) {
-      questionsMap[q._id.toString()] = q;
+      questionsMap[q.question_text] = q; // Using question_text as key
     }
 
-    // Function to check correctness of chosen answers
+    // Function to check if student's chosen answer is correct
     function isAnswerCorrect(question, choosedAnswer) {
       if (Array.isArray(choosedAnswer)) {
         return choosedAnswer.some((ans) => {
@@ -1237,11 +1237,11 @@ exports.submitQuiz = async (req, res) => {
       }
     }
 
-    // Calculate total points
+    // Calculate total score based on correct answers
     for (const oneAnswer of answers) {
       const questionId = oneAnswer._id;
       const choosedAnswer = oneAnswer.choosed_answer;
-      const question = questionsMap[questionId];
+      const question = questionsMap[oneAnswer.question_text];
       if (!question) continue;
 
       if (isAnswerCorrect(question, choosedAnswer)) {
@@ -1249,12 +1249,15 @@ exports.submitQuiz = async (req, res) => {
       }
     }
 
+    // Build submission object including student's answers and the correct answers
     const submission = {
       student_id: student_id,
       mark: totalPoint,
       questions_submission: answers.map((ans) => {
         let choosedAnswerText = "";
+        let correctAnswerText = "";
 
+        // Extract student's chosen answer text
         if (Array.isArray(ans.choosed_answer)) {
           choosedAnswerText = ans.choosed_answer
             .map((a) => a.choosed_answer)
@@ -1263,31 +1266,40 @@ exports.submitQuiz = async (req, res) => {
         } else if (ans.choosed_answer && ans.choosed_answer.choosed_answer) {
           choosedAnswerText = ans.choosed_answer.choosed_answer;
         }
-
         if (!choosedAnswerText) choosedAnswerText = "No answer";
+
+        // Find the original question from quiz questions
+        const originalQuestion = questionsMap[ans.question_text];
+
+        if (originalQuestion) {
+          // Get all correct options texts concatenated
+          correctAnswerText = originalQuestion.options
+            .filter((opt) => opt.isCorrectAnswer)
+            .map((opt) => opt.option_text)
+            .join(", ");
+        }
 
         return {
           question_text: ans.question_text || "No question text",
           choosed_answer: choosedAnswerText,
+          correct_answer: correctAnswerText || "No correct answer found",
         };
       }),
-      submited_at: new Date().toISOString().split("T")[0],
+      submited_at: new Date().toISOString().split("T")[0], // Current date as YYYY-MM-DD
     };
-    console.log(submission.student_id);
-    quiz.Submissions.push({
-      student_id: submission.student_id,
-      questions_submission: submission.questions_submission,
-      mark: totalPoint,
-    });
-    console.log(quiz.Submissions);
+
+    // Add submission to quiz and save
+    quiz.Submissions.push(submission);
     await quiz.save();
 
+    // Respond with success and total score
     res.status(201).json({
       status: "success",
       totalPoints: totalPoint,
       data: submission,
     });
   } catch (error) {
+    // Handle unexpected errors
     res.status(500).json({ error: error.message });
   }
 };
@@ -1299,20 +1311,49 @@ exports.showQuizMark = async (req, res) => {
     if (req.role === "parent") {
       student_id = req.params.student_id;
     } else {
-      student_id = req.role.id;
+      student_id = req.user.id;
     }
+    console.log("student_id:", student_id);
+
     const quiz = await Quiz.findById(quiz_id);
+    if (!quiz) {
+      return res
+        .status(404)
+        .json({ status: "failure", message: "Quiz not found" });
+    }
 
     const submission = quiz.Submissions.find(
       (sub) => sub.student_id === student_id
     );
-    console.log(quiz.Submissions);
+    console.log("submission:", submission);
+
     if (submission) {
+      // Map student's questions_submission to add full choices from quiz.questions
+      const detailedQuestions = submission.questions_submission.map((qs) => {
+        // Find the matching original question from the quiz
+        const originalQuestion = quiz.questions.find(
+          (q) => q.question_text === qs.question_text
+        );
+
+        let choices = [];
+        if (originalQuestion) {
+          choices = originalQuestion.options.map((opt) => opt.option_text);
+        }
+
+        return {
+          question_text: qs.question_text,
+          choosed_answer: qs.choosed_answer,
+          correct_answer: qs.correct_answer || "", // If you saved it; else empty
+          choices: choices,
+        };
+      });
+
       return res.status(200).json({
         status: "success",
         data: {
           submited_at: submission.submited_at,
           mark: submission.mark,
+          questions: detailedQuestions,
         },
       });
     } else {
@@ -1321,6 +1362,7 @@ exports.showQuizMark = async (req, res) => {
         data: {
           submited_at: "Not submitted",
           mark: "Don't have mark",
+          questions: [],
         },
       });
     }
@@ -1330,10 +1372,17 @@ exports.showQuizMark = async (req, res) => {
     });
   }
 };
+
 exports.showQuizSubmissions = async (req, res) => {
   try {
     const { quiz_id } = req.params;
     const findedCourse = await Quiz.findById(quiz_id);
+    if (!findedCourse) {
+      return res
+        .status(404)
+        .json({ status: "failure", message: "Quiz not found" });
+    }
+
     const StudentsInCourse = await course_student.findAll({
       where: {
         course_id: findedCourse.course_id,
@@ -1345,7 +1394,9 @@ exports.showQuizSubmissions = async (req, res) => {
         attributes: ["student_id", "first_name", "last_name"],
       },
     });
-    let finalSubmisions = [];
+
+    const finalSubmissions = [];
+
     for (const oneStudent of StudentsInCourse) {
       const studentData = oneStudent.student;
       const fullName = `${studentData.first_name} ${studentData.last_name}`;
@@ -1356,25 +1407,53 @@ exports.showQuizSubmissions = async (req, res) => {
       );
 
       if (submission) {
-        // If submission exists, add submission data
-        finalSubmisions.push({
+        // For each question answered by the student, build detailed info
+        const detailedQuestions = submission.questions_submission.map((qs) => {
+          // Find the original question in quiz.questions by matching question_text
+          const originalQuestion = findedCourse.questions.find(
+            (q) => q.question_text === qs.question_text
+          );
+
+          // If found original question, prepare correct answers and all choices
+          let correctAnswersText = [];
+          let allChoices = [];
+
+          if (originalQuestion) {
+            correctAnswersText = originalQuestion.options
+              .filter((opt) => opt.isCorrectAnswer)
+              .map((opt) => opt.option_text);
+
+            allChoices = originalQuestion.options.map((opt) => opt.option_text);
+          }
+
+          return {
+            question_text: qs.question_text,
+            student_answer: qs.choosed_answer,
+            correct_answer: correctAnswersText.join(", "),
+            choices: allChoices,
+          };
+        });
+
+        finalSubmissions.push({
           fullName,
           submited_at: submission.submited_at,
           mark: submission.mark,
+          questions: detailedQuestions,
         });
       } else {
-        // If no submission, add default values
-        finalSubmisions.push({
+        // No submission found for this student
+        finalSubmissions.push({
           fullName,
           submited_at: "Not submitted",
           mark: "Not marked",
+          questions: [],
         });
       }
     }
 
     res.status(200).json({
-      status: "sucess",
-      data: finalSubmisions,
+      status: "success",
+      data: finalSubmissions,
     });
   } catch (error) {
     res.status(500).json({
@@ -1382,6 +1461,7 @@ exports.showQuizSubmissions = async (req, res) => {
     });
   }
 };
+
 exports.publicQuizMarks = async (req, res) => {
   try {
     const { quiz_id } = req.params;
