@@ -137,7 +137,6 @@ export const useAdminStore = create((set) => ({
       );
     }
   },
-
   // add course
   addCourse: async ({ subject_name, section_id, teacher_id }) => {
     try {
@@ -181,6 +180,21 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // get all reports
+  getAllReports: async (student_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/admin/course/getreports/${student_id}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error fetching reports from admin: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
   // get all parents
   getAllParents: async () => {
     try {
@@ -191,6 +205,23 @@ export const useAdminStore = create((set) => ({
       console.log("error fetching parents:", error.message);
     } finally {
       set({ isFetchingParents: false });
+    }
+  },
+
+  fetchShowReports: async (studentId) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await axiosInstance.get(`/admin/reports/${studentId}`);
+      set({
+        reports: response.data.data,
+        loading: false,
+        error: null,
+      });
+    } catch (error) {
+      set({
+        error: error.response?.data?.message || "Failed to load reports",
+        loading: false,
+      });
     }
   },
 

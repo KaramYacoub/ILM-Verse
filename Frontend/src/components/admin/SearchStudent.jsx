@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Loader2, Search } from "lucide-react";
 import { useAdminStore } from "../../store/adminStore";
 import AdminReportModal from "../admin/adminReportModal";
 
 function SearchStudent() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [allStudents, setAllStudents] = useState([]);
   const [filteredStudents, setFilteredStudents] = useState([]);
@@ -22,6 +24,15 @@ function SearchStudent() {
       student_name: `${student.first_name} ${student.last_name}`,
     });
     setIsReportModalOpen(true);
+  };
+
+  const handleViewReportClick = (student) => {
+    navigate(`/admin/view-report/${student.student_id}`, {
+      state: {
+        student_name: `${student.first_name} ${student.last_name}`,
+        student_id: student.student_id,
+      },
+    });
   };
 
   useEffect(() => {
@@ -113,6 +124,7 @@ function SearchStudent() {
                   <th>Department</th>
                   <th>Parent ID</th>
                   <th>Action</th>
+                  <th>View Report</th>
                 </tr>
               </thead>
               <tbody>
@@ -132,6 +144,14 @@ function SearchStudent() {
                         className="btn btn-primary btn-sm"
                       >
                         add report
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => handleViewReportClick(student)}
+                        className="btn btn-outline btn-primary btn-sm"
+                      >
+                        view report
                       </button>
                     </td>
                   </tr>
