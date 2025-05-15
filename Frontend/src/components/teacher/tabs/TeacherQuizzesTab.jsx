@@ -15,7 +15,7 @@ function TeacherQuizzesTab() {
   const navigate = useNavigate();
   const { course_id } = useParams();
 
-  const { getQuizzesForCourse, deleteQuiz } = useTeacherStore();
+  const { getQuizzesForCourse, deleteQuiz, publishMarks } = useTeacherStore();
 
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -53,9 +53,27 @@ function TeacherQuizzesTab() {
 
   const handleShowSubmit = (quiz) => {
     console.log(quiz);
-    navigate(`/teacher-course-content/${course_id}/quiz-submit-status/${quiz._id}`, {
-      state: { quiz },
-    });
+    navigate(
+      `/teacher-course-content/${course_id}/quiz-submit-status/${quiz._id}`,
+      {
+        state: { quiz },
+      }
+    );
+  };
+
+  const handlePublishMarks = async (quiz) => {
+    try {
+      const updatedAbleToView = !quiz.able_to_view;
+      await publishMarks(quiz._id, updatedAbleToView);
+      // Update local state after successful response
+      setQuizzes((prev) =>
+        prev.map((q) =>
+          q._id === quiz._id ? { ...q, able_to_view: updatedAbleToView } : q
+        )
+      );
+    } catch (error) {
+      console.error("Error publishing marks:", error);
+    }
   };
 
   if (loading) {
@@ -159,10 +177,14 @@ function TeacherQuizzesTab() {
                     Delete
                   </button>
                   <button
-                    // onClick={() => handlePublishMarks(quiz)}
+                    onClick={() => handlePublishMarks(quiz)}
                     className="btn btn-sm btn-outline btn-success gap-2"
                   >
-                    Publish Marks
+                    {quiz.able_to_view ? (
+                      <span>Hide Marks</span>
+                    ) : (
+                      <span>Publish Marks</span>
+                    )}
                   </button>
                 </div>
               </div>

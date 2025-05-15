@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { useCourseStore } from "../../store/CourseStore";
 import { useParams } from "react-router-dom";
 import { useTeacherStore } from "../../store/TeacherStore";
 
@@ -8,6 +7,78 @@ function TeacherStudentMarksModal({ isOpen, onClose, student }) {
   const { getCourseByID } = useTeacherStore();
 
   const [course, setCourse] = useState([]);
+  const [activeTerm, setActiveTerm] = useState("Term 1");
+  const [marks, setMarks] = useState({
+    "Term 1": [],
+    "Term 2": [],
+    "Term 3": [],
+    Final: [],
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaved, setIsSaved] = useState({
+    "Term 1": false,
+    "Term 2": false,
+    "Term 3": false,
+    Final: false,
+  });
+
+  const { addMark, getMark } = useTeacherStore();
+
+  const loadMarks = useCallback(async () => {
+    setIsLoading(true);
+    const markType = {
+      "Term 1": "MT-001",
+      "Term 2": "MT-002",
+      "Term 3": "MT-003",
+      Final: "MT-004",
+    }[activeTerm];
+
+    const maxMark = {
+      "Term 1": 20,
+      "Term 2": 20,
+      "Term 3": 20,
+      Final: 40,
+    }[activeTerm];
+
+    try {
+      const existingMark = await getMark(
+        course.course_id,
+        student.id,
+        markType
+      );
+
+      if (existingMark !== "No mark found") {
+        setMarks((prev) => ({
+          ...prev,
+          [activeTerm]: [
+            {
+              type: markType,
+              max: maxMark,
+              obtained: existingMark,
+            },
+          ],
+        }));
+        setIsSaved((prev) => ({ ...prev, [activeTerm]: true }));
+      } else {
+        // No mark found → create default input field
+        setMarks((prev) => ({
+          ...prev,
+          [activeTerm]: [
+            {
+              type: markType,
+              max: maxMark,
+              obtained: "",
+            },
+          ],
+        }));
+        setIsSaved((prev) => ({ ...prev, [activeTerm]: false }));
+      }
+    } catch (error) {
+      console.error("Error loading marks:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [activeTerm, course.course_id, getMark, student.id]);
 
   useEffect(() => {
     const fetchCourseContent = async () => {
@@ -18,53 +89,6 @@ function TeacherStudentMarksModal({ isOpen, onClose, student }) {
     fetchCourseContent();
   }, [course_id, getCourseByID]);
 
-  const { addMark, editMark, getMark } = useCourseStore();
-  const [activeTerm, setActiveTerm] = useState("Term 1");
-  const [marks, setMarks] = useState({
-    "Term 1": [{ type: "MT-001", max: 20, obtained: 0 }],
-    "Term 2": [{ type: "MT-002", max: 20, obtained: 0 }],
-    "Term 3": [{ type: "MT-003", max: 20, obtained: 0 }],
-    Final: [{ type: "MT-004", max: 40, obtained: 0 }],
-  });
-  const [isLoading, setIsLoading] = useState(false);
-
-  const loadMarks = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const markType = {
-        "Term 1": "MT-001",
-        "Term 2": "MT-002",
-        "Term 3": "MT-003",
-        Final: "MT-004",
-      }[activeTerm];
-
-      const maxMark = {
-        "Term 1": 20,
-        "Term 2": 20,
-        "Term 3": 20,
-        Final: 40,
-      }[activeTerm];
-
-      const markValue = await getMark(course.course_id, student.id, markType);
-
-      setMarks((prev) => ({
-        ...prev,
-        [activeTerm]: [
-          {
-            type: markType,
-            max: maxMark,
-            obtained: markValue === "No mark found" ? 0 : markValue,
-          },
-        ],
-      }));
-    } catch (error) {
-      console.error("Error loading marks:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [activeTerm, course.course_id, getMark, student.id]);
-
-  // Load marks when modal opens or term changes
   useEffect(() => {
     if (isOpen) {
       loadMarks();
@@ -72,44 +96,22 @@ function TeacherStudentMarksModal({ isOpen, onClose, student }) {
   }, [isOpen, activeTerm, loadMarks]);
 
   const handleMarkChange = (index, value) => {
-    const updatedMarks = { ...marks };
-    const currentTermData = [...updatedMarks[activeTerm]];
-
-    currentTermData[index] = {
-      ...currentTermData[index],
-      obtained: value,
-    };
-
-    updatedMarks[activeTerm] = currentTermData;
-    setMarks(updatedMarks);
+    const updated = [...marks[activeTerm]];
+    updated[index].obtained = value;
+    setMarks((prev) => ({ ...prev, [activeTerm]: updated }));
   };
 
   const handleSave = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      const termData = marks[activeTerm][0];
-
-      // First try to edit existing mark
-      try {
-        await editMark(course.course_id, {
+      for (let item of marks[activeTerm]) {
+        await addMark(course.course_id, {
           student_id: student.id,
-          mark_type: termData.type,
-          mark_value: termData.obtained,
+          mark_type: item.type,
+          mark_value: item.obtained,
         });
-      } catch (editError) {
-        // If edit fails (mark doesn't exist), try to add new mark
-        if (editError.response?.status === 404) {
-          await addMark(course.course_id, {
-            student_id: student.id,
-            mark_type: termData.type,
-            mark_value: termData.obtained,
-          });
-        } else {
-          throw editError;
-        }
       }
-
-      onClose();
+      setIsSaved((prev) => ({ ...prev, [activeTerm]: true }));
     } catch (error) {
       console.error("Error saving mark:", error);
       alert(
@@ -145,9 +147,8 @@ function TeacherStudentMarksModal({ isOpen, onClose, student }) {
           ))}
         </div>
 
-        {/* Marks table */}
-        <div className="overflow-x-auto">
-          <table className="table w-full mb-4">
+        <div className="overflow-x-auto mb-4">
+          <table className="table w-full">
             <thead>
               <tr className="bg-gray-100">
                 <th className="text-center">Max Marks</th>
@@ -159,15 +160,23 @@ function TeacherStudentMarksModal({ isOpen, onClose, student }) {
                 <tr key={index} className="border-b">
                   <td className="text-center">{item.max}</td>
                   <td className="text-center">
-                    <input
-                      type="number"
-                      className="input input-bordered w-full max-w-xs"
-                      value={item.obtained}
-                      onChange={(e) => handleMarkChange(index, e.target.value)}
-                      min="0"
-                      max={item.max}
-                      disabled={isLoading}
-                    />
+                    {isSaved[activeTerm] ? (
+                      <div className="bg-gray-200 text-center p-2 rounded w-full max-w-xs mx-auto">
+                        {item.obtained}
+                      </div>
+                    ) : (
+                      <input
+                        type="number"
+                        className="input input-bordered w-full max-w-xs"
+                        value={item.obtained}
+                        onChange={(e) =>
+                          handleMarkChange(index, e.target.value)
+                        }
+                        min="0"
+                        max={item.max}
+                        disabled={isLoading}
+                      />
+                    )}
                   </td>
                 </tr>
               ))}
@@ -175,7 +184,6 @@ function TeacherStudentMarksModal({ isOpen, onClose, student }) {
           </table>
         </div>
 
-        {/* Actions */}
         <div className="flex justify-end gap-2">
           <button
             className="btn btn-ghost"
@@ -184,20 +192,22 @@ function TeacherStudentMarksModal({ isOpen, onClose, student }) {
           >
             Cancel
           </button>
-          <button
-            className="btn btn-primary"
-            onClick={handleSave}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <span className="loading loading-spinner loading-sm"></span>
-                Saving...
-              </>
-            ) : (
-              "Save"
-            )}
-          </button>
+          {!isSaved[activeTerm] && (
+            <button
+              className="btn btn-primary"
+              onClick={handleSave}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <span className="loading loading-spinner loading-sm"></span>
+                  Saving...
+                </>
+              ) : (
+                "Save"
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>
