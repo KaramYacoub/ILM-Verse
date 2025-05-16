@@ -72,13 +72,14 @@ export default function QuizSubmitStatus() {
     );
   }
 
-  if (loading) {
+   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="animate-spin" size={50} />
       </div>
     );
   }
+
 
   return (
     <div className="p-4 bg-gray-50 rounded-lg shadow-md">
