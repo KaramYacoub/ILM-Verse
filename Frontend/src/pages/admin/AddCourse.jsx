@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import AdminNavbar from "../../components/admin/adminNavbar";
-import { useAdminStore } from "../../store/adminStore";
+import { useAdminStore } from "../../store/AdminStore";
+import SuccessModal from "../../components/shared/SuccessModal";
+import ErrorModal from "../../components/shared/ErrorModal";
 
 function AddCourse() {
   const {
@@ -19,7 +21,13 @@ function AddCourse() {
   const [courseName, setCourseName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // fetch the grades on mount
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+
+  // fetch grades on mount
   useEffect(() => {
     const fetchGrades = async () => {
       await getAllGrades();
@@ -27,17 +35,16 @@ function AddCourse() {
     fetchGrades();
   }, [getAllGrades]);
 
-  // fetch sections when grade is selected
+  // fetch sections by grade
   const fetchSections = async (grade_id) => {
     await getAllSections(grade_id);
   };
 
-  // fetch teachers when section is selected
+  // fetch teachers by section
   const fetchTeachers = async (grade_id, section_id) => {
     await getTeacherByDepartment(grade_id, section_id);
   };
 
-  // Handle Grade selection
   const handleGradeChange = (grade) => {
     setSelectedGrade(grade);
     setSelectedSection(null);
@@ -45,7 +52,6 @@ function AddCourse() {
     fetchSections(grade.grade_id);
   };
 
-  // Handle Section selection
   const handleSectionChange = (section) => {
     setSelectedSection(section);
     setSelectedTeacher("");
@@ -54,7 +60,6 @@ function AddCourse() {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -70,16 +75,18 @@ function AddCourse() {
       });
 
       if (result) {
-        // Reset form
         setCourseName("");
         setSelectedGrade(null);
         setSelectedSection(null);
         setSelectedTeacher("");
 
-        alert("Course created successfully!");
+        setSuccessMessage("Course created successfully!");
+        setShowSuccessModal(true);
       }
     } catch (error) {
       console.error("Error creating course:", error);
+      setErrorMessage("Failed to create course");
+      setShowErrorModal(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -130,7 +137,7 @@ function AddCourse() {
             </div>
           </div>
 
-          {/* Section Selection - only shows if grade is selected */}
+          {/* Section Selection */}
           {selectedGrade && (
             <div className="mb-6">
               <label className="block font-medium mb-2">Section*</label>
@@ -153,7 +160,7 @@ function AddCourse() {
             </div>
           )}
 
-          {/* Teacher Selection - only shows if section is selected */}
+          {/* Teacher Selection */}
           {selectedSection && (
             <div className="mb-6">
               <label className="block font-medium mb-2">Teacher*</label>
@@ -203,6 +210,18 @@ function AddCourse() {
           </div>
         </form>
       </div>
+
+      {/* Success & Error Modals */}
+      <SuccessModal
+        successMessage={successMessage || "Course created successfully."}
+        showSuccessModal={showSuccessModal}
+        setShowSuccessModal={setShowSuccessModal}
+      />
+      <ErrorModal
+        errorMessage={errorMessage}
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+      />
     </div>
   );
 }

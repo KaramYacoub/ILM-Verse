@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminNavbar from "../../components/admin/adminNavbar";
 import { useCourseStore } from "../../store/CourseStore";
-import { useAdminStore } from "../../store/adminStore";
+import { useAdminStore } from "../../store/AdminStore";
 
 function CourseContent() {
   const navigate = useNavigate();
