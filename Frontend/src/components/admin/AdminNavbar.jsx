@@ -70,14 +70,6 @@ function AdminNavbar() {
             </Link>
 
             <Link
-              to="/reports"
-              className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
-            >
-              <FaChartBar color="#fff" />
-              <span>Reports</span>
-            </Link>
-
-            <Link
               to="/settings"
               className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
             >
