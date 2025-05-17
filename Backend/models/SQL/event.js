@@ -18,14 +18,6 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.STRING(20),
         allowNull: false,
       },
-      adminid: {
-        type: DataTypes.STRING(20),
-        allowNull: true,
-        references: {
-          model: "admin",
-          key: "gm_id",
-        },
-      },
     },
     {
       sequelize,
