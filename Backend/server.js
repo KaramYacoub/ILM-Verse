@@ -26,8 +26,8 @@ mongoose
   });
 
 // Start the server (HTTP + WebSocket)
-app.listen(port, () => {
-  console.log(`🚀 Server running at http://localhost:${port}`);
+server.listen(port, () => {
+  console.log(`🚀 Socket Server + App running at http://localhost:${port}`);
 });
 
 // When Shutting Down The Server

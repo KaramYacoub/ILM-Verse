@@ -12,6 +12,16 @@ exports.getCourseByTeacherID = async (req, res) => {
       where: {
         teacher_id,
       },
+      include: {
+        model: section,
+        as: "section",
+        attributes: ["section_name"],
+        include: {
+          model: grade,
+          as: "grade",
+          attributes: ["grade_name"],
+        },
+      },
     });
 
     res.status(201).json({
