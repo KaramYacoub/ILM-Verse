@@ -35,6 +35,8 @@ function ChatPanel({ isOpen, onClose }) {
   const [messageInput, setMessageInput] = useState("");
   const [announcementText, setAnnouncementText] = useState("");
   const [selectedGroups, setSelectedGroups] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
+  const [announcementViewTab, setAnnouncementViewTab] = useState("send");
 
   if (!isOpen) return null;
 
@@ -92,10 +94,14 @@ function ChatPanel({ isOpen, onClose }) {
   };
 
   const handleSendAnnouncement = () => {
-    console.log("Sending announcement:", {
+    const newAnnouncement = {
+      id: Date.now(),
       text: announcementText,
-      groups: selectedGroups,
-    });
+      groups: [...selectedGroups],
+      timestamp: new Date().toLocaleString(),
+    };
+
+    setAnnouncements((prev) => [...prev, newAnnouncement]);
     setAnnouncementText("");
     setSelectedGroups([]);
     alert("Announcement sent successfully!");
@@ -106,7 +112,7 @@ function ChatPanel({ isOpen, onClose }) {
       {/* Header */}
       <div className="flex justify-between items-center bg-primary text-white px-4 py-3">
         <h2 className="text-lg font-semibold">
-          {activeSection === "chat" ? "Chat" : "Send Announcement"}
+          {activeSection === "chat" ? "Chat" : "Announcements"}
         </h2>
         <button onClick={onClose}>
           <FaTimes className="text-white" />
@@ -136,7 +142,7 @@ function ChatPanel({ isOpen, onClose }) {
             setActiveChatUser(null);
           }}
         >
-          Send Announcement
+          Announcements
         </button>
       </div>
 
@@ -195,43 +201,119 @@ function ChatPanel({ isOpen, onClose }) {
 
       {/* Announcement Section */}
       {activeSection === "announcement" && (
-        <div className="p-4 overflow-y-auto h-[calc(100%-160px)]">
-          <textarea
-            placeholder="Type your announcement here..."
-            value={announcementText}
-            onChange={(e) => setAnnouncementText(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md h-32"
-          />
-
-          <h3 className="font-medium mt-4 mb-2">Select Groups:</h3>
-          <div className="grid grid-cols-2 gap-2 mb-4">
-            {announcementGroups.map((group) => (
-              <button
-                key={group}
-                className={`py-2 px-3 rounded-md border ${
-                  selectedGroups.includes(group)
-                    ? "bg-secondary text-white"
-                    : "bg-gray-100 hover:bg-gray-200"
-                }`}
-                onClick={() => toggleGroupSelection(group)}
-              >
-                {group}
-              </button>
-            ))}
+        <>
+          {/* Toggle between send and view */}
+          <div className="flex justify-around border-b">
+            <button
+              className={`w-full py-2 font-semibold ${
+                announcementViewTab === "send"
+                  ? "border-b-4 border-secondary text-primary"
+                  : "text-gray-500"
+              }`}
+              onClick={() => setAnnouncementViewTab("send")}
+            >
+              Send
+            </button>
+            <button
+              className={`w-full py-2 font-semibold ${
+                announcementViewTab === "view"
+                  ? "border-b-4 border-secondary text-primary"
+                  : "text-gray-500"
+              }`}
+              onClick={() => setAnnouncementViewTab("view")}
+            >
+              View
+            </button>
           </div>
 
-          <button
-            onClick={handleSendAnnouncement}
-            disabled={!announcementText || selectedGroups.length === 0}
-            className={`w-full py-2 px-4 rounded-md text-white ${
-              !announcementText || selectedGroups.length === 0
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-primary hover:bg-primary-dark"
-            }`}
-          >
-            Send Announcement
-          </button>
-        </div>
+          {announcementViewTab === "send" && (
+            <div className="p-4 overflow-y-auto h-[calc(100%-200px)]">
+              <textarea
+                placeholder="Type your announcement here..."
+                value={announcementText}
+                onChange={(e) => setAnnouncementText(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md h-32"
+              />
+
+              <h3 className="font-medium mt-4 mb-2">Select Groups:</h3>
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                {announcementGroups.map((group) => (
+                  <button
+                    key={group}
+                    className={`py-2 px-3 rounded-md border ${
+                      selectedGroups.includes(group)
+                        ? "bg-secondary text-white"
+                        : "bg-gray-100 hover:bg-gray-200"
+                    }`}
+                    onClick={() => toggleGroupSelection(group)}
+                  >
+                    {group}
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={handleSendAnnouncement}
+                disabled={!announcementText || selectedGroups.length === 0}
+                className={`w-full py-2 px-4 rounded-md text-white ${
+                  !announcementText || selectedGroups.length === 0
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-primary hover:bg-primary-dark"
+                }`}
+              >
+                Send Announcement
+              </button>
+            </div>
+          )}
+
+          {announcementViewTab === "view" && (
+            <div className="p-4 overflow-y-auto h-[calc(100%-200px)]">
+              <h3 className="font-medium mb-2">Filter by Group:</h3>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {announcementGroups.map((group) => (
+                  <button
+                    key={group}
+                    className={`px-3 py-1 rounded-full border text-sm ${
+                      selectedGroups.includes(group)
+                        ? "bg-secondary text-white"
+                        : "bg-gray-100"
+                    }`}
+                    onClick={() => toggleGroupSelection(group)}
+                  >
+                    {group}
+                  </button>
+                ))}
+              </div>
+
+              {announcements
+                .filter((a) =>
+                  selectedGroups.length > 0
+                    ? a.groups.some((g) => selectedGroups.includes(g))
+                    : true
+                )
+                .map((a) => (
+                  <div
+                    key={a.id}
+                    className="mb-3 p-3 bg-gray-100 rounded-md border"
+                  >
+                    <div className="text-sm">{a.text}</div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      Groups: {a.groups.join(", ")}
+                    </div>
+                    <div className="text-[10px] text-gray-400">
+                      {a.timestamp}
+                    </div>
+                  </div>
+                ))}
+
+              {announcements.length === 0 && (
+                <div className="text-center text-gray-500 mt-6">
+                  No announcements yet.
+                </div>
+              )}
+            </div>
+          )}
+        </>
       )}
 
       {/* Chat Popup */}
