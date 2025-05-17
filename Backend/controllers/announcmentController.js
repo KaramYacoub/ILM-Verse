@@ -15,6 +15,7 @@ const {
   parent,
   announcment,
 } = models;
+const { Sequelize } = require("sequelize");
 
 exports.sendAnnouncment = async (req, res) => {
   try {
@@ -45,6 +46,7 @@ exports.sendAnnouncment = async (req, res) => {
     });
   }
 };
+
 exports.getAnnoucments = async (req, res) => {
   try {
     const { department_id } = req.params;
@@ -57,7 +59,17 @@ exports.getAnnoucments = async (req, res) => {
         include: {
           model: admin,
           as: "admin",
-          attributes: ["first_name", "last_name"],
+          attributes: [
+            [
+              Sequelize.fn(
+                "concat",
+                Sequelize.col("admin.first_name"),
+                " ",
+                Sequelize.col("admin.last_name")
+              ),
+              "full_name",
+            ],
+          ],
         },
       });
     } else {
@@ -68,169 +80,23 @@ exports.getAnnoucments = async (req, res) => {
         include: {
           model: admin,
           as: "admin",
-          attributes: ["first_name", "last_name"],
+          attributes: [
+            [
+              Sequelize.fn(
+                "concat",
+                Sequelize.col("admin.first_name"),
+                " ",
+                Sequelize.col("admin.last_name")
+              ),
+              "full_name",
+            ],
+          ],
         },
       });
     }
     res.status(200).json({
-      status: "sucess",
+      status: "success",
       data: annoucments,
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: error.message,
-    });
-  }
-};
-exports.getStudentDepartment = async (req, res) => {
-  try {
-    // this function just used for student
-    const studentDepartment = await student.findOne({
-      where: {
-        student_id: req.user.id,
-      },
-      attributes: [],
-      include: {
-        model: section,
-        as: "section",
-        attributes: ["section_id"],
-        include: {
-          model: grade,
-          as: "grade",
-          attributes: ["grade_id"],
-          include: {
-            model: department,
-            as: "dept",
-            attributes: ["department_id", "name"],
-          },
-        },
-      },
-    });
-    const department_data = {
-      department_id: studentDepartment.section.grade.dept.department_id,
-      name: studentDepartment.section.grade.dept.name,
-    };
-    res.status(200).json({
-      status: "success",
-      data: department_data,
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: error.message,
-    });
-  }
-};
-exports.getParentDepartments = async (req, res) => {
-  try {
-    // this function just used for parent
-    const parent_id = req.user.id;
-    const parentStudents = await student.findAll({
-      where: {
-        parent_id: parent_id,
-      },
-      attributes: ["student_id"],
-    });
-    let parentDepartments = [];
-    for (oneStudent of parentStudents) {
-      const studentDepartment = await student.findOne({
-        where: {
-          student_id: oneStudent.student_id,
-        },
-        attributes: [],
-        include: {
-          model: section,
-          as: "section",
-          attributes: ["section_id"],
-          include: {
-            model: grade,
-            as: "grade",
-            attributes: ["grade_id"],
-            include: {
-              model: department,
-              as: "dept",
-              attributes: ["department_id", "name"],
-            },
-          },
-        },
-      });
-
-      const oneDepartment = {
-        department_id: studentDepartment.section.grade.dept.department_id,
-        name: studentDepartment.section.grade.dept.name,
-      };
-      const exists = parentDepartments.some(
-        (dept) => dept.name === oneDepartment.name
-      );
-
-      if (exists) {
-        continue;
-      } else {
-        parentDepartments.push(oneDepartment);
-      }
-    }
-    // const studentDepartment = await student.findOne({
-    //   where: {
-    //     student_id: req.user.id,
-    //   },
-    //   include: {
-    //     model: section,
-    //     as: "section",
-    //     attributes: [],
-    //     include: {
-    //       model: grade,
-    //       as: "grade",
-    //       attributes: [],
-    //       include: {
-    //         model: department,
-    //         as: "dept",
-    //         attributes: ["department_id", "department_name"],
-    //       },
-    //     },
-    //   },
-    // });
-    res.status(200).json({
-      status: "sucess",
-      data: parentDepartments,
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: error.message,
-    });
-  }
-};
-exports.getTeacherDepartment = async (req, res) => {
-  try {
-    // this function will just be used for teacher
-    const teacher_id = req.user.id;
-    const teacherData = await teacher.findOne({
-      where: {
-        teacher_id: teacher_id,
-      },
-      attributes: ["section_id"],
-      include: {
-        model: section,
-        as: "section",
-        attributes: ["grade_id"],
-        include: {
-          model: grade,
-          as: "grade",
-          attributes: ["grade_id"],
-          include: {
-            model: department,
-            as: "dept",
-            attributes: ["department_id", "name"],
-          },
-        },
-      },
-    });
-    const teacherDepartment = {
-      department_id: teacherData.section.grade.dept.department_id,
-      name: teacherData.section.grade.dept.name,
-    };
-    console.log(teacherData);
-    res.status(200).json({
-      status: "success",
-      data: teacherDepartment,
     });
   } catch (error) {
     res.status(500).json({
