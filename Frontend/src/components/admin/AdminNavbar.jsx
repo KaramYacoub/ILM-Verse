@@ -82,7 +82,7 @@ function AdminNavbar() {
               className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
             >
               <FaComments color="#fff" />
-              <span>Chat</span>
+              <span>Announcment</span>
             </button>
           </div>
 

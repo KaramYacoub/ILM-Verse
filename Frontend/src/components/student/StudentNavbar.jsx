@@ -69,7 +69,7 @@ function StudentNavbar() {
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500 text-accent text-sm"
           >
             <FaComments color="#fff" />
-            <span>Chat</span>
+            <span>Announcment</span>
           </button>
         </div>
 
