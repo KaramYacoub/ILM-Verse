@@ -4,7 +4,6 @@ dotenv.config({ path: path.resolve(__dirname, "./config.env") });
 //-----------------------------------------------------------
 // app , socket ,port imports(to run the server)
 const app = require("./app.js");
-const { server, io } = require("./socket.js");
 const port = process.env.BACKEND_PORT;
 
 //-----------------------------------------------------------
@@ -26,7 +25,7 @@ mongoose
   });
 
 // Start the server (HTTP + WebSocket)
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`🚀 Socket Server + App running at http://localhost:${port}`);
 });
 
