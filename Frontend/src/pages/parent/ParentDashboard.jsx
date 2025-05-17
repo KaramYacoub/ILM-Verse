@@ -5,14 +5,8 @@ import CourseCard from "../../components/shared/CourseCard"; // Assuming this pa
 import useParentsStore from "../../store/ParentStore";
 
 function ParentDashboard() {
-  const {
-    students,
-    fetchStudents,
-    getCoursesForStudent,
-    courses,
-    loading,
-    error,
-  } = useParentsStore();
+  const { students, fetchStudents, getCoursesForStudent, courses, loading } =
+    useParentsStore();
 
   const [selectedStudent, setSelectedStudent] = useState(null);
   const navigate = useNavigate();
@@ -41,7 +35,9 @@ function ParentDashboard() {
   };
 
   const handleCourseClick = (course_id) => {
-    navigate(`/parent-course-content/${course_id}/parent-overview`);
+    navigate(
+      `/parent-course-content/${course_id}/${selectedStudent.student_id}/parent-overview`
+    );
   };
 
   return (

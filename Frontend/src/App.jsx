@@ -43,7 +43,6 @@ const StudentReviewQuiz = lazy(() =>
   import("./components/student/tabs/StudentReviewQuiz")
 );
 
-
 // Teacher Components/Pages
 const TeacherDashboard = lazy(() => import("./pages/teacher/TeacherDashboard"));
 const TeacherCourseContent = lazy(() =>
@@ -95,12 +94,15 @@ const ParentUnitsTab = lazy(() =>
 const ParentUnitDetails = lazy(() =>
   import("./components/parent/Tabs/ParentUnitDetails")
 );
+const ParentShowQuizzes = lazy(() =>
+  import("./components/parent/Tabs/ParentShowQuizzes")
+);
+const ParentReviewQuiz = lazy(() =>
+  import("./components/parent/Tabs/ParentReviewQuiz")
+);
 const ParentViewGrades = lazy(() => import("./pages/parent/ParentViewGrades"));
 const ParentShowReports = lazy(() =>
   import("./pages/parent/ParentShowReports")
-);
-const ParentShowQuizzes = lazy(() =>
-  import("./pages/parent/ParentShowQuizzes")
 );
 const ParentShowAbsences = lazy(() =>
   import("./pages/parent/ParentShowAbsences")
@@ -242,9 +244,11 @@ function App() {
                 authStudent ? <StudentQuizDetails /> : <Navigate to="/" />
               }
             />
-            <Route 
+            <Route
               path="/student/course/:course_id/quizes/:quiz_id/mark"
-              element={authStudent ? <StudentReviewQuiz /> : <Navigate to="/" />}
+              element={
+                authStudent ? <StudentReviewQuiz /> : <Navigate to="/" />
+              }
             />
 
             <Route
@@ -388,12 +392,12 @@ function App() {
                 authParent ? <ParentShowAbsences /> : <Navigate to="/" />
               }
             />
-            <Route
+            {/* <Route
               path="/parent-quizzes"
               element={authParent ? <ParentShowQuizzes /> : <Navigate to="/" />}
-            />
+            /> */}
             <Route
-              path="/parent-course-content/:course_id"
+              path="/parent-course-content/:course_id/:student_id/"
               element={
                 authParent ? <ParentCourseContent /> : <Navigate to="/" />
               }
@@ -402,15 +406,35 @@ function App() {
                 index
                 element={<Navigate to="parent-overview" replace />}
               />
-              <Route path="parent-overview" element={<ParentOverview />} />
-              {/* <Route path="parent-units" element={<ParentUnitsTab />} /> */}
-              <Route path=":unit_id/content" element={<ParentUnitDetails />} />
               <Route
-                path="parent-assignments/:student_id"
-                element={<ParentAssignment />}
+                path="parent-overview"
+                element={authParent ? <ParentOverview /> : <Navigate to="/" />}
+              />
+              {/* <Route path="parent-units" element={<ParentUnitsTab />} /> */}
+              <Route
+                path=":unit_id/content"
+                element={
+                  authParent ? <ParentUnitDetails /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="parent-assignments"
+                element={
+                  authParent ? <ParentAssignment /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="parent-quizzes"
+                element={
+                  authParent ? <ParentShowQuizzes /> : <Navigate to="/" />
+                }
               />
             </Route>
           </>
+          <Route
+            path="/parent/course/:course_id/:student_id/quizes/:quiz_id/mark"
+            element={authParent ? <ParentReviewQuiz /> : <Navigate to="/" />}
+          />
 
           {/* admin Routes */}
           <>

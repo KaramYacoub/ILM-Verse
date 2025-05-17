@@ -31,8 +31,7 @@ function ParentUnitDetails() {
     if (!unitContent || unitContent.length === 0) {
       fetchData();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [course_id, unit_id]); // ✅ Only these are actual reactive values
+  }, [course_id, fetchUnitContent, unitContent, unit_id]);
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
