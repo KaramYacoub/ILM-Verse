@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ParentNavBar from "../../components/parent/ParentNavBar";
 import { X } from "lucide-react";
 import useParentsStore from "../../store/ParentStore";

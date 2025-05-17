@@ -71,7 +71,7 @@ function ParentDashboard() {
                 to={`/parent-view-grades?student_id=${selectedStudent.student_id}`}
                 className="btn btn-primary rounded-md text-sm font-medium w-[20%] min-w-[120px]"
               >
-                Show Grades
+                Show Marks
               </Link>
 
               <Link
