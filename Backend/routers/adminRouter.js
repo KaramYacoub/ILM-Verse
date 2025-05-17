@@ -197,7 +197,7 @@ router.get(
 );
 
 //Reports
-router.post("/course/addreport", reportController.addReport);
+router.post("/course/:student_id/addreport", reportController.addReport);
 
 router.get("/reports/:student_id", reportController.getStudentReports);
 module.exports = router;

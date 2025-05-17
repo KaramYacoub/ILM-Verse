@@ -90,11 +90,7 @@ export default function QuizSubmitStatus() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <h3 className="font-semibold text-gray-700">Quiz Date</h3>
-            <p>
-              {new Date(
-                `${quiz.start_date}T${quiz.start_time}`
-              ).toLocaleString()}
-            </p>
+            <p>{`${quiz.start_date} at ${quiz.start_time}`}</p>
           </div>
 
           <div className="bg-white p-4 rounded-lg shadow-sm">

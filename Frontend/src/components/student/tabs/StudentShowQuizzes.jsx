@@ -1,10 +1,11 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import useStudentStore from "../../../store/studentStore";
 import { useEffect } from "react";
 import { Loader2, Clock, CheckCircle, PlayCircle } from "lucide-react";
 
 function StudentShowQuizzes() {
   const { course_id } = useParams();
+  const navigate = useNavigate();
   const { quizzes, getQuizzes, loading } = useStudentStore();
 
   // fetch all the quizzes for the student in course
@@ -27,6 +28,13 @@ function StudentShowQuizzes() {
     const period = +hours >= 12 ? "PM" : "AM"; // +hours to change the hours to number
     const hours12 = +hours % 12 || 12; // Convert 0 to 12 for 12 AM
     return `${hours12}:${minutes} ${period}`;
+  };
+
+  const handleShowResult = (quiz) => {
+    console.log(quiz);
+    navigate(`/student/course/${course_id}/quizes/${quiz.quiz_id}/mark`, {
+      state: { quiz },
+    });
   };
 
   if (loading) {
@@ -106,7 +114,10 @@ function StudentShowQuizzes() {
                           Start Quiz
                         </Link>
                       ) : status === "finished" && quiz.able_to_view ? (
-                        <button className="btn btn-sm btn-outline">
+                        <button
+                          onClick={() => handleShowResult(quiz)}
+                          className="btn btn-sm btn-secondary"
+                        >
                           View Results
                         </button>
                       ) : status === "finished" ? (

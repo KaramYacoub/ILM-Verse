@@ -1308,6 +1308,7 @@ exports.showQuizMark = async (req, res) => {
   try {
     const { quiz_id } = req.params;
     let student_id;
+
     if (req.role === "parent") {
       student_id = req.params.student_id;
     } else if (req.role === "student") {
@@ -1315,38 +1316,42 @@ exports.showQuizMark = async (req, res) => {
     } else {
       student_id = req.params.student_id;
     }
-    console.log("student_id:", student_id);
 
     const quiz = await Quiz.findById(quiz_id);
     if (!quiz) {
-      return res
-        .status(404)
-        .json({ status: "failure", message: "Quiz not found" });
+      return res.status(404).json({
+        status: "failure",
+        message: "Quiz not found",
+      });
     }
 
     const submission = quiz.Submissions.find(
       (sub) => sub.student_id === student_id
     );
-    console.log("submission:", submission);
 
     if (submission) {
-      // Map student's questions_submission to add full choices from quiz.questions
       const detailedQuestions = submission.questions_submission.map((qs) => {
-        // Find the matching original question from the quiz
         const originalQuestion = quiz.questions.find(
           (q) => q.question_text === qs.question_text
         );
 
         let choices = [];
+        let points = 0;
+
         if (originalQuestion) {
-          choices = originalQuestion.options.map((opt) => opt.option_text);
+          choices = originalQuestion.options.map((opt) => ({
+            option_text: opt.option_text,
+            isCorrectAnswer: opt.isCorrectAnswer,
+          }));
+          points = originalQuestion.points;
         }
 
         return {
           question_text: qs.question_text,
           choosed_answer: qs.choosed_answer,
-          correct_answer: qs.correct_answer || "", // If you saved it; else empty
-          choices: choices,
+          correct_answer: qs.correct_answer || "",
+          choices,
+          points,
         };
       });
 
@@ -1355,6 +1360,9 @@ exports.showQuizMark = async (req, res) => {
         data: {
           submited_at: submission.submited_at,
           mark: submission.mark,
+          quiz_title: quiz.title,
+          quiz_description: quiz.description,
+          total_points: quiz.total_points,
           questions: detailedQuestions,
         },
       });
@@ -1369,9 +1377,7 @@ exports.showQuizMark = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(500).json({
-      error: error.message,
-    });
+    res.status(500).json({ error: error.message });
   }
 };
 

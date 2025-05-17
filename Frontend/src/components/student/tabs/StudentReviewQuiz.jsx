@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
-import { useTeacherStore } from "../../../store/TeacherStore";
-import TeacherNavbar from "../TeacherNavbar";
+import { useParams } from "react-router-dom";
+import StudentNavbar from "../StudentNavbar";
 import { Loader2 } from "lucide-react";
+import useStudentStore from "../../../store/studentStore";
 
-export default function QuizReview() {
-  const { course_id, quiz_id, student_id } = useParams();
-  const location = useLocation();
-
-  const { getStudentQuizMark } = useTeacherStore();
+export default function StudentReviewQuiz() {
+  const { course_id, quiz_id } = useParams();
+  const { getStudentQuizMark } = useStudentStore();
 
   const [quiz, setQuiz] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -16,22 +14,19 @@ export default function QuizReview() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (location.state?.quiz) {
-      setQuiz(location.state.quiz);
-    }
-  }, [location.state]);
-
-  useEffect(() => {
     const fetchQuizData = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        const submission = await getStudentQuizMark(
-          course_id,
-          quiz_id,
-          student_id
-        );
+        const submission = await getStudentQuizMark(course_id, quiz_id);
         if (submission) {
           setStudentSubmission(submission);
+
+          setQuiz({
+            title: submission.quiz_title,
+            description: submission.quiz_description,
+            total_points: submission.total_points,
+            questions: submission.questions,
+          });
         }
       } catch (err) {
         console.error("Error fetching quiz data:", err);
@@ -41,23 +36,7 @@ export default function QuizReview() {
     };
 
     fetchQuizData();
-  }, [course_id, quiz_id, student_id, getStudentQuizMark]);
-
-  const handleNext = () => {
-    if (currentQuestionIndex < quiz.questions.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex((prev) => prev - 1);
-    }
-  };
-
-  const handleNavigateTo = (index) => {
-    setCurrentQuestionIndex(index);
-  };
+  }, [course_id, quiz_id, getStudentQuizMark]);
 
   if (loading) {
     return (
@@ -73,20 +52,14 @@ export default function QuizReview() {
 
   const totalQuestions = quiz.questions.length;
   const currentQuestion = quiz.questions[currentQuestionIndex];
-  const currentSubmission = studentSubmission.questions[currentQuestionIndex];
 
   return (
-    <div className="min-h-screen bg-base-200 flex flex-col justify-start pb-5">
-      <TeacherNavbar />
+    <div className="min-h-screen bg-base-200">
+      <StudentNavbar />
 
       <div className="container mx-auto p-6">
         <div className="flex justify-between items-start mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-primary">{quiz.title}</h1>
-            <p className="text-gray-600">
-              Reviewing submission for: {student_id}
-            </p>
-          </div>
+          <h1 className="text-2xl font-bold text-primary">{quiz.title}</h1>
           <div className="bg-white p-3 rounded-lg shadow-sm">
             <p className="font-bold">
               Final Mark: {studentSubmission.mark} / {quiz.total_points}
@@ -94,17 +67,12 @@ export default function QuizReview() {
           </div>
         </div>
 
-        {/* Student Info */}
         <div className="bg-white rounded-lg p-4 shadow-md mb-6">
           <h2 className="text-lg font-semibold mb-2">Student Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <p className="font-medium">Student ID:</p>
-              <p>{student_id}</p>
-            </div>
-            <div>
               <p className="font-medium">Submitted At:</p>
-              <p>{new Date(studentSubmission.submited_at).toLocaleString()}</p>
+              <p>{studentSubmission.submited_at}</p>
             </div>
             <div>
               <p className="font-medium">Final Grade:</p>
@@ -123,7 +91,7 @@ export default function QuizReview() {
             {quiz.questions.map((_, index) => (
               <button
                 key={index}
-                onClick={() => handleNavigateTo(index)}
+                onClick={() => setCurrentQuestionIndex(index)}
                 className={`w-10 h-10 rounded-full font-bold ${
                   currentQuestionIndex === index
                     ? "bg-primary text-white"
@@ -136,14 +104,20 @@ export default function QuizReview() {
           </div>
           <div className="flex gap-2">
             <button
-              onClick={handlePrev}
+              onClick={() =>
+                setCurrentQuestionIndex((prev) => Math.max(prev - 1, 0))
+              }
               className="btn btn-secondary"
               disabled={currentQuestionIndex <= 0}
             >
               Prev
             </button>
             <button
-              onClick={handleNext}
+              onClick={() =>
+                setCurrentQuestionIndex((prev) =>
+                  Math.min(prev + 1, totalQuestions - 1)
+                )
+              }
               className="btn btn-secondary"
               disabled={currentQuestionIndex >= totalQuestions - 1}
             >
@@ -156,39 +130,35 @@ export default function QuizReview() {
         <div className="bg-white p-6 rounded-lg shadow-md mb-6">
           <div className="flex items-center gap-4 mb-4">
             <p className="text-lg font-semibold">
-              {currentSubmission?.question_text}
+              {currentQuestion?.question_text}
             </p>
             <span className="badge badge-primary">
               {currentQuestion.points} points
             </span>
           </div>
 
-          {/* Redesigned Answer Options */}
+          {/* Redesigned Options */}
           <div>
             <h3 className="font-medium text-gray-700 mb-2">All Options:</h3>
             <div className="grid grid-cols-1 gap-4">
-              {currentSubmission.choices.map((choice, idx) => {
+              {currentQuestion.choices?.map((opt, idx) => {
                 const isStudentAnswer =
-                  choice.option_text === currentSubmission.choosed_answer;
-                const isCorrectAnswer =
-                  choice.option_text === currentSubmission.correct_answer;
+                  opt.option_text === currentQuestion.choosed_answer;
+                const isCorrect =
+                  opt.option_text === currentQuestion.correct_answer;
 
                 let borderColor = "border-gray-300";
                 let bgColor = "bg-white";
-                let label = null;
 
-                if (isStudentAnswer && isCorrectAnswer) {
+                if (isStudentAnswer && isCorrect) {
                   borderColor = "border-green-500";
                   bgColor = "bg-green-50";
-                  label = "Student's Answer (Correct)";
-                } else if (isStudentAnswer && !isCorrectAnswer) {
+                } else if (isStudentAnswer && !isCorrect) {
                   borderColor = "border-red-500";
                   bgColor = "bg-red-50";
-                  label = "Student's Answer (Incorrect)";
-                } else if (!isStudentAnswer && isCorrectAnswer) {
+                } else if (!isStudentAnswer && isCorrect) {
                   borderColor = "border-green-500";
                   bgColor = "bg-green-100";
-                  label = "Correct Answer";
                 }
 
                 return (
@@ -196,10 +166,16 @@ export default function QuizReview() {
                     key={idx}
                     className={`p-4 border-2 ${borderColor} ${bgColor} rounded-lg shadow-sm`}
                   >
-                    <p className="text-sm font-medium">{choice.option_text}</p>
-                    {label && (
-                      <p className="text-xs mt-1 italic text-gray-600">
-                        {label}
+                    <p className="text-sm font-medium">{opt.option_text}</p>
+                    {isStudentAnswer && (
+                      <p className="text-xs mt-1 italic">
+                        Student's Answer{" "}
+                        {isCorrect ? "(Correct)" : "(Incorrect)"}
+                      </p>
+                    )}
+                    {!isStudentAnswer && isCorrect && (
+                      <p className="text-xs mt-1 italic text-green-700">
+                        Correct Answer
                       </p>
                     )}
                   </div>
@@ -213,8 +189,8 @@ export default function QuizReview() {
             <h3 className="font-medium text-gray-700 mb-2">Points Earned:</h3>
             <div className="flex items-center gap-4">
               <p className="font-bold">
-                {currentSubmission.choosed_answer ===
-                currentSubmission.correct_answer
+                {currentQuestion.choosed_answer ===
+                currentQuestion.correct_answer
                   ? currentQuestion.points
                   : 0}{" "}
                 / {currentQuestion.points}

@@ -156,7 +156,7 @@ const useStudentStore = create((set) => ({
       const response = await axiosInstance.get(
         `/student/course/${course_id}/quizes/${quiz_id}`
       );
-      set({ quizzes: response.data.data, loading: false });
+      set({ loading: false });
       return response.data.data;
     } catch (err) {
       set({ error: err.response.data.message || err.message, loading: false });
@@ -176,6 +176,21 @@ const useStudentStore = create((set) => ({
       return response.data.data;
     } catch (err) {
       set({ error: err.response.data.message || err.message });
+    }
+  },
+
+  getStudentQuizMark: async (course_id, quiz_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/student/course/${course_id}/quizes/${quiz_id}/mark`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error getting a student asnwers for a quiz: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
     }
   },
 }));

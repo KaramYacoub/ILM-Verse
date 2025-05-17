@@ -35,11 +35,14 @@ const StudentAssignmentsTab = lazy(() =>
 );
 const StudentUnitDetails = lazy(() =>
   import("./components/student/tabs/StudentUnitDetails")
-); // Import StudentUnitDetails
-
+);
 const StudentShowQuizzes = lazy(() =>
   import("./components/student/tabs/StudentShowQuizzes")
-); // Import StudentUnitDetails
+);
+const StudentReviewQuiz = lazy(() =>
+  import("./components/student/tabs/StudentReviewQuiz")
+);
+
 
 // Teacher Components/Pages
 const TeacherDashboard = lazy(() => import("./pages/teacher/TeacherDashboard"));
@@ -239,6 +242,10 @@ function App() {
                 authStudent ? <StudentQuizDetails /> : <Navigate to="/" />
               }
             />
+            <Route 
+              path="/student/course/:course_id/quizes/:quiz_id/mark"
+              element={authStudent ? <StudentReviewQuiz /> : <Navigate to="/" />}
+            />
 
             <Route
               path="units/:unit_id/content"
@@ -349,7 +356,6 @@ function App() {
                 authTeacher ? <TeacherAddQuizzes /> : <Navigate to="/" />
               }
             />
-            {/* /course/${course_id}/quizes/${quiz._id}/review/${student_id}` */}
             <Route
               path="/course/:course_id/quizes/:quiz_id/review/:student_id"
               element={authTeacher ? <QuizReview /> : <Navigate to="/" />}
