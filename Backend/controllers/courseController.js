@@ -1027,6 +1027,40 @@ exports.getQuiz = async (req, res) => {
     });
   }
 };
+
+async function calculateNewMarks(quiz_id, newQuestions) {
+  const quiz = await Quiz.findById(quiz_id);
+  if (!quiz) throw new Error("Quiz not found");
+
+  const questionsMap = {};
+  for (const q of newQuestions) {
+    questionsMap[q.question_text] = q;
+  }
+
+  for (const submission of quiz.Submissions) {
+    let newMark = 0;
+
+    for (const qs of submission.questions_submission) {
+      const newQuestion = questionsMap[qs.question_text];
+      if (!newQuestion) continue;
+
+      const correctOptions = newQuestion.options
+        .filter((opt) => opt.isCorrectAnswer)
+        .map((opt) => opt.option_text);
+
+      const isCorrect = correctOptions.includes(qs.choosed_answer);
+
+      if (isCorrect) {
+        newMark += newQuestion.points;
+      }
+    }
+
+    submission.mark = newMark;
+  }
+
+  await quiz.save();
+}
+
 exports.editQuiz = async (req, res) => {
   try {
     const { quiz_id } = req.params;
@@ -1039,30 +1073,44 @@ exports.editQuiz = async (req, res) => {
       total_points,
       questions,
     } = req.body;
-    // check
+
     const nowDate = new Date().toISOString().split("T")[0];
     const nowTime = getCurrentTime(); // HH:MM
 
-    if (nowDate > start_date) {
-      return res.status(400).json({
-        status: "failure",
-        message: "You can't make a past quiz",
-      });
-    } else if (nowDate === start_date && nowTime > start_time) {
+    if (
+      nowDate > start_date ||
+      (nowDate === start_date && nowTime > start_time)
+    ) {
       return res.status(400).json({
         status: "failure",
         message: "You can't make a past quiz",
       });
     }
+
     let totalMarks = 0;
     for (let question of questions) {
       totalMarks += question.points;
     }
+
     if (totalMarks != total_points) {
       return res.status(400).json({
         error: "Total marks don't match the total points of the questions",
       });
     }
+
+    const existingQuiz = await Quiz.findById(quiz_id);
+
+    if (!existingQuiz) {
+      return res.status(404).json({
+        status: "failure",
+        message: "Quiz not found",
+      });
+    }
+
+    if (existingQuiz.Submissions && existingQuiz.Submissions.length > 0) {
+      await calculateNewMarks(quiz_id, questions);
+    }
+
     const updatedQuiz = await Quiz.findByIdAndUpdate(
       quiz_id,
       {
@@ -1076,6 +1124,7 @@ exports.editQuiz = async (req, res) => {
       },
       { new: true }
     );
+
     res.status(200).json({
       status: "success",
       message: "quiz updated successfully",
@@ -1096,6 +1145,25 @@ function minutesToTime(minutes) {
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
   return `${hours < 10 ? "0" + hours : hours}:${mins < 10 ? "0" + mins : mins}`;
+}
+async function isQuizSubmitted(student_id, quiz_id) {
+  try {
+    const quiz = await Quiz.findById(quiz_id).select("Submissions");
+
+    if (!quiz) {
+      console.error("Quiz not found");
+      return false;
+    }
+
+    const foundSubmission = quiz.Submissions.find(
+      (submission) => submission.student_id === student_id
+    );
+
+    return !!foundSubmission; // true if found, false if not
+  } catch (error) {
+    console.error("Error in isQuizSubmitted:", error.message);
+    return false;
+  }
 }
 exports.getQuizesForCourseForStudent = async (req, res) => {
   try {
@@ -1142,7 +1210,11 @@ exports.getQuizesForCourseForStudent = async (req, res) => {
 
       console.log(nowDate, startDate, nowTime, endTime);
       // Check if the current date and time are past the start and end times of the quiz
-      if (nowDate > startDate || (nowDate === startDate && nowTime > endTime)) {
+      if (
+        nowDate > startDate ||
+        (nowDate === startDate && nowTime > endTime) ||
+        isQuizSubmitted
+      ) {
         toPushQuiz.status = "finished"; // If quiz time is finished
       } else if (
         nowDate === startDate &&
@@ -1157,8 +1229,6 @@ exports.getQuizesForCourseForStudent = async (req, res) => {
       ) {
         // If the quiz is upcoming
         toPushQuiz.status = "Upcoming";
-      } else {
-        toPushQuiz.status = "hi";
       }
 
       allQuizes.push(toPushQuiz);
