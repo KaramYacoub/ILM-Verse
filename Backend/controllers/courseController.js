@@ -1040,20 +1040,28 @@ async function calculateNewMarks(quiz_id, newQuestions) {
   for (const submission of quiz.Submissions) {
     let newMark = 0;
 
-    for (const qs of submission.questions_submission) {
-      const newQuestion = questionsMap[qs.question_text];
-      if (!newQuestion) continue;
+    submission.questions_submission = submission.questions_submission.map(
+      (qs) => {
+        const newQuestion = questionsMap[qs.question_text];
+        if (!newQuestion) return qs;
 
-      const correctOptions = newQuestion.options
-        .filter((opt) => opt.isCorrectAnswer)
-        .map((opt) => opt.option_text);
+        const correctOptions = newQuestion.options
+          .filter((opt) => opt.isCorrectAnswer)
+          .map((opt) => opt.option_text);
 
-      const isCorrect = correctOptions.includes(qs.choosed_answer);
+        const updatedCorrectAnswerText = correctOptions.join(", ");
+        const isCorrect = correctOptions.includes(qs.choosed_answer);
 
-      if (isCorrect) {
-        newMark += newQuestion.points;
+        if (isCorrect) {
+          newMark += newQuestion.points;
+        }
+
+        return {
+          ...qs,
+          correct_answer: updatedCorrectAnswerText || "No correct answer found",
+        };
       }
-    }
+    );
 
     submission.mark = newMark;
   }
