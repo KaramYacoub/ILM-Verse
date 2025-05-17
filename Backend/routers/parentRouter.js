@@ -5,6 +5,7 @@ const parentController = require("../controllers/parentController");
 const courseController = require("../controllers/courseController");
 const absenceController = require("../controllers/absenceController");
 const studentController = require("../controllers/studentController");
+const annoucmentController = require("../controllers/announcmentController");
 const downloadController = require("../controllers/download/downloadController");
 const reportController = require("../controllers/reportController");
 
@@ -54,6 +55,8 @@ router.get(
   "/course/:course_id/quizes/:quiz_id/:student_id/mark",
   courseController.showQuizMark
 );
-
+// Annoucments
+router.get("/departments", annoucmentController.getParentDepartments);
+router.get("/annoucments/:department_id", annoucmentController.getAnnoucments);
 
 module.exports = router;

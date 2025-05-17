@@ -4,6 +4,7 @@ const adminController = require("../controllers/adminController");
 const courseController = require("../controllers/courseController");
 const absenceController = require("../controllers/absenceController");
 const reportController = require("../controllers/reportController");
+const annoucmentController = require("../controllers/announcmentController");
 const authController = require("../controllers/authController");
 const uploadFiles = require("../controllers/upload/uploadEvent"); // Import the upload middleware for events
 const uploadContent = require("../controllers/upload/uploadContentMiddleWare"); //Import the upload middleware for courses
@@ -200,4 +201,11 @@ router.get(
 router.post("/course/:student_id/addreport", reportController.addReport);
 
 router.get("/reports/:student_id", reportController.getStudentReports);
+//Annoucments
+
+router.post(
+  "/annoucments/sendannoucment",
+  annoucmentController.sendAnnouncment
+);
+router.get("/annoucments/:department_id", annoucmentController.getAnnoucments);
 module.exports = router;

@@ -5,6 +5,7 @@ const teacherController = require("../controllers/teacherController");
 const courseController = require("../controllers/courseController");
 const absenceController = require("../controllers/absenceController");
 const reportController = require("../controllers/reportController");
+const annoucmentController = require("../controllers/announcmentController");
 const uploadContent = require("../controllers/upload/uploadContentMiddleWare");
 const uploadAssigment = require("../controllers/upload/uploadAssigment-Description");
 const checkFile = require("../Middlewares/checkFileMiddleware");
@@ -107,5 +108,9 @@ router.get(
 
   courseController.getMark
 );
+
+// Annoucments
+router.get("/annoucments/:department_id", annoucmentController.getAnnoucments);
+router.get("/department", annoucmentController.getTeacherDepartment);
 
 module.exports = router;

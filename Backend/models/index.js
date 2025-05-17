@@ -43,6 +43,14 @@ function initModels(sequelize) {
     otherKey: "course_id",
   });
   announcment.belongsTo(admin, { as: "admin", foreignKey: "adminid" });
+  announcment.belongsTo(department, {
+    as: "department",
+    foreignKey: "department_id",
+  });
+  department.hasMany(announcment, {
+    as: "announcment",
+    foreignKey: "announcmentid",
+  });
   admin.hasMany(announcment, { as: "announcments", foreignKey: "adminid" });
   post.belongsTo(admin, { as: "admin", foreignKey: "adminid" });
   admin.hasMany(post, { as: "posts", foreignKey: "adminid" });
