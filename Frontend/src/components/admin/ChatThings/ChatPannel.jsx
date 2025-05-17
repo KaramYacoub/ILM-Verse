@@ -1,23 +1,5 @@
 import { useState } from "react";
-import { X, Send } from "lucide-react";
-
-const users = {
-  parent: [
-    { id: "0211765", name: "Anas Ghnaim" },
-    { id: "0211766", name: "Talal Majed" },
-    { id: "0211767", name: "Ali Alsharif" },
-  ],
-  teacher: [
-    { id: "0311765", name: "Mohammed Ahmed" },
-    { id: "0311766", name: "Sarah Johnson" },
-    { id: "0311767", name: "David Wilson" },
-  ],
-  student: [
-    { id: "0411765", name: "Omar Khalid" },
-    { id: "0411766", name: "Layla Mohammed" },
-    { id: "0411767", name: "Fatima Ali" },
-  ],
-};
+import { X } from "lucide-react";
 
 const announcementGroups = [
   "General",
@@ -27,13 +9,7 @@ const announcementGroups = [
   "Intermediate Female",
 ];
 
-function ChatPanel({ isOpen, onClose }) {
-  const [activeSection, setActiveSection] = useState("chat");
-  const [activeTab, setActiveTab] = useState("parent");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [activeChatUser, setActiveChatUser] = useState(null);
-  const [messages, setMessages] = useState({});
-  const [messageInput, setMessageInput] = useState("");
+function AnnouncementPanel({ isOpen, onClose }) {
   const [announcementText, setAnnouncementText] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
   const [announcements, setAnnouncements] = useState([]);
@@ -41,54 +17,9 @@ function ChatPanel({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  const filteredUsers = users[activeTab].filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  const handleUserClick = (user) => {
-    setActiveChatUser(user);
-  };
-
-  const sendMessage = () => {
-    if (!messageInput.trim() || !activeChatUser) return;
-
-    const key = `${activeTab}-${activeChatUser.id}`;
-    const newMessage = {
-      id: Date.now(),
-      content: messageInput,
-      sender: "You",
-      timestamp: new Date().toLocaleTimeString(),
-      isOwn: true,
-    };
-
-    setMessages((prev) => ({
-      ...prev,
-      [key]: [...(prev[key] || []), newMessage],
-    }));
-    setMessageInput("");
-
-    setTimeout(() => {
-      const reply = {
-        id: Date.now() + 1,
-        content: "Auto-reply to: " + messageInput,
-        sender: activeChatUser.name,
-        timestamp: new Date().toLocaleTimeString(),
-        isOwn: false,
-      };
-
-      setMessages((prev) => ({
-        ...prev,
-        [key]: [...(prev[key] || []), reply],
-      }));
-    }, 1000);
-  };
-
-  const closeChatPopup = () => {
-    setActiveChatUser(null);
-    setMessageInput("");
-  };
-
-  const handleSendAnnouncement = () => {
     const newAnnouncement = {
       id: Date.now(),
       text: announcementText,
@@ -99,7 +30,8 @@ function ChatPanel({ isOpen, onClose }) {
     setAnnouncements((prev) => [...prev, newAnnouncement]);
     setAnnouncementText("");
     setSelectedGroup("");
-    alert("Announcement sent successfully!");
+
+    console.log("Announcement submitted:", newAnnouncement);
   };
 
   return (
@@ -107,9 +39,7 @@ function ChatPanel({ isOpen, onClose }) {
       {/* Header */}
       <div className="flex justify-between items-center bg-primary text-white px-4 py-3">
         <h2 className="text-lg font-semibold">
-          {activeSection === "chat"
-            ? "Chat"
-            : announcementViewTab === "send"
+          {announcementViewTab === "send"
             ? "Send Announcement"
             : "View Announcements"}
         </h2>
@@ -118,272 +48,135 @@ function ChatPanel({ isOpen, onClose }) {
         </button>
       </div>
 
-      {/* Section Switch */}
+      {/* Tabs */}
       <div className="flex justify-around border-b">
-        <button
-          className={`w-full py-2 font-semibold ${
-            activeSection === "chat"
-              ? "border-b-4 border-secondary text-primary"
-              : "text-gray-500"
-          }`}
-          onClick={() => setActiveSection("chat")}
-        >
-          Chat
-        </button>
-        <button
-          className={`w-full py-2 font-semibold ${
-            activeSection === "announcement"
-              ? "border-b-4 border-secondary text-primary"
-              : "text-gray-500"
-          }`}
-          onClick={() => {
-            setActiveSection("announcement");
-            setActiveChatUser(null);
-          }}
-        >
-          Announcement
-        </button>
+        {["send", "view"].map((tab) => (
+          <button
+            key={tab}
+            className={`w-full py-2 font-semibold capitalize ${
+              announcementViewTab === tab
+                ? "border-b-4 border-secondary text-primary"
+                : "text-gray-500"
+            }`}
+            onClick={() => setAnnouncementViewTab(tab)}
+          >
+            {tab === "send" ? "Send Announcement" : "View Announcements"}
+          </button>
+        ))}
       </div>
 
-      {/* Chat Section */}
-      {activeSection === "chat" && (
-        <>
-          <div className="flex justify-around border-b">
-            {["parent", "teacher", "student"].map((tab) => (
-              <button
-                key={tab}
-                className={`w-full py-2 font-semibold capitalize ${
-                  activeTab === tab
-                    ? "border-b-4 border-secondary text-primary"
-                    : "text-gray-500"
-                }`}
-                onClick={() => {
-                  setActiveTab(tab);
-                  setSearchTerm("");
-                  setActiveChatUser(null);
-                }}
+      {announcementViewTab === "send" ? (
+        <form
+          onSubmit={handleSubmit}
+          className="p-4 overflow-y-auto h-[calc(100%-200px)]"
+        >
+          <textarea
+            placeholder="Type your announcement here..."
+            value={announcementText}
+            onChange={(e) => setAnnouncementText(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md h-32"
+            required
+          />
+
+          <h3 className="font-medium mt-4 mb-2">Select Group:</h3>
+          <div className="space-y-2 mb-4">
+            {announcementGroups.map((group) => (
+              <label
+                key={group}
+                className="flex items-center space-x-2 cursor-pointer"
               >
-                {tab}
-              </button>
-            ))}
-          </div>
-
-          <div className="p-3">
-            <input
-              type="text"
-              placeholder={`Search ${activeTab}...`}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
-          </div>
-
-          <div className="px-4 overflow-y-auto h-[calc(100%-180px)]">
-            <div className="space-y-2">
-              {filteredUsers.map((user) => (
-                <div
-                  key={user.id}
-                  onClick={() => handleUserClick(user)}
-                  className="flex items-center gap-3 p-3 border rounded-md hover:bg-gray-100 cursor-pointer"
-                >
-                  <div className="w-10 h-10 rounded-full bg-gray-200" />
-                  <div>
-                    <div className="font-medium text-primary">{user.name}</div>
-                    <div className="text-sm text-gray-500">{user.id}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Announcement Section */}
-      {activeSection === "announcement" && (
-        <>
-          <div className="flex justify-around border-b">
-            {["send", "view"].map((tab) => (
-              <button
-                key={tab}
-                className={`w-full py-2 font-semibold capitalize ${
-                  announcementViewTab === tab
-                    ? "border-b-4 border-secondary text-primary"
-                    : "text-gray-500"
-                }`}
-                onClick={() => setAnnouncementViewTab(tab)}
-              >
-                {tab === "send" ? "Send Announcement" : "View Announcements"}
-              </button>
-            ))}
-          </div>
-
-          {announcementViewTab === "send" ? (
-            <div className="p-4 overflow-y-auto h-[calc(100%-200px)]">
-              <textarea
-                placeholder="Type your announcement here..."
-                value={announcementText}
-                onChange={(e) => setAnnouncementText(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md h-32"
-              />
-
-              <h3 className="font-medium mt-4 mb-2">Select Group:</h3>
-              <div className="space-y-2 mb-4">
-                {announcementGroups.map((group) => (
-                  <label
-                    key={group}
-                    className="flex items-center space-x-2 cursor-pointer"
-                  >
-                    <input
-                      type="radio"
-                      name="announcementGroup"
-                      value={group}
-                      checked={selectedGroup === group}
-                      onChange={() => setSelectedGroup(group)}
-                      className="form-radio text-primary"
-                    />
-                    <span
-                      className={`text-sm ${
-                        selectedGroup === group
-                          ? "text-primary font-medium"
-                          : "text-gray-700"
-                      }`}
-                    >
-                      {group}
-                    </span>
-                  </label>
-                ))}
-              </div>
-
-              <button
-                onClick={handleSendAnnouncement}
-                disabled={!announcementText || !selectedGroup}
-                className={`w-full py-2 px-4 rounded-md text-white ${
-                  !announcementText || !selectedGroup
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-primary hover:bg-primary-dark"
-                }`}
-              >
-                Send Announcement
-              </button>
-            </div>
-          ) : (
-            <div className="p-4 overflow-y-auto h-[calc(100%-200px)]">
-              <h3 className="font-medium mb-2">Filter by Group:</h3>
-              <div className="space-y-2 mb-4">
-                {announcementGroups.map((group) => (
-                  <label
-                    key={group}
-                    className="flex items-center space-x-2 cursor-pointer"
-                  >
-                    <input
-                      type="radio"
-                      name="viewGroup"
-                      value={group}
-                      checked={selectedGroup === group}
-                      onChange={() => setSelectedGroup(group)}
-                      className="form-radio text-primary"
-                    />
-                    <span
-                      className={`text-sm ${
-                        selectedGroup === group
-                          ? "text-primary font-medium"
-                          : "text-gray-700"
-                      }`}
-                    >
-                      {group}
-                    </span>
-                  </label>
-                ))}
-              </div>
-
-              {announcements
-                .filter((a) =>
-                  selectedGroup === "General" || selectedGroup === ""
-                    ? true
-                    : a.group === selectedGroup
-                )
-                .map((a) => (
-                  <div
-                    key={a.id}
-                    className="mb-3 p-3 bg-gray-100 rounded-md border"
-                  >
-                    <div className="text-sm">{a.text}</div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      Group: {a.group}
-                    </div>
-                    <div className="text-[10px] text-gray-400">
-                      {a.timestamp}
-                    </div>
-                  </div>
-                ))}
-
-              {announcements.length === 0 && (
-                <div className="text-center text-gray-500 mt-6">
-                  No announcements yet.
-                </div>
-              )}
-            </div>
-          )}
-        </>
-      )}
-
-      {/* Chat Popup */}
-      {activeChatUser && (
-        <div className="fixed bottom-4 right-4 md:right-[420px] w-[320px] h-[450px] bg-white shadow-lg border rounded-lg flex flex-col z-50">
-          <div className="flex justify-between items-center bg-primary text-white px-4 py-2 rounded-t-md">
-            <h3 className="text-sm font-semibold">
-              Conversation with {activeChatUser.name}
-            </h3>
-            <button onClick={closeChatPopup}>
-              <X className="text-white w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-50">
-            {(messages[`${activeTab}-${activeChatUser.id}`] || []).map(
-              (msg) => (
-                <div
-                  key={msg.id}
-                  className={`max-w-[75%] p-2 rounded-md text-sm ${
-                    msg.isOwn
-                      ? "ml-auto bg-primary text-white"
-                      : "mr-auto bg-gray-200"
+                <input
+                  type="radio"
+                  name="announcementGroup"
+                  value={group}
+                  checked={selectedGroup === group}
+                  onChange={() => setSelectedGroup(group)}
+                  className="form-radio text-primary"
+                  required
+                />
+                <span
+                  className={`text-sm ${
+                    selectedGroup === group
+                      ? "text-primary font-medium"
+                      : "text-gray-700"
                   }`}
                 >
-                  {msg.content}
-                  <div className="text-[10px] opacity-60 text-right mt-1">
-                    {msg.timestamp}
-                  </div>
-                </div>
-              )
-            )}
+                  {group}
+                </span>
+              </label>
+            ))}
           </div>
 
-          <div className="flex border-t p-2">
-            <input
-              type="text"
-              value={messageInput}
-              onChange={(e) => setMessageInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-              placeholder="Type a message..."
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md"
-            />
-            <button
-              onClick={sendMessage}
-              disabled={!messageInput.trim()}
-              className={`px-4 py-2 rounded-r-md ${
-                !messageInput.trim()
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-primary text-white"
-              }`}
-            >
-              <Send size={16} />
-            </button>
+          <button
+            type="submit"
+            disabled={!announcementText || !selectedGroup}
+            className={`w-full py-2 px-4 rounded-md text-white ${
+              !announcementText || !selectedGroup
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-primary hover:bg-primary-dark"
+            }`}
+          >
+            Submit Announcement
+          </button>
+        </form>
+      ) : (
+        <div className="p-4 overflow-y-auto h-[calc(100%-200px)]">
+          <h3 className="font-medium mb-2">Filter by Group:</h3>
+          <div className="space-y-2 mb-4">
+            {announcementGroups.map((group) => (
+              <label
+                key={group}
+                className="flex items-center space-x-2 cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="viewGroup"
+                  value={group}
+                  checked={selectedGroup === group}
+                  onChange={() => setSelectedGroup(group)}
+                  className="form-radio text-primary"
+                />
+                <span
+                  className={`text-sm ${
+                    selectedGroup === group
+                      ? "text-primary font-medium"
+                      : "text-gray-700"
+                  }`}
+                >
+                  {group}
+                </span>
+              </label>
+            ))}
           </div>
+
+          {announcements
+            .filter((a) =>
+              selectedGroup === "General" || selectedGroup === ""
+                ? true
+                : a.group === selectedGroup
+            )
+            .map((a) => (
+              <div
+                key={a.id}
+                className="mb-3 p-3 bg-gray-100 rounded-md border"
+              >
+                <div className="text-sm">{a.text}</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  Group: {a.group}
+                </div>
+                <div className="text-[10px] text-gray-400">{a.timestamp}</div>
+              </div>
+            ))}
+
+          {announcements.length === 0 && (
+            <div className="text-center text-gray-500 mt-6">
+              No announcements yet.
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 }
 
-export default ChatPanel;
+export default AnnouncementPanel;
