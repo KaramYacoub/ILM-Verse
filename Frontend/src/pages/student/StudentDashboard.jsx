@@ -47,6 +47,8 @@ function StudentDashboard() {
               key={course.course_id}
               title={course.course.subject_name}
               to={`/student-course-content/${course.course_id}/student-overview`}
+              section={course.course.section?.section_name}
+              grade={course.course.section.grade.grade_name}
             />
           ))}
         </div>

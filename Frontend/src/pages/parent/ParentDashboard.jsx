@@ -108,7 +108,8 @@ function ParentDashboard() {
               >
                 <CourseCard
                   title={course.course.subject_name}
-                  // Removed the direct 'to' prop here, navigation is handled by onClick
+                  section={course.course.section?.section_name}
+                  grade={course.course.section.grade.grade_name}
                 />
               </div>
             ))
