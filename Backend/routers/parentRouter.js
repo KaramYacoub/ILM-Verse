@@ -43,4 +43,17 @@ router.get(
 );
 router.get("/reports/:student_id", reportController.getStudentReports); //done
 
+// quiz functionalites
+//getQuizesForCourse
+router.get(
+  "/course/:course_id/student/quizes",
+  courseController.getQuizesForCourseForStudent
+);
+//show quiz Mark
+router.get(
+  "/course/:course_id/quizes/:quiz_id/:student_id/mark",
+  courseController.showQuizMark
+);
+
+
 module.exports = router;
