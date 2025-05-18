@@ -13,6 +13,7 @@ var _section = require("./SQL/section");
 var _student = require("./SQL/student");
 var _student_marks = require("./SQL/student_marks");
 var _teacher = require("./SQL/teacher");
+var _otp = require("./SQL/otp");
 //ORM
 function initModels(sequelize) {
   var admin = _admin(sequelize, DataTypes);
@@ -29,6 +30,7 @@ function initModels(sequelize) {
   var student = _student(sequelize, DataTypes);
   var student_marks = _student_marks(sequelize, DataTypes);
   var teacher = _teacher(sequelize, DataTypes);
+  var otp = _otp(sequelize, DataTypes);
 
   course.belongsToMany(student, {
     as: "student_id_students",
@@ -121,6 +123,7 @@ function initModels(sequelize) {
     student,
     student_marks,
     teacher,
+    otp,
   };
 }
 module.exports = initModels;

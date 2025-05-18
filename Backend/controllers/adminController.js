@@ -57,7 +57,8 @@ exports.addAdmin = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 3);
-
+    console.log(hashedPassword);
+    console.log(hashedPassword);
     const newAdmin = await admin.create({
       first_name,
       last_name,

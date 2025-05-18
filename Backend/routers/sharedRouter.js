@@ -26,4 +26,5 @@ router.post("/login/studentLogin", authController.studentLogin);
 // otp functionalites
 
 router.post("/forgotpassword", otpController.sendOTP);
+router.patch("/forgotpassword/check", otpController.updatePassword);
 module.exports = router;
