@@ -16,8 +16,9 @@ function SendAnnouncement({ depts, onSend, isLoading }) {
         id: response.announcmentid,
         text: response.content,
         group: response.department_id ?? "general",
-        timestamp: `${response.announcmentdate} ${response.sentat}`,
-        sender: "You", // You can update this based on login data if needed
+        date: response.announcmentdate,
+        time: response.sentat,
+        sender: "You",
       };
 
       onSend(newAnnouncement);

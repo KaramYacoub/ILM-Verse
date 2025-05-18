@@ -13,7 +13,6 @@ const {
   parent,
   announcment,
 } = models;
-const { Sequelize } = require("sequelize");
 exports.sendAnnouncment = async (req, res) => {
   try {
     const { department_id, content } = req.body;

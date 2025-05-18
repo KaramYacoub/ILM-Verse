@@ -32,15 +32,18 @@ function AnnouncementPanel({ isOpen, onClose }) {
       try {
         const deptId = selectedGroup || "general";
         const data = await getAnnoucments(deptId);
+        console.log(data);
 
         const mapped = data.map((a) => ({
           id: a.announcmentid,
           text: a.content,
-          timestamp: new Date(a.announcmentdate).toLocaleString(),
-          group: a.department_id ?? "general", // This preserves the original department_id
-          department_id: a.department_id, // Add this line to explicitly include department_id
+          group: a.department_id ?? "general",
+          department_id: a.department_id,
           sender: a.admin?.full_name ?? "Unknown",
+          date: a.announcmentdate,
+          time: a.sentat,
         }));
+
         setAnnouncements(mapped);
       } catch (error) {
         console.error("Error fetching announcements:", error);
@@ -61,11 +64,7 @@ function AnnouncementPanel({ isOpen, onClose }) {
       await addAnnoucments(newAnnouncement.group, newAnnouncement.text);
 
       // Update local state with the new announcement
-      const updatedAnnouncement = {
-        ...newAnnouncement,
-        timestamp: new Date().toLocaleString(),
-      };
-      setAnnouncements((prev) => [...prev, updatedAnnouncement]);
+      setAnnouncements((prev) => [...prev, newAnnouncement]);
       setActiveTab("view");
       setSelectedGroup(newAnnouncement.group);
     } catch (error) {
