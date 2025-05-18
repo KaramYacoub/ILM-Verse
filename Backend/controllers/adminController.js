@@ -15,6 +15,7 @@ const {
   course,
   course_student,
   grade,
+  student_marks,
   event,
 } = models; // extract all the needed models
 const eventMedia = require("../models/NOSQL/Event");
@@ -524,6 +525,17 @@ exports.deleteStudent = async (req, res) => {
     if (!searchedStudent) {
       return res.status(404).json({ error: "Student not found" });
     }
+    const findCourse = await course_student.destroy({
+      where: {
+        student_id: id,
+      },
+    });
+    const findMarks = await student_marks.destroy({
+      where: {
+        student_id: id,
+      },
+    });
+
     await student.destroy({
       where: {
         student_id: id,
