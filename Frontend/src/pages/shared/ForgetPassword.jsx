@@ -3,7 +3,6 @@ import { useAuthStore } from "../../store/AuthStore";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 
-
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -16,7 +15,7 @@ function ForgotPassword() {
   const navigate = useNavigate();
 
   const { forgotPassword, verifyOtpAndResetPassword } = useAuthStore();
-    
+
   // Countdown timer effect
   useEffect(() => {
     let timer;
@@ -33,7 +32,7 @@ function ForgotPassword() {
     setIsLoading(true);
 
     try {
-      const response = await forgotPassword({ email });
+      const response = await forgotPassword(email);
       if (response?.status === "success") {
         setSuccess("OTP sent to your email!");
         setShowOtpForm(true);
@@ -55,12 +54,8 @@ function ForgotPassword() {
     setIsLoading(true);
 
     try {
-      const response = await verifyOtpAndResetPassword({ 
-        email, 
-        otp, 
-        newPassword 
-      });
-      
+      const response = await verifyOtpAndResetPassword(email, otp, newPassword);
+
       if (response?.status === "success") {
         setSuccess("Password reset successfully! Redirecting to login...");
         setTimeout(() => navigate("/stafflogin"), 2000);
@@ -80,10 +75,10 @@ function ForgotPassword() {
     setIsLoading(true);
 
     try {
-      const response = await forgotPassword({ email });
+      const response = await forgotPassword(email);
       if (response?.status === "success") {
         setSuccess("New OTP sent to your email!");
-        setCountdown(60); // Reset countdown
+        setCountdown(60);
       } else {
         setError(response?.message || "Failed to resend OTP");
       }
@@ -109,7 +104,7 @@ function ForgotPassword() {
         <h2 className="text-xl font-bold mb-1">
           {showOtpForm ? "Reset Your Password" : "Forgot Password"}
         </h2>
-        
+
         {!showOtpForm ? (
           <>
             <p className="mb-6">
@@ -120,7 +115,9 @@ function ForgotPassword() {
               {/* Email */}
               <div>
                 <label className="label">
-                  <span className="label-text text-base-100">Email Address</span>
+                  <span className="label-text text-base-100">
+                    Email Address
+                  </span>
                 </label>
                 <input
                   type="email"
@@ -136,7 +133,9 @@ function ForgotPassword() {
               {error && <p className="text-red-500 font-medium">{error}</p>}
 
               {/* Success message */}
-              {success && <p className="text-green-500 font-medium">{success}</p>}
+              {success && (
+                <p className="text-green-500 font-medium">{success}</p>
+              )}
 
               {/* Submit button */}
               <button
@@ -167,7 +166,9 @@ function ForgotPassword() {
               {/* Email (readonly) */}
               <div>
                 <label className="label">
-                  <span className="label-text text-base-100">Email Address</span>
+                  <span className="label-text text-base-100">
+                    Email Address
+                  </span>
                 </label>
                 <input
                   type="email"
@@ -218,7 +219,7 @@ function ForgotPassword() {
                   placeholder="Enter new password"
                   className="input input-bordered w-full bg-primary text-base-100 placeholder-base-100 focus:border-base-100"
                   required
-                  minLength={8}
+                  minLength={6}
                 />
               </div>
 
@@ -226,7 +227,9 @@ function ForgotPassword() {
               {error && <p className="text-red-500 font-medium">{error}</p>}
 
               {/* Success message */}
-              {success && <p className="text-green-500 font-medium">{success}</p>}
+              {success && (
+                <p className="text-green-500 font-medium">{success}</p>
+              )}
 
               {/* Submit button */}
               <button
