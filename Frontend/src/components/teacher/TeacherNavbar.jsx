@@ -11,12 +11,12 @@ import {
 import { Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/AuthStore";
-import TeacherChatPanel from "./ChatThings/TeacherChatPanel";
+import TeacherAnnouncementPanel from "./TeacherAnnouncements";
 
 function TeacherNavbar() {
   const { isUserLoggingOut, logout, authTeacher } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isAnnouncementOpen, setIsAnnouncementOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -73,11 +73,11 @@ function TeacherNavbar() {
             <span>Take Absence</span>
           </Link>
           <button
-            onClick={() => setIsChatOpen(true)}
+            onClick={() => setIsAnnouncementOpen(true)}
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500 text-accent text-sm"
           >
             <FaComments color="#fff" />
-            <span>Announcement</span>
+            <span>Announcements</span>
           </button>
         </div>
 
@@ -135,12 +135,12 @@ function TeacherNavbar() {
               <button
                 onClick={() => {
                   toggleMenu();
-                  setIsChatOpen(true);
+                  setIsAnnouncementOpen(true);
                 }}
                 className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500 text-left w-full"
               >
                 <FaComments color="#fff" />
-                <span>Chat</span>
+                <span>Announcements</span>
               </button>
 
               <div className="divider divider-accent my-0" />
@@ -161,10 +161,10 @@ function TeacherNavbar() {
         )}
       </div>
 
-      {/* Chat Panel */}
-      <TeacherChatPanel
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
+      {/* Announcements Panel */}
+      <TeacherAnnouncementPanel
+        isOpen={isAnnouncementOpen}
+        onClose={() => setIsAnnouncementOpen(!isAnnouncementOpen)}
       />
     </div>
   );

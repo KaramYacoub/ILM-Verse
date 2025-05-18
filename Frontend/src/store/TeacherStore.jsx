@@ -516,4 +516,32 @@ export const useTeacherStore = create((set) => ({
       throw error;
     }
   },
+
+  getTeacherDepartment: async () => {
+    try {
+      const response = await axiosInstance.get("/teacher/department");
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "error in get departments for the teacher: ",
+        error.response?.data?.error || error.message
+      );
+      throw error; // Add this to handle errors properly
+    }
+  },
+
+  getAnnoucments: async (department_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/teacher/annoucments/${department_id || "general"}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "error in get announcement for the teacher: ",
+        error.response?.data?.error || error.message
+      );
+      throw error; // Add this to handle errors properly
+    }
+  },
 }));
