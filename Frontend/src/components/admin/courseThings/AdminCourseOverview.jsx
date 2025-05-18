@@ -4,10 +4,12 @@ import AdminNavbar from "../adminNavbar";
 import { useCourseStore } from "../../../store/CourseStore";
 import { AlertCircle, ArrowLeft, Plus, FileText } from "lucide-react";
 import ShowCourseStudents from "../ShowCourseStudents";
+import ErrorModal from "../../../components/shared/ErrorModal";
+import SuccessModal from "../../../components/shared/SuccessModal";
+import ConfirmModal from "../../../components/shared/ConfirmModal";
 
 function AdminCourseOverview() {
   const { getCourseUnits, addCourseUnit, deleteUnit } = useCourseStore();
-
   const navigate = useNavigate();
   const { courseId } = useParams();
   const location = useLocation();
@@ -24,6 +26,13 @@ function AdminCourseOverview() {
   });
   const [showStudentsModal, setShowStudentsModal] = useState(false);
 
+  // Modal states
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [unitToDelete, setUnitToDelete] = useState(null);
+
   useEffect(() => {
     const fetchCourseData = async () => {
       setIsLoading(true);
@@ -32,6 +41,8 @@ function AdminCourseOverview() {
         setCourseUnits(units);
       } catch (error) {
         console.error("Error fetching course units:", error);
+        setModalMessage("Failed to load course units");
+        setShowErrorModal(true);
       } finally {
         setIsLoading(false);
       }
@@ -40,35 +51,54 @@ function AdminCourseOverview() {
   }, [courseId, getCourseUnits]);
 
   const handleAddUnit = async () => {
+    if (!newUnit.unit_name.trim()) {
+      setModalMessage("Unit name is required");
+      setShowErrorModal(true);
+      return;
+    }
+
     try {
       setIsAdding(true);
       await addCourseUnit(courseId, newUnit);
-      // Refresh the units list
       const units = await getCourseUnits(courseId);
       setCourseUnits(units);
+      setModalMessage("Unit added successfully!");
+      setShowSuccessModal(true);
       setShowAddModal(false);
       setNewUnit({ unit_name: "", unit_description: "" });
     } catch (error) {
       console.log("Error adding unit:", error);
+      setModalMessage(error.response?.data?.message || "Failed to add unit");
+      setShowErrorModal(true);
     } finally {
       setIsAdding(false);
     }
   };
 
-  const handleDeleteUnit = async (course_id, unit_id) => {
+  const handleDeleteClick = (unit) => {
+    setUnitToDelete(unit);
+    setModalMessage(`Are you sure you want to delete the unit "${unit.unit_name}"?`);
+    setShowConfirmModal(true);
+  };
+
+  const confirmDeleteUnit = async () => {
+    if (!unitToDelete) return;
+    
     try {
       setIsDeleting(true);
-      await deleteUnit(course_id, unit_id);
-      // Refresh the units list
+      await deleteUnit(courseId, unitToDelete.unit_id);
       const units = await getCourseUnits(courseId);
       setCourseUnits(units);
+      setModalMessage("Unit deleted successfully!");
+      setShowSuccessModal(true);
     } catch (error) {
-      console.log(
-        "Error deleting course unit: ",
-        error.response?.data?.error || error.message
-      );
+      console.log("Error deleting unit:", error);
+      setModalMessage(error.response?.data?.message || "Failed to delete unit");
+      setShowErrorModal(true);
     } finally {
       setIsDeleting(false);
+      setUnitToDelete(null);
+      setShowConfirmModal(false);
     }
   };
 
@@ -90,12 +120,6 @@ function AdminCourseOverview() {
               onClick={() => navigate(-1)}
             >
               Go Back
-            </button>
-            <button
-              className="btn btn-secondary"
-              onClick={() => setShowStudentsModal(true)}
-            >
-              Show Students
             </button>
           </div>
         </div>
@@ -177,33 +201,30 @@ function AdminCourseOverview() {
                           </div>
                         </div>
 
-                        {isDeleting ? (
-                          <div className="flex justify-center items-center h-16">
-                            <span className="loading loading-spinner loading-sm text-primary"></span>
-                          </div>
-                        ) : (
-                          <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                            <button
-                              onClick={() =>
-                                handleDeleteUnit(courseId, unit.unit_id)
-                              }
-                              className="btn btn-outline"
-                            >
-                              Delete unit
-                            </button>
+                        <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                          <button
+                            onClick={() => handleDeleteClick(unit)}
+                            className="btn btn-outline"
+                            disabled={isDeleting}
+                          >
+                            {isDeleting && unitToDelete?.unit_id === unit.unit_id ? (
+                              <span className="loading loading-spinner loading-sm"></span>
+                            ) : (
+                              "Delete unit"
+                            )}
+                          </button>
 
-                            <button
-                              className="btn btn-primary"
-                              onClick={() =>
-                                navigate(`/admin-unit-content/${courseId}`, {
-                                  state: { unit },
-                                })
-                              }
-                            >
-                              View Content
-                            </button>
-                          </div>
-                        )}
+                          <button
+                            className="btn btn-primary"
+                            onClick={() =>
+                              navigate(`/admin-unit-content/${courseId}`, {
+                                state: { unit },
+                              })
+                            }
+                          >
+                            View Content
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -303,6 +324,30 @@ function AdminCourseOverview() {
           onClose={() => setShowStudentsModal(false)}
         />
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        showConfirmModal={showConfirmModal}
+        setShowConfirmModal={setShowConfirmModal}
+        message={modalMessage}
+        onConfirm={confirmDeleteUnit}
+        confirmText="Delete"
+        dangerAction={true}
+      />
+
+      {/* Success Modal */}
+      <SuccessModal
+        showSuccessModal={showSuccessModal}
+        setShowSuccessModal={setShowSuccessModal}
+        successMessage={modalMessage}
+      />
+    
+      {/* Error Modal */}
+      <ErrorModal
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+        errorMessage={modalMessage}
+      />
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import AdminNavbar from "../../components/admin/AdminNavbar";
+import AdminNavbar from "../../components/Admin/AdminNavbar";
 import { X } from "lucide-react";
-import { useAdminStore } from "../../store/adminStore";
+import { useAdminStore } from "../../store/AdminStore";
 
 function AdminShowReports() {
   const { student_id } = useParams();

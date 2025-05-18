@@ -1,6 +1,8 @@
 import { useState } from "react";
 import AdminNavbar from "../../components/admin/adminNavbar";
-import { useAdminStore } from "../../store/adminStore";
+import { useAdminStore } from "../../store/AdminStore";
+import ErrorModal from "../../components/shared/ErrorModal";
+import SuccessModal from "../../components/shared/SuccessModal";
 
 function Settings() {
   // States for changing password
@@ -13,6 +15,11 @@ function Settings() {
   const [profileFirstName, setProfileFirstName] = useState("");
   const [profileLastName, setProfileLastName] = useState("");
 
+  // Modal states
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
   const { changeAdminPassword, isChangingPassword, changeAdminName } =
     useAdminStore();
 
@@ -21,21 +28,24 @@ function Settings() {
     e.preventDefault();
 
     if (newPassword !== confirmNewPassword) {
-      alert("New password and confirm password do not match.");
+      setModalMessage("New password and confirm password do not match.");
+      setShowErrorModal(true);
       return;
     }
 
     try {
       await changeAdminPassword(oldPassword, newPassword);
-      alert("Password changed successfully.");
+      setModalMessage("Password changed successfully.");
+      setShowSuccessModal(true);
       setOldPassword("");
       setNewPassword("");
       setConfirmNewPassword("");
     } catch (error) {
-      alert(
+      setModalMessage(
         "Error changing password: " +
           (error?.response?.data?.error || error.message)
       );
+      setShowErrorModal(true);
     }
   };
 
@@ -44,7 +54,8 @@ function Settings() {
     e.preventDefault();
 
     if (!profileFirstName || !profileLastName || !profileOldPassword) {
-      alert("Please fill in all profile fields.");
+      setModalMessage("Please fill in all profile fields.");
+      setShowErrorModal(true);
       return;
     }
 
@@ -54,15 +65,17 @@ function Settings() {
         profileLastName,
         profileOldPassword
       );
-      alert("Name updated successfully.");
+      setModalMessage("Name updated successfully.");
+      setShowSuccessModal(true);
       setProfileFirstName("");
       setProfileLastName("");
       setProfileOldPassword("");
     } catch (error) {
-      alert(
+      setModalMessage(
         "Error updating name: " +
           (error?.response?.data?.error || error.message)
       );
+      setShowErrorModal(true);
     }
   };
 
@@ -176,6 +189,18 @@ function Settings() {
           </form>
         </div>
       </div>
+
+      {/* Modals */}
+      <SuccessModal
+        showSuccessModal={showSuccessModal}
+        setShowSuccessModal={setShowSuccessModal}
+        successMessage={modalMessage}
+      />
+      <ErrorModal
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+        errorMessage={modalMessage}
+      />
     </div>
   );
 }
