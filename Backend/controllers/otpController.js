@@ -29,14 +29,6 @@ function generateOTP() {
   return otp;
 }
 
-async function isTeacherExist(email) {
-  if (foundedTeacher) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 exports.sendOTP = async (req, res) => {
   try {
     const { email } = req.body;

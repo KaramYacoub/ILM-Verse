@@ -93,3 +93,17 @@ exports.getStudentReports = async (req, res) => {
     });
   }
 };
+exports.deleteReport = async (req, res) => {
+  try {
+    const { report_id } = req.body;
+    const deletedReport = await Report.findByIdAndDelete(report_id);
+    res.status(200).json({
+      sattus: "success",
+      message: "Report deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};

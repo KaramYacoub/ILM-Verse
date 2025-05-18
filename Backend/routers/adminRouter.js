@@ -201,6 +201,7 @@ router.get(
 router.post("/course/:student_id/addreport", reportController.addReport);
 
 router.get("/reports/:student_id", reportController.getStudentReports);
+router.delete("/reports/delete", reportController.deleteReport);
 //Annoucments
 
 router.post(
