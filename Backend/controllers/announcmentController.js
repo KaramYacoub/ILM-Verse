@@ -1,10 +1,8 @@
 const express = require("express");
-const router = express.Router();
-const authController = require("../controllers/authController");
-const authenticateUser = require("../Middlewares/authMiddleware");
 const SQL = require("../models/Connections/SQL-Driver"); // your Sequelize instance
 const initModels = require("../models/index"); // path to index.js
 const models = initModels(SQL); // initialize models
+const { Sequelize } = require("sequelize");
 const {
   admin,
   student,

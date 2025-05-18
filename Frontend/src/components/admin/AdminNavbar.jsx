@@ -11,7 +11,7 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
-import AnnouncementPanel from "./AnnouncementPanel";
+import AnnouncementPanel from "./announcements/AnnouncementPanel";
 import { useAuthStore } from "../../store/AuthStore";
 
 function AdminNavbar() {
@@ -168,7 +168,10 @@ function AdminNavbar() {
         </div>
       </div>
       {/* Chat Panel */}
-      <AnnouncementPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(!isChatOpen)} />
+      <AnnouncementPanel
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(!isChatOpen)}
+      />
     </>
   );
 }
