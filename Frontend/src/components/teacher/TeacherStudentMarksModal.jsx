@@ -1,10 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useTeacherStore } from "../../store/TeacherStore";
+import ErrorModal from "../../components/shared/ErrorModal";
 
 function TeacherStudentMarksModal({ isOpen, onClose, student }) {
   const { course_id } = useParams();
   const { getCourseByID } = useTeacherStore();
+
+
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   const [course, setCourse] = useState([]);
   const [activeTerm, setActiveTerm] = useState("Term 1");
@@ -114,9 +119,10 @@ function TeacherStudentMarksModal({ isOpen, onClose, student }) {
       setIsSaved((prev) => ({ ...prev, [activeTerm]: true }));
     } catch (error) {
       console.error("Error saving mark:", error);
-      alert(
+      setModalMessage(
         "Failed to save mark: " + (error.response?.data?.error || error.message)
       );
+      setShowErrorModal(true);
     } finally {
       setIsLoading(false);
     }
@@ -210,6 +216,11 @@ function TeacherStudentMarksModal({ isOpen, onClose, student }) {
           )}
         </div>
       </div>
+       <ErrorModal
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+        errorMessage={modalMessage}
+      />
     </div>
   );
 }

@@ -5,21 +5,32 @@ import { useTeacherStore } from "../../../store/TeacherStore";
 import { useCourseStore } from "../../../store/CourseStore";
 import UploadModal from "../../course/UploadModal";
 import MediaPreviewModal from "../../course/MediaPreviewModal";
+import ErrorModal from "../../shared/ErrorModal";
+import SuccessModal from "../../shared/SuccessModal";
+import ConfirmModal from "../../shared/ConfirmModal";
 
 function TeacherUnitContentTab() {
   const location = useLocation();
   const unit = location.state?.unit;
-
   const { unit_id } = useParams();
 
+  // Store hooks
   const { getUnitContent, unitContent, addUnitContent, deleteUnitContent } =
     useTeacherStore();
   const { downloadResource } = useCourseStore();
 
+  // Modal states
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [mediaToDelete, setMediaToDelete] = useState({ unit_id: "", media_id: "" });
+
+  // Content states
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [deletingMediaId, setDeletingMediaId] = useState(null);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [uploadState, setUploadState] = useState({
     file: null,
     title: "",
@@ -28,15 +39,19 @@ function TeacherUnitContentTab() {
   });
 
   useEffect(() => {
-    const fetcheContents = async () => {
+    const fetchContents = async () => {
+      setIsLoading(true);
       try {
         await getUnitContent(unit_id);
       } catch (error) {
-        console.error("Failed to load unit content:", error);
+        setModalMessage("Failed to load unit content. Please try again.");
+        setShowErrorModal(true);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetcheContents();
+    fetchContents();
   }, [unit_id, getUnitContent]);
 
   const openUploadModal = () => {
@@ -63,7 +78,8 @@ function TeacherUnitContentTab() {
 
   const handleUpload = async () => {
     if (!uploadState.file || !uploadState.title) {
-      alert("Please provide both a file and a title");
+      setModalMessage("Please provide both a file and a title");
+      setShowErrorModal(true);
       return;
     }
 
@@ -89,10 +105,12 @@ function TeacherUnitContentTab() {
       await getUnitContent(unit_id);
 
       clearInterval(interval);
+      setModalMessage("Content uploaded successfully!");
+      setShowSuccessModal(true);
       closeUploadModal();
     } catch (error) {
-      console.error("Upload error:", error);
-      alert("Upload failed. Please try again.");
+      setModalMessage(error.response?.data?.error || "Upload failed. Please try again.");
+      setShowErrorModal(true);
     } finally {
       setUploadState((prev) => ({ ...prev, isUploading: false }));
     }
@@ -120,29 +138,46 @@ function TeacherUnitContentTab() {
     return mimeType.split("/")[1]?.toUpperCase() || "File";
   };
 
-  const handleDownload = (media) => {
-    downloadResource(
-      media.path.split("/").pop(),
-      `${media.title}.${getFileType(media.type).toLowerCase()}`
-    );
-  };
-
-  const handleDeleteMedia = async (unit_id, media_id) => {
+  const handleDownload = async (media) => {
     try {
-      setDeletingMediaId(media_id);
-      await deleteUnitContent(unit_id, media_id);
-      // Refresh the content
-      await getUnitContent(unit_id);
-    } catch (error) {
-      console.log(
-        "Error deleting media from a unit (from the page): ",
-        error.response?.data?.error || error.message
+      setIsLoading(true);
+      await downloadResource(
+        media.path.split("/").pop(),
+        `${media.title}.${getFileType(media.type).toLowerCase()}`
       );
+      setModalMessage("Download started successfully!");
+      setShowSuccessModal(true);
+    } catch (error) {
+      setModalMessage("Failed to download file. Please try again.");
+      setShowErrorModal(true);
     } finally {
-      setDeletingMediaId(null);
+      setIsLoading(false);
     }
   };
-  if (!unitContent) {
+
+  const confirmDeleteMedia = (unit_id, media_id) => {
+    setMediaToDelete({ unit_id, media_id });
+    setModalMessage("Are you sure you want to delete this content?");
+    setShowConfirmModal(true);
+  };
+
+  const handleDeleteMedia = async () => {
+    try {
+      setIsLoading(true);
+      await deleteUnitContent(mediaToDelete.unit_id, mediaToDelete.media_id);
+      await getUnitContent(mediaToDelete.unit_id);
+      setModalMessage("Content deleted successfully!");
+      setShowSuccessModal(true);
+    } catch (error) {
+      setModalMessage(error.response?.data?.error || "Failed to delete content.");
+      setShowErrorModal(true);
+    } finally {
+      setIsLoading(false);
+      setShowConfirmModal(false);
+    }
+  };
+
+  if (!unit) {
     return (
       <div className="text-center text-error text-2xl mt-16 font-bold">
         No unit selected
@@ -153,17 +188,31 @@ function TeacherUnitContentTab() {
   return (
     <div className="bg-base-100 p-6 rounded-lg shadow-md">
       {/* Unit Header */}
-      <h2 className="text-2xl font-bold text-primary mb-6">Unit Content</h2>
+      <h2 className="text-2xl font-bold text-primary mb-6">Unit Content </h2>
       <div className="bg-base-200 rounded-md px-4 py-2 flex justify-between items-center font-semibold text-lg mb-4">
         <span>{unit.unit_name}</span>
         <div className="flex gap-2">
-          <button className="btn btn-sm btn-ghost" onClick={openUploadModal}>
-            <Plus /> Add
+          <button 
+            className="btn btn-sm btn-ghost" 
+            onClick={openUploadModal}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <span className="loading loading-spinner loading-xs"></span>
+            ) : (
+              <>
+                <Plus /> Add
+              </>
+            )}
           </button>
         </div>
       </div>
 
-      {unitContent?.length > 0 ? (
+      {isLoading && unitContent?.length === 0 ? (
+        <div className="flex justify-center py-8">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      ) : unitContent?.length > 0 ? (
         unitContent.map((media, i) => (
           <div
             key={i}
@@ -187,13 +236,11 @@ function TeacherUnitContentTab() {
             </div>
             <div className="flex gap-2">
               <button
-                onClick={() => {
-                  handleDeleteMedia(unit_id, media._id);
-                }}
+                onClick={() => confirmDeleteMedia(unit_id, media._id)}
                 className="btn btn-sm btn-ghost text-error"
-                disabled={deletingMediaId === media._id}
+                disabled={isLoading}
               >
-                {deletingMediaId === media._id ? (
+                {isLoading ? (
                   <span className="loading loading-spinner loading-xs"></span>
                 ) : (
                   <Trash2 />
@@ -207,6 +254,8 @@ function TeacherUnitContentTab() {
           No content available for this unit
         </div>
       )}
+
+      {/* Modals */}
       <UploadModal
         isOpen={isUploadModalOpen}
         closeUploadModal={closeUploadModal}
@@ -222,6 +271,24 @@ function TeacherUnitContentTab() {
         closeModal={closeMediaModal}
         handleDownload={handleDownload}
         formatDate={formatDate}
+      />
+
+      <SuccessModal
+        showSuccessModal={showSuccessModal}
+        setShowSuccessModal={setShowSuccessModal}
+        successMessage={modalMessage}
+      />
+      <ErrorModal
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+        errorMessage={modalMessage}
+      />
+      <ConfirmModal
+        showConfirmModal={showConfirmModal}
+        setShowConfirmModal={setShowConfirmModal}
+        message={modalMessage}
+        onConfirm={handleDeleteMedia}
+        onCancel={() => setShowConfirmModal(false)}
       />
     </div>
   );

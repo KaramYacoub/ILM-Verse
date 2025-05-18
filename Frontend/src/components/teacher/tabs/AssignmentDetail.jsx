@@ -1,8 +1,18 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useTeacherStore } from "../../../store/TeacherStore";
+import SuccessModal  from "../../shared/SuccessModal";
+import ErrorModal from "../../shared/ErrorModal";
 
 export default function AssignmentDetail() {
+
+
+  const [modalMessage, setModalMessage] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+
+
+
   const location = useLocation();
   const assignment = location.state?.assignment;
 
@@ -50,9 +60,13 @@ export default function AssignmentDetail() {
       await TeacherUpdateSubmition(assignment.course_id, assignment._id, {
         studentsSubmissions: submissions,
       });
-      alert("Student submission statuses updated successfully!");
+      setModalMessage("Student submission statuses updated successfully!");
+      setShowSuccessModal(true)
     } catch (error) {
       console.log("error update submition: ", error);
+      setModalMessage(
+        "Failed to update student submission statuses: " );
+        setShowErrorModal(true);
     }
   };
 
@@ -135,6 +149,17 @@ export default function AssignmentDetail() {
           </tbody>
         </table>
       </div>
+      <SuccessModal
+        showSuccessModal={showSuccessModal}
+        setShowSuccessModal={setShowSuccessModal}
+        successMessage={modalMessage}
+      />
+      <ErrorModal
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+        errorMessage={modalMessage} 
+        />
+
     </div>
   );
 }

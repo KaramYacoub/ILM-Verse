@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ParentNavBar from "../../components/parent/ParentNavBar";
-import CourseCard from "../../components/shared/CourseCard"; // Assuming this path
+import CourseCard from "../../components/shared/CourseCard";
 import useParentsStore from "../../store/ParentStore";
 
 function ParentDashboard() {
@@ -14,6 +14,17 @@ function ParentDashboard() {
   useEffect(() => {
     fetchStudents();
   }, [fetchStudents]);
+
+  // Set the first student as default when students are loaded
+  useEffect(() => {
+    if (students.length > 0 && !selectedStudent) {
+      const firstStudent = students[0];
+      setSelectedStudent({
+        student_id: firstStudent.student_id,
+        section_id: firstStudent.section_id,
+      });
+    }
+  }, [students, selectedStudent]);
 
   useEffect(() => {
     if (selectedStudent) {

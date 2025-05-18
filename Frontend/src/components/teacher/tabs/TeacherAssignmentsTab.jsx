@@ -2,10 +2,31 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Calendar, FileText, Trash2, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTeacherStore } from "../../../store/TeacherStore";
+import SuccessModal from "../../shared/SuccessModal";
+import ErrorModal from "../../shared/ErrorModal";
+import ConfirmModal from "../../shared/ConfirmModal";
 
 export default function TeacherAssignmentsTab() {
   const { course_id } = useParams();
   const navigate = useNavigate();
+
+  // Modal states
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [actionCallback, setActionCallback] = useState(null);
+
+  // Assignment states
+  const [showModal, setShowModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [newAssignment, setNewAssignment] = useState({
+    title: "",
+    description: "",
+    dueDate: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [assignmentToDelete, setAssignmentToDelete] = useState(null);
 
   const {
     assignments,
@@ -15,35 +36,42 @@ export default function TeacherAssignmentsTab() {
     downloadAssignments,
   } = useTeacherStore();
 
-  const [showModal, setShowModal] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [newAssignment, setNewAssignment] = useState({
-    title: "",
-    description: "",
-    dueDate: "",
-  });
-
   useEffect(() => {
     const fetchAssignments = async () => {
+      setIsLoading(true);
       try {
         await TeacherGetAssignment(course_id);
       } catch (error) {
-        console.error("Failed to load assignments:", error);
+        setModalMessage("Failed to load assignments. Please try again.");
+        setShowErrorModal(true);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchAssignments();
   }, [course_id, TeacherGetAssignment]);
 
-  const handleDeleteAssignment = async (assignment_id) => {
+  const confirmDeleteAssignment = (assignment_id) => {
+    setAssignmentToDelete(assignment_id);
+    setModalMessage("Are you sure you want to delete this assignment?");
+    setShowConfirmModal(true);
+  };
+
+  const handleDeleteAssignment = async () => {
     try {
-      if (window.confirm("are you sure you want to delete this assignment?")) {
-        await TeacherDelteAssignment(course_id, assignment_id);
-        await TeacherGetAssignment(course_id);
-        alert("Assignment deleted successfully");
-      }
+      setIsLoading(true);
+      await TeacherDelteAssignment(course_id, assignmentToDelete);
+      await TeacherGetAssignment(course_id);
+      setModalMessage("Assignment deleted successfully");
+      setShowSuccessModal(true);
     } catch (error) {
-      alert("Failed to deleting assignment", error);
+      setModalMessage(error.response?.data?.error || "Failed to delete assignment");
+      setShowErrorModal(true);
+    } finally {
+      setIsLoading(false);
+      setAssignmentToDelete(null);
+      setShowConfirmModal(false);
     }
   };
 
@@ -67,11 +95,22 @@ export default function TeacherAssignmentsTab() {
     setSelectedFile(file);
   };
 
-  const handleSaveAssignment = async () => {
-    if (!newAssignment.title || !selectedFile) {
-      alert("Title and file are required.");
-      return;
+  const validateAssignment = () => {
+    if (!newAssignment.title.trim()) {
+      setModalMessage("Title is required");
+      setShowErrorModal(true);
+      return false;
     }
+    if (!selectedFile) {
+      setModalMessage("File is required");
+      setShowErrorModal(true);
+      return false;
+    }
+    return true;
+  };
+
+  const handleSaveAssignment = async () => {
+    if (!validateAssignment()) return;
 
     const formData = new FormData();
     formData.append("title", newAssignment.title);
@@ -79,18 +118,20 @@ export default function TeacherAssignmentsTab() {
     formData.append("end_at", newAssignment.dueDate);
     formData.append("media", selectedFile);
 
+    setIsLoading(true);
     try {
-      const response = await TeacherAddAssignment(course_id, formData);
-      if (response.status === 200) {
-        await TeacherGetAssignment(course_id);
-        handleCloseModal();
-      }
+      await TeacherAddAssignment(course_id, formData);
+      await TeacherGetAssignment(course_id);
+      setModalMessage("Assignment added successfully!");
+      setShowSuccessModal(true);
+      handleCloseModal();
     } catch (error) {
-      console.error(
-        "Error adding assignment:",
-        error.response?.data?.error || error.message
+      setModalMessage(
+        error.response?.data?.error || "Error saving assignment. Please try again."
       );
-      alert("Error saving assignment.");
+      setShowErrorModal(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -101,25 +142,50 @@ export default function TeacherAssignmentsTab() {
     return mimeType.split("/")[1]?.toUpperCase() || "File";
   };
 
-  const handleDownload = (assigment) => {
-    downloadAssignments(
-      assigment.path.split("/").pop(),
-      `${assigment.title}.${getFileType(assigment.type).toLowerCase()}`
-    );
+  const handleDownload = async (assignment) => {
+    try {
+      setIsLoading(true);
+      await downloadAssignments(
+        assignment.path.split("/").pop(),
+        `${assignment.title}.${getFileType(assignment.type).toLowerCase()}`
+      );
+      setModalMessage("Download started successfully!");
+      setShowSuccessModal(true);
+    } catch (error) {
+      setModalMessage("Failed to download file. Please try again.");
+      setShowErrorModal(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="p-4 bg-gray-50 rounded-lg shadow-md">
-      {assignments.length === 0 ? (
-        <p className="text-primary font-bold text-2xl text-center">
-          No assignments available.
-        </p>
+      {isLoading && assignments.length === 0 ? (
+        <div className="flex justify-center py-8">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      ) : assignments.length === 0 ? (
+        <div className="text-center space-y-4">
+          <p className="text-primary font-bold text-2xl">No assignments available.</p>
+          <button onClick={handleAddAssignment} className="btn btn-primary">
+            + Add Assignment
+          </button>
+        </div>
       ) : (
         <div className="grid gap-4 mb-6">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-3xl text-primary font-semibold">Assignments</h2>
-            <button onClick={handleAddAssignment} className="btn btn-primary">
-              + Add Assignment
+            <button 
+              onClick={handleAddAssignment} 
+              className="btn btn-primary"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <span className="loading loading-spinner"></span>
+              ) : (
+                "+ Add Assignment"
+              )}
             </button>
           </div>
           {assignments.map((assignment, i) => (
@@ -131,6 +197,7 @@ export default function TeacherAssignmentsTab() {
                 <button
                   onClick={() => handleDownload(assignment)}
                   className="text-lg font-bold flex items-center gap-2 text-primary hover:underline"
+                  disabled={isLoading}
                 >
                   <FileText className="w-5 h-5" />
                   {assignment.title || `Untitled`}
@@ -157,14 +224,20 @@ export default function TeacherAssignmentsTab() {
                     )
                   }
                   className="btn btn-sm btn-outline btn-primary"
+                  disabled={isLoading}
                 >
                   Show submission
                 </button>
                 <button
-                  onClick={() => handleDeleteAssignment(assignment._id)}
+                  onClick={() => confirmDeleteAssignment(assignment._id)}
                   className="btn btn-sm btn-outline btn-error"
+                  disabled={isLoading}
                 >
-                  <Trash2 className="w-4 h-4" />
+                  {isLoading ? (
+                    <span className="loading loading-spinner loading-xs"></span>
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
                 </button>
               </div>
             </div>
@@ -172,7 +245,7 @@ export default function TeacherAssignmentsTab() {
         </div>
       )}
 
-      {/* add assignment modal */}
+      {/* Add Assignment Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
@@ -183,6 +256,7 @@ export default function TeacherAssignmentsTab() {
               <button
                 onClick={handleCloseModal}
                 className="text-gray-500 hover:text-gray-700"
+                disabled={isLoading}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -200,6 +274,7 @@ export default function TeacherAssignmentsTab() {
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                   placeholder="Enter assignment title"
+                  disabled={isLoading}
                 />
               </div>
 
@@ -214,6 +289,7 @@ export default function TeacherAssignmentsTab() {
                   className="textarea textarea-bordered w-full"
                   placeholder="Enter description"
                   rows="3"
+                  disabled={isLoading}
                 ></textarea>
               </div>
 
@@ -227,6 +303,7 @@ export default function TeacherAssignmentsTab() {
                   value={newAssignment.dueDate}
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
+                  disabled={isLoading}
                 />
               </div>
 
@@ -240,25 +317,57 @@ export default function TeacherAssignmentsTab() {
                     accept=".pdf,.doc,.docx"
                     className="file-input file-input-bordered w-full"
                     onChange={handleFileChange}
+                    disabled={isLoading}
                   />
                 </label>
               </div>
             </div>
 
             <div className="flex justify-end gap-2 p-4 border-t">
-              <button onClick={handleCloseModal} className="btn btn-ghost">
+              <button 
+                onClick={handleCloseModal} 
+                className="btn btn-ghost"
+                disabled={isLoading}
+              >
                 Cancel
               </button>
               <button
                 onClick={handleSaveAssignment}
                 className="btn btn-primary"
+                disabled={isLoading}
               >
-                Save
+                {isLoading ? (
+                  <span className="loading loading-spinner"></span>
+                ) : (
+                  "Save"
+                )}
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* Feedback Modals */}
+      <SuccessModal
+        showSuccessModal={showSuccessModal}
+        setShowSuccessModal={setShowSuccessModal}
+        successMessage={modalMessage}
+      />
+      <ErrorModal
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+        errorMessage={modalMessage}
+      />
+      <ConfirmModal
+        showConfirmModal={showConfirmModal}
+        setShowConfirmModal={setShowConfirmModal}
+        message={modalMessage}
+        onConfirm={handleDeleteAssignment}
+        onCancel={() => {
+          setAssignmentToDelete(null);
+          setShowConfirmModal(false);
+        }}
+      />
     </div>
   );
 }
