@@ -2,12 +2,19 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CheckCircle2, Download, Loader2, XCircle } from "lucide-react";
 import useStudentStore from "../../../store/studentStore";
+import SuccessModal from "../../../components/shared/SuccessModal";
+import ErrorModal from "../../../components/shared/ErrorModal";
 
 function StudentAssignmentsTab() {
   const { course_id } = useParams();
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [submissionError, setSubmissionError] = useState(null);
+  
+  // Modal states
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     assignments = [],
@@ -23,14 +30,12 @@ function StudentAssignmentsTab() {
     }
   }, [course_id, fetchAssignments]);
 
-  // Check if due date has passed
   const isPastDue = (dueDateString) => {
     const dueDate = new Date(dueDateString);
     const currentDate = new Date();
     return currentDate > dueDate;
   };
 
-  // Format date for display
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -44,19 +49,41 @@ function StudentAssignmentsTab() {
 
     const formData = new FormData();
     formData.append("media", selectedFile);
-    setSubmissionError(null);
+    setIsSubmitting(true);
 
     try {
       await submitAssignment(course_id, selectedAssignment._id, formData);
+      setModalMessage("Assignment submitted successfully!");
+      setShowSuccessModal(true);
       document.getElementById("submit-modal").checked = false;
       fetchAssignments(course_id);
       setSelectedAssignment(null);
       setSelectedFile(null);
     } catch (err) {
       console.error("Submission failed:", err);
-      setSubmissionError(
+      setModalMessage(
         err.response?.data?.message || "Upload failed. Please try again."
       );
+      setShowErrorModal(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDownload = async (media) => {
+    try {
+      setIsSubmitting(true);
+      await downloadAssignments(
+        media.path.split("/").pop(),
+        `${media.title}.${getFileType(media.type).toLowerCase()}`
+      );
+      setModalMessage("Download started successfully!");
+      setShowSuccessModal(true);
+    } catch (error) {
+      setModalMessage("Failed to download file. Please try again.");
+      setShowErrorModal(true);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -92,12 +119,17 @@ function StudentAssignmentsTab() {
           setSelectedAssignment(assignment);
           setSelectedFile(null);
         }}
+        disabled={isSubmitting}
       >
-        View and Submit
+        {isSubmitting ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          "View and Submit"
+        )}
       </label>
     ) : (
       <span className="flex items-center gap-1 justify-center font-bold text-success">
-        <CheckCircle2  className="h-5 w-5"/> Submitted successfully
+        <CheckCircle2 className="h-5 w-5" /> Submitted successfully
       </span>
     );
   };
@@ -109,15 +141,6 @@ function StudentAssignmentsTab() {
     return mimeType.split("/")[1]?.toUpperCase() || "File";
   };
 
-  const handleDownload = (media) => {
-    downloadAssignments(
-      media.path.split("/").pop(),
-      `${media.title}.${getFileType(media.type).toLowerCase()}`
-    );
-  };
-
-  
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -125,10 +148,6 @@ function StudentAssignmentsTab() {
       </div>
     );
   }
-  if (submissionError)
-    return (
-      <div className="text-center text-red-500 py-10">{submissionError}</div>
-    );
 
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
@@ -171,8 +190,15 @@ function StudentAssignmentsTab() {
                 <button
                   onClick={() => handleDownload(selectedAssignment)}
                   className="link link-primary flex items-center gap-2 mt-2"
+                  disabled={isSubmitting}
                 >
-                  <Download /> {selectedAssignment.title}.pdf
+                  {isSubmitting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Download /> {selectedAssignment.title}.pdf
+                    </>
+                  )}
                 </button>
               </div>
 
@@ -187,6 +213,7 @@ function StudentAssignmentsTab() {
                   accept=".pdf,.doc,.docx"
                   className="file-input file-input-bordered w-full"
                   onChange={(e) => setSelectedFile(e.target.files[0])}
+                  disabled={isSubmitting}
                 />
                 {selectedFile && (
                   <p className="text-sm mt-2 text-gray-600">
@@ -196,21 +223,41 @@ function StudentAssignmentsTab() {
               </div>
 
               <div className="modal-action mt-4">
-                <label htmlFor="submit-modal" className="btn btn-outline">
+                <label 
+                  htmlFor="submit-modal" 
+                  className="btn btn-outline"
+                  disabled={isSubmitting}
+                >
                   Cancel
                 </label>
                 <button
                   className="btn btn-primary"
                   onClick={handleSubmit}
-                  disabled={!selectedFile}
+                  disabled={!selectedFile || isSubmitting}
                 >
-                  Submit Assignment
+                  {isSubmitting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    "Submit Assignment"
+                  )}
                 </button>
               </div>
             </>
           )}
         </div>
       </div>
+
+      {/* Success and Error Modals */}
+      <SuccessModal
+        showSuccessModal={showSuccessModal}
+        setShowSuccessModal={setShowSuccessModal}
+        successMessage={modalMessage}
+      />
+      <ErrorModal
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+        errorMessage={modalMessage}
+      />
     </div>
   );
 }

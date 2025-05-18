@@ -185,6 +185,11 @@ router.get(
 router.post("/absence", absenceController.updateAbsence);
 
 router.get(
+  "/absence/check/:student_id/:section_id",
+  absenceController.getStudentAbsences
+);
+
+router.get(
   "/students/:section_id",
 
   courseController.getStudentInSection
@@ -209,4 +214,9 @@ router.post(
   annoucmentController.sendAnnouncment
 );
 router.get("/annoucments/:department_id", annoucmentController.getAnnoucments);
+router.delete(
+  "/annoucments/:annoucment_id",
+  annoucmentController.deleteAnnoucment
+);
+
 module.exports = router;

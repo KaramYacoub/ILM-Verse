@@ -257,10 +257,10 @@ exports.getTeacherDepartment = async (req, res) => {
 };
 exports.deleteAnnoucment = async (req, res) => {
   try {
-    const { annoucment_id } = req.body;
+    const { annoucment_id } = req.params;
     const findAnnoucment = announcment.findOne({
       where: {
-        annoucment_id: annoucment_id,
+        announcmentid: annoucment_id,
       },
     });
     if (!findAnnoucment) {
@@ -270,7 +270,7 @@ exports.deleteAnnoucment = async (req, res) => {
       });
     } else {
       await announcment.destroy({
-        where: { annoucment_id: annoucment_id },
+        where: { announcmentid: annoucment_id },
       });
       return res.status(200).json({
         status: "sucess",

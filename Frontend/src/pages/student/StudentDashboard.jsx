@@ -38,7 +38,7 @@ function StudentDashboard() {
             <Loader2 className="animate-spin" size={50} />
           </div>
         )}
-        {error && <p className="mt-6 text-red-500">{error}</p>}
+        {/* {error && <p className="mt-6 text-red-500">{error}</p>} */}
 
         {/* Courses Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 w-full">

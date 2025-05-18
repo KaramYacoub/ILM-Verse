@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Loader2, Search } from "lucide-react";
-import { useAdminStore } from "../../store/adminStore";
+import { useAdminStore } from "../../store/AdminStore";
 
 function SearchParent() {
   const [searchTerm, setSearchTerm] = useState("");
