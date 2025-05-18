@@ -428,6 +428,20 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // delete report
+  deleteReport: async (report_id) => {
+    try {
+      await axiosInstance.delete("/admin/reports/delete/", {
+        data: { report_id },
+      });
+    } catch (error) {
+      console.log(
+        "Error deleting report: ",
+        error.response.data.error || error.message
+      );
+    }
+  },
+
   // change user password
   changeUserPassword: async ({ userType, identifier, newPassword }) => {
     try {

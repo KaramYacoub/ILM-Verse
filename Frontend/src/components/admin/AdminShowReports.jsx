@@ -3,18 +3,26 @@ import { useParams } from "react-router-dom";
 import AdminNavbar from "../admin/AdminNavbar";
 import { X } from "lucide-react";
 import { useAdminStore } from "../../store/AdminStore";
+import SuccessModal from "../../components/shared/SuccessModal";
+import ErrorModal from "../../components/shared/ErrorModal";
 
 function AdminShowReports() {
   const { student_id } = useParams();
 
-  const { getAllStudents, reports, fetchShowReports } = useAdminStore();
+  const { getAllStudents, reports, fetchShowReports, deleteReport } =
+    useAdminStore();
 
   const [selectedReport, setSelectedReport] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState([]);
 
-  // 🔹 Fetch students on mount (only if not already fetched)
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Fetch students on mount (only if not already fetched)
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -34,12 +42,12 @@ function AdminShowReports() {
     fetchStudents();
   }, [students, getAllStudents]);
 
-  // 🔹 Find the student after students are loaded
+  // Find the student after students are loaded
   const selectedStudent = students.find(
     (student) => student.student_id === student_id
   );
 
-  // 🔹 Fetch reports when student is available
+  // Fetch reports when student is available
   useEffect(() => {
     if (selectedStudent?.student_id) {
       fetchShowReports(selectedStudent.student_id);
@@ -56,7 +64,29 @@ function AdminShowReports() {
     setSelectedReport(null);
   };
 
-  // 🔹 Optional: show spinner if students are still loading
+  const handleDeleteClick = (report) => {
+    setSelectedReport(report);
+    setShowConfirmModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedReport) return;
+    try {
+      await deleteReport(selectedReport.report_id);
+      setShowConfirmModal(false);
+      setShowSuccessModal(true);
+      if (selectedStudent?.student_id) {
+        await fetchShowReports(selectedStudent.student_id);
+      }
+    } catch (error) {
+      console.error("Error deleting report:", error);
+      setErrorMessage("Failed to delete report");
+      setShowErrorModal(true);
+    } finally {
+      setSelectedReport(null);
+    }
+  };
+
   if (loading && students.length === 0) {
     return (
       <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">
@@ -101,14 +131,14 @@ function AdminShowReports() {
           </h2>
 
           {reportsData.adminReports?.length > 0 ? (
-            <div className="overflow-x-auto">
-              <table className="table w-full">
+            <div className="overflow-x-auto ">
+              <table className="table w-full text-center">
                 <thead>
                   <tr className="bg-primary text-base-100">
-                    <th className="text-center">Admin</th>
-                    <th className="text-center">Date</th>
-                    <th className="text-center">Title</th>
-                    <th className="text-center">Actions</th>
+                    <th>Admin</th>
+                    <th>Date</th>
+                    <th>Title</th>
+                    <th colSpan="2">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -117,18 +147,24 @@ function AdminShowReports() {
                       key={`admin-${report.title}-${report.date}`}
                       className="hover"
                     >
-                      <td className="text-center">{report.admin}</td>
-                      <td className="text-center">
-                        {new Date(report.date).toLocaleDateString()}
-                      </td>
-                      <td className="text-center">{report.title}</td>
-                      <td className="text-center">
-                        <button
-                          onClick={() => openReportModal(report)}
-                          className="btn btn-primary btn-sm"
-                        >
-                          View
-                        </button>
+                      <td>{report.admin}</td>
+                      <td>{new Date(report.date).toLocaleDateString()}</td>
+                      <td>{report.title}</td>
+                      <td colSpan="2">
+                        <div className="flex flex-row justify-center gap-2">
+                          <button
+                            onClick={() => openReportModal(report)}
+                            className="btn btn-primary btn-sm"
+                          >
+                            View
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClick(report)}
+                            className="btn btn-outline btn-primary btn-sm"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -253,6 +289,43 @@ function AdminShowReports() {
           </div>
         </div>
       )}
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h3 className="text-xl font-bold mb-4">Confirm Deletion</h3>
+            <p className="mb-6">
+              Are you sure you want to delete the report titled{" "}
+              <span className="font-semibold">{selectedReport?.title}</span>?
+              This action cannot be undone.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="btn btn-outline"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="btn btn-error text-white"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <SuccessModal
+        successMessage="Report deleted successfully."
+        showSuccessModal={showSuccessModal}
+        setShowSuccessModal={setShowSuccessModal}
+      />
+      <ErrorModal
+        errorMessage={errorMessage}
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+      />
     </div>
   );
 }
