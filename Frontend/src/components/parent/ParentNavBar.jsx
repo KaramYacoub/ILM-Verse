@@ -1,6 +1,5 @@
 import {
   FaHome,
-  FaClipboardList,
   FaCalendarAlt,
   FaComments,
   FaSignOutAlt,
@@ -12,11 +11,11 @@ import { Loader2 } from "lucide-react";
 
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/AuthStore";
-import ParentChatPanel from "./ChatThings/ParentChatPanel";
+import ParentAnnouncements from "./ParentAnnouncements";
 
 function ParentNavBar() {
   const { isUserLoggingOut, logout, authParent } = useAuthStore();
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isAnnouncementOpen, setIsAnnouncementOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -72,7 +71,7 @@ function ParentNavBar() {
           <button
             onClick={() => {
               toggleMenu();
-              setIsChatOpen(true);
+              setIsAnnouncementOpen(!isAnnouncementOpen);
             }}
             className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500 text-left w-full"
           >
@@ -127,7 +126,7 @@ function ParentNavBar() {
               <button
                 onClick={() => {
                   toggleMenu();
-                  setIsChatOpen(true);
+                  setIsAnnouncementOpen(!isAnnouncementOpen);
                 }}
                 className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500 text-left w-full"
               >
@@ -150,9 +149,9 @@ function ParentNavBar() {
         )}
       </div>
       {/* Chat Panel */}
-      <ParentChatPanel
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
+      <ParentAnnouncements
+        isOpen={isAnnouncementOpen}
+        onClose={() => setIsAnnouncementOpen(!isAnnouncementOpen)}
       />
     </div>
   );

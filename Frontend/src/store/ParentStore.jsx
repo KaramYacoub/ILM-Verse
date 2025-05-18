@@ -202,6 +202,34 @@ const useParentsStore = create((set) => ({
       throw error;
     }
   },
+
+  getParentDepartment: async () => {
+    try {
+      const response = await axiosInstance.get("/parent/departments");
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "error in get departments for the parent: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
+
+  getAnnoucments: async (department_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/parent/annoucments/${department_id || "general"}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "error in get announcement for the parent: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
+    }
+  },
 }));
 
 export default useParentsStore;

@@ -26,9 +26,10 @@ function TeacherCourseStudentsTab() {
       setIsLoading(true);
       try {
         const allStudents = await getStudentsInCourse(course_id);
-        setStudents(allStudents);
+        setStudents(allStudents || []);
       } catch (error) {
         console.error("Error fetching students:", error);
+        setStudents([]);
       } finally {
         setIsLoading(false);
       }
@@ -50,8 +51,8 @@ function TeacherCourseStudentsTab() {
 
   const studentsPerPage = 5;
 
-  const filteredStudents = students.filter((student) =>
-    student.first_name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredStudents = (students || []).filter((student) =>
+    student?.first_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
@@ -65,7 +66,7 @@ function TeacherCourseStudentsTab() {
     <div className="bg-base-100 p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-primary mb-4">Students</h2>
 
-      {/* Search */}
+      {/* Search - keep this always visible */}
       <div className="w-full flex items-center mb-4">
         <input
           type="text"
@@ -86,123 +87,124 @@ function TeacherCourseStudentsTab() {
         </div>
       ) : (
         <>
-          {/* Table */}
-          <div className="rounded border border-base-300 overflow-x-auto">
-            <table className="table table-zebra w-full text-center">
-              <thead className="bg-base-300">
-                <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentStudents.length > 0 ? (
-                  currentStudents.map((student, index) => (
-                    <tr key={index}>
-                      <td>{student.student_id}</td>
-                      <td>
-                        {student.first_name} {student.last_name}
-                      </td>
-                      <td>
-                        <div className="dropdown dropdown-end">
-                          <button tabIndex={0} className="btn btn-sm">
-                            <MoreHorizontal size={16} />
-                          </button>
-                          <ul
-                            tabIndex={0}
-                            className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-40"
-                          >
-                            <li>
-                              <button
-                                onClick={() =>
-                                  handleReportClick({
-                                    id: student.student_id,
-                                    name:
-                                      student.first_name +
-                                      " " +
-                                      student.last_name,
-                                  })
-                                }
-                              >
-                                Report
-                              </button>
-                            </li>
-                            <li>
-                              <button
-                                onClick={() =>
-                                  handleAddMarks({
-                                    id: student.student_id,
-                                    name:
-                                      student.first_name +
-                                      " " +
-                                      student.last_name,
-                                  })
-                                }
-                              >
-                                Add marks
-                              </button>
-                            </li>
-                          </ul>
-                        </div>
-                      </td>
+          {/* Show table only if there are students */}
+          {filteredStudents.length > 0 ? (
+            <>
+              <div className="rounded border border-base-300 overflow-x-auto">
+                <table className="table table-zebra w-full text-center">
+                  <thead className="bg-base-300">
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Actions</th>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="3" className="py-8 text-center">
-                      {searchTerm
-                        ? "No students match your search"
-                        : "No students found in this course"}
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  </thead>
+                  <tbody>
+                    {currentStudents.map((student, index) => (
+                      <tr key={index}>
+                        <td>{student.student_id}</td>
+                        <td>
+                          {student.first_name} {student.last_name}
+                        </td>
+                        <td>
+                          <div className="dropdown dropdown-end">
+                            <button tabIndex={0} className="btn btn-sm">
+                              <MoreHorizontal size={16} />
+                            </button>
+                            <ul
+                              tabIndex={0}
+                              className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-40"
+                            >
+                              <li>
+                                <button
+                                  onClick={() =>
+                                    handleReportClick({
+                                      id: student.student_id,
+                                      name:
+                                        student.first_name +
+                                        " " +
+                                        student.last_name,
+                                    })
+                                  }
+                                >
+                                  Report
+                                </button>
+                              </li>
+                              <li>
+                                <button
+                                  onClick={() =>
+                                    handleAddMarks({
+                                      id: student.student_id,
+                                      name:
+                                        student.first_name +
+                                        " " +
+                                        student.last_name,
+                                    })
+                                  }
+                                >
+                                  Add marks
+                                </button>
+                              </li>
+                            </ul>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-            {/* Modals */}
-            {isReportModalOpen && (
-              <StudentReportModal
-                isOpen={isReportModalOpen}
-                onClose={() => setIsReportModalOpen(false)}
-                student={selectedStudent}
-              />
-            )}
+              {/* Pagination */}
+              <div className="flex justify-between items-center mt-4">
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                  disabled={currentPage === 1}
+                >
+                  Previous
+                </button>
 
-            {isMarksModalOpen && (
-              <TeacherStudentMarksModal
-                isOpen={isMarksModalOpen}
-                onClose={() => setIsMarksModalOpen(false)}
-                student={selectedStudent}
-              />
-            )}
-          </div>
+                <p>
+                  Page {currentPage} of {totalPages}
+                </p>
 
-          {/* Pagination */}
-          {filteredStudents.length > 0 && (
-            <div className="flex justify-between items-center mt-4">
-              <button
-                className="btn btn-sm btn-primary"
-                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-
-              <p>
-                Page {currentPage} of {totalPages}
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(p + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          ) : (
+            // Show simple message when no students
+            <div className="flex justify-center items-center h-40">
+              <p className="text-lg">
+                {searchTerm
+                  ? "No students match your search"
+                  : "No students found in this course"}
               </p>
-
-              <button
-                className="btn btn-sm btn-primary"
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(p + 1, totalPages))
-                }
-                disabled={currentPage === totalPages}
-              >
-                Next
-              </button>
             </div>
+          )}
+
+          {/* Modals (keep outside the conditional) */}
+          {isReportModalOpen && (
+            <StudentReportModal
+              isOpen={isReportModalOpen}
+              onClose={() => setIsReportModalOpen(false)}
+              student={selectedStudent}
+            />
+          )}
+
+          {isMarksModalOpen && (
+            <TeacherStudentMarksModal
+              isOpen={isMarksModalOpen}
+              onClose={() => setIsMarksModalOpen(false)}
+              student={selectedStudent}
+            />
           )}
         </>
       )}

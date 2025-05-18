@@ -16,7 +16,7 @@ import { useAuthStore } from "../../store/AuthStore";
 
 function AdminNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isAnnouncementOpen, setIsAnnouncementOpen] = useState(false);
   const { isUserLoggingOut, logout, authAdmin } = useAuthStore();
 
   const toggleMenu = () => {
@@ -78,7 +78,7 @@ function AdminNavbar() {
             </Link>
 
             <button
-              onClick={() => setIsChatOpen(!isChatOpen)}
+              onClick={() => setIsAnnouncementOpen(!isAnnouncementOpen)}
               className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
             >
               <FaComments color="#fff" />
@@ -144,7 +144,7 @@ function AdminNavbar() {
                 <button
                   onClick={() => {
                     toggleMenu();
-                    setIsChatOpen(true);
+                    setIsAnnouncementOpen(!isAnnouncementOpen);
                   }}
                   className="flex items-center gap-3 py-2 cursor-pointer hover:text-yellow-500 px-6"
                 >
@@ -169,8 +169,8 @@ function AdminNavbar() {
       </div>
       {/* Chat Panel */}
       <AnnouncementPanel
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(!isChatOpen)}
+        isOpen={isAnnouncementOpen}
+        onClose={() => setIsAnnouncementOpen(!isAnnouncementOpen)}
       />
     </>
   );

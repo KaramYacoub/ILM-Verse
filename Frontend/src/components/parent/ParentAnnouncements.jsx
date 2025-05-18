@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { X, Filter } from "lucide-react";
-import useStudentStore from "../../store/studentStore";
+import useParentsStore from "../../store/ParentStore";
 
-function StudentAnnouncements({ isOpen, onClose }) {
-  const { getStudentDepartment, getAnnoucments } = useStudentStore();
+function ParentAnnouncements({ isOpen, onClose }) {
+  const { getParentDepartment, getAnnoucments } = useParentsStore();
 
   const [announcements, setAnnouncements] = useState([]);
-  const [studentDept, setStudentDept] = useState(null);
+  const [studentDepts, setStudentDepts] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState("general");
   const [isLoading, setIsLoading] = useState(true);
 
@@ -14,17 +14,17 @@ function StudentAnnouncements({ isOpen, onClose }) {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const dept = await getStudentDepartment();
-        setStudentDept(dept);
+        const depts = await getParentDepartment();
+        setStudentDepts(depts);
 
-        const targetGroup = selectedGroup || "general";
+        const targetGroup = selectedGroup === "general" ? null : selectedGroup;
         const data = await getAnnoucments(targetGroup);
 
         const formatted = data
           .map((a) => ({
             id: a.announcmentid,
             text: a.content,
-            group: a.department_id ?? "general",
+            group: a.department_id ? a.department_id : "general",
             department_id: a.department_id,
             sender: a.admin?.full_name ?? "Unknown",
             date: a.announcmentdate,
@@ -42,18 +42,18 @@ function StudentAnnouncements({ isOpen, onClose }) {
     };
 
     fetchData();
-  }, [getStudentDepartment, getAnnoucments, selectedGroup]);
+  }, [getParentDepartment, getAnnoucments, selectedGroup]);
 
   if (!isOpen) return null;
 
   const depts = [
     { department_id: "general", name: "General" },
-    ...(studentDept ? [studentDept] : []),
+    ...studentDepts,
   ];
 
-  const filtered =
-    selectedGroup === "" || selectedGroup === "general"
-      ? announcements
+  const filteredAnnouncements =
+    selectedGroup === "general"
+      ? announcements.filter((a) => a.group === "general")
       : announcements.filter((a) => a.group === selectedGroup);
 
   return (
@@ -100,8 +100,8 @@ function StudentAnnouncements({ isOpen, onClose }) {
             <div className="flex justify-center items-center h-64">
               <span className="loading loading-spinner loading-lg"></span>
             </div>
-          ) : filtered.length > 0 ? (
-            filtered.map((a) => {
+          ) : filteredAnnouncements.length > 0 ? (
+            filteredAnnouncements.map((a) => {
               const formattedTime = new Date(
                 `${a.date}T${a.time}`
               ).toLocaleTimeString([], {
@@ -127,13 +127,6 @@ function StudentAnnouncements({ isOpen, onClose }) {
                         {depts.find((d) => d.department_id === a.group)?.name ||
                           "General"}
                       </span>
-                      {a.group === "general" && a.department_id && (
-                        <span className="inline-block px-2 py-1 text-xs font-medium bg-accent text-primary rounded-full">
-                          {depts.find(
-                            (d) => d.department_id === a.department_id
-                          )?.name || a.department_id}
-                        </span>
-                      )}
                     </div>
                     <div className="text-xs text-neutral/60">
                       <span>{a.date}</span> at <span>{formattedTime}</span>
@@ -144,7 +137,9 @@ function StudentAnnouncements({ isOpen, onClose }) {
             })
           ) : (
             <div className="text-center py-8 text-neutral/50">
-              No announcements found
+              No announcements found for{" "}
+              {depts.find((d) => d.department_id === selectedGroup)?.name ||
+                "General"}
             </div>
           )}
         </div>
@@ -153,4 +148,4 @@ function StudentAnnouncements({ isOpen, onClose }) {
   );
 }
 
-export default StudentAnnouncements;
+export default ParentAnnouncements;

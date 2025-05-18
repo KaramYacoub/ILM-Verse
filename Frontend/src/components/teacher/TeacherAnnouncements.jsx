@@ -103,7 +103,7 @@ function TeacherAnnouncements({ isOpen, onClose }) {
           ) : filtered.length > 0 ? (
             filtered.map((a) => {
               const formattedTime = new Date(
-                `1970-01-01T${a.time}`
+                `${a.date}T${a.time}`
               ).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
