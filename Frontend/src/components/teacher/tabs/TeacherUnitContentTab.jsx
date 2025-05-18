@@ -43,7 +43,7 @@ function TeacherUnitContentTab() {
       setIsLoading(true);
       try {
         await getUnitContent(unit_id);
-      } catch (error) {
+      } catch {
         setModalMessage("Failed to load unit content. Please try again.");
         setShowErrorModal(true);
       } finally {
@@ -147,7 +147,7 @@ function TeacherUnitContentTab() {
       );
       setModalMessage("Download started successfully!");
       setShowSuccessModal(true);
-    } catch (error) {
+    } catch {
       setModalMessage("Failed to download file. Please try again.");
       setShowErrorModal(true);
     } finally {

@@ -404,6 +404,7 @@ exports.getAllStudents = async (req, res) => {
         first_name: student.first_name,
         last_name: student.last_name,
         section_name: section.section_name,
+        section_id: section.section_id,
         grade_name: grade.grade_name,
         dept_name: dept.name,
         parent_id: student.parent_id,

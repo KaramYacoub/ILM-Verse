@@ -4,9 +4,9 @@ import AdminNavbar from "../adminNavbar";
 import { useCourseStore } from "../../../store/CourseStore";
 import { AlertCircle, ArrowLeft, Plus, FileText } from "lucide-react";
 import ShowCourseStudents from "../ShowCourseStudents";
-import ErrorModal from "../../../components/shared/ErrorModal";
-import SuccessModal from "../../../components/shared/SuccessModal";
-import ConfirmModal from "../../../components/shared/ConfirmModal";
+import ErrorModal from "../../shared/ErrorModal";
+import SuccessModal from "../../shared/SuccessModal";
+import ConfirmModal from "../../shared/ConfirmModal";
 
 function AdminCourseOverview() {
   const { getCourseUnits, addCourseUnit, deleteUnit } = useCourseStore();

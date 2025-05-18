@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader2, Search } from "lucide-react";
-import { useAdminStore } from "../../store/adminStore";
+import { useAdminStore } from "../../store/AdminStore";
 import AdminReportModal from "../admin/adminReportModal";
 
 function SearchStudent() {
@@ -68,6 +68,12 @@ function SearchStudent() {
     }
   };
 
+  const handleAbsenceClick = (student) => {
+    navigate(
+      `/admin-show-absences/${student.student_id}/${student.section_id}`
+    );
+  };
+
   const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
   const indexOfLastStudent = currentPage * studentsPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
@@ -123,6 +129,7 @@ function SearchStudent() {
                   <th>Grade</th>
                   <th>Department</th>
                   <th>Parent ID</th>
+                  <th>Absences</th>
                   <th>Action</th>
                   <th>View Report</th>
                 </tr>
@@ -138,6 +145,14 @@ function SearchStudent() {
                     <td>{student.grade_name}</td>
                     <td>{student.dept_name}</td>
                     <td>{student.parent_id}</td>
+                    <td>
+                      <button
+                        onClick={() => handleAbsenceClick(student)}
+                        className="btn btn-secondary btn-sm"
+                      >
+                        Show absence
+                      </button>
+                    </td>
                     <td>
                       <button
                         onClick={() => handleReportClick(student)}

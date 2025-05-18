@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 function UploadModal({
   isOpen,
@@ -8,6 +9,14 @@ function UploadModal({
   handleFileChange,
   handleUpload,
 }) {
+  const fileInputRef = useRef();
+
+  useEffect(() => {
+    if (!isOpen && fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, [isOpen]);
+
   return (
     <dialog className={`modal ${isOpen ? "modal-open" : ""}`}>
       <div className="modal-box">
@@ -44,6 +53,7 @@ function UploadModal({
               </span>
             </div>
             <input
+              ref={fileInputRef}
               type="file"
               accept=".pdf,.doc,.docx,video/mp4"
               className="file-input file-input-bordered w-full"

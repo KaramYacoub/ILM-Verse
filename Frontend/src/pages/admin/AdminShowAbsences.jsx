@@ -1,22 +1,33 @@
-import { useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
-import ParentNavBar from "../../components/parent/ParentNavBar";
-import useParentsStore from "../../store/ParentStore";
-import { AlertCircle, XCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { AlertCircle, Loader2, XCircle } from "lucide-react";
+import { useAdminStore } from "../../store/AdminStore";
+import AdminNavbar from "../../components/admin/adminNavbar";
 
-function ParentShowAbsences() {
-  const [searchParams] = useSearchParams();
+function AdminShowAbsences() {
+  const { student_id, section_id } = useParams();
   const navigate = useNavigate();
-  const student_id = searchParams.get("student_id");
-  const section_id = searchParams.get("section_id");
 
-  const { fetchShowAbsences, absence, loading, error } = useParentsStore();
+  const { getStudentAbsences } = useAdminStore();
+
+  const [loading, setLoading] = useState(false);
+  const [absences, setAbsences] = useState([]);
 
   useEffect(() => {
-    if (student_id && section_id) {
-      fetchShowAbsences(student_id, section_id);
+    setLoading(true);
+    try {
+      const fetchAbsence = async () => {
+        const allAbsences = await getStudentAbsences(student_id, section_id);
+        console.log(allAbsences);
+        setAbsences(allAbsences);
+      };
+      fetchAbsence();
+    } catch (error) {
+      console.log(error.response.data.error || error.message);
+    } finally {
+      setLoading(false);
     }
-  }, [student_id, section_id, fetchShowAbsences]);
+  }, [student_id, section_id, getStudentAbsences]);
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -31,7 +42,7 @@ function ParentShowAbsences() {
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">
-      <ParentNavBar />
+      <AdminNavbar />
 
       <div className="p-6 space-y-6 w-full max-w-5xl bg-base-100 rounded-lg shadow-md mt-5">
         <div className="flex justify-between items-center">
@@ -42,24 +53,10 @@ function ParentShowAbsences() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-10">
-            <span className="loading loading-spinner loading-lg text-primary"></span>
+          <div className="flex items-center justify-center h-screen">
+            <Loader2 className="animate-spin" size={50} />
           </div>
-        ) : error ? (
-          <div className="alert alert-error shadow-lg">
-            <div>
-              <XCircle className="stroke-current flex-shrink-0 h-6 w-6" />
-
-              <span>Error: {error}</span>
-            </div>
-            <button
-              className="btn btn-sm"
-              onClick={() => fetchShowAbsences(student_id, section_id)}
-            >
-              Retry
-            </button>
-          </div>
-        ) : absence?.count > 0 ? (
+        ) : absences?.absenceDates?.length > 0 ? (
           <>
             <div className="stats bg-base-300 text-base-content shadow">
               <div className="stat">
@@ -67,7 +64,7 @@ function ParentShowAbsences() {
                   Total Absences
                 </div>
                 <div className="stat-value text-4xl font-bold">
-                  {absence.count}
+                  {absences.absenceCount}
                 </div>
                 <div className="stat-desc text-sm">Current Academic Year</div>
               </div>
@@ -83,7 +80,7 @@ function ParentShowAbsences() {
                   </tr>
                 </thead>
                 <tbody>
-                  {absence.dates.map((date, index) => (
+                  {absences.absenceDates.map((date, index) => (
                     <tr key={index} className="hover:bg-base-300">
                       <th>{index + 1}</th>
                       <td>{formatDate(date)}</td>
@@ -105,4 +102,4 @@ function ParentShowAbsences() {
   );
 }
 
-export default ParentShowAbsences;
+export default AdminShowAbsences;

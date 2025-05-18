@@ -12,7 +12,7 @@ const StaffLogin = lazy(() => import("./pages/shared/StaffLogin"));
 const AboutUs = lazy(() => import("./pages/shared/AboutUs"));
 const ContactUs = lazy(() => import("./pages/shared/ContactUs"));
 const SharedEvents = lazy(() => import("./pages/shared/SharedEvents"));
-const ForgotPassword = lazy(() =>import("./pages/shared/ForgetPassword"));
+const ForgotPassword = lazy(() => import("./pages/shared/ForgetPassword"));
 // Student Components/Pages
 const StudentDashboard = lazy(() => import("./pages/student/StudentDashboard"));
 const StudentViewGrades = lazy(() =>
@@ -128,6 +128,8 @@ const AdminUnitContent = lazy(() =>
 );
 const TakeAbsence = lazy(() => import("./pages/admin/TakeAbsence"));
 
+const AdminShowAbsences = lazy(() => import("./pages/admin/AdminShowAbsences"));
+
 function App() {
   const {
     isCheckingAuth,
@@ -224,14 +226,7 @@ function App() {
               }
             />
 
-            <Route
-              path="/forgot-password"
-              element={
-                 
-                  <ForgotPassword />
-                 
-              }
-            />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/events" element={<SharedEvents />} />
           </>
 
@@ -401,10 +396,6 @@ function App() {
                 authParent ? <ParentShowAbsences /> : <Navigate to="/" />
               }
             />
-            {/* <Route
-              path="/parent-quizzes"
-              element={authParent ? <ParentShowQuizzes /> : <Navigate to="/" />}
-            /> */}
             <Route
               path="/parent-course-content/:course_id/:student_id/"
               element={
@@ -419,7 +410,6 @@ function App() {
                 path="parent-overview"
                 element={authParent ? <ParentOverview /> : <Navigate to="/" />}
               />
-              {/* <Route path="parent-units" element={<ParentUnitsTab />} /> */}
               <Route
                 path=":unit_id/content"
                 element={
@@ -450,6 +440,10 @@ function App() {
             <Route
               path="/admin-dashboard"
               element={authAdmin ? <AdminDashboard /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/admin-show-absences/:student_id/:section_id"
+              element={authAdmin ? <AdminShowAbsences /> : <Navigate to="/" />}
             />
             <Route
               path="/addition"

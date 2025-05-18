@@ -179,6 +179,22 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  getStudentAbsences: async (student_id, section_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/admin/absence/check/${student_id}/${section_id}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Absence fetch error:", error);
+      set({
+        error: error.response?.data?.message || "Failed to load absences",
+
+        absence: { count: 0, dates: [] }, // Reset on error
+      });
+    }
+  },
+
   // get all admins
   getAllAdmins: async () => {
     try {

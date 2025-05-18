@@ -5,9 +5,9 @@ import AdminNavbar from "../adminNavbar";
 import { useCourseStore } from "../../../store/CourseStore";
 import MediaPreviewModal from "../../course/MediaPreviewModal";
 import UploadModal from "../../course/UploadModal";
-import SuccessModal from "../../components/shared/SuccessModal";
-import ErrorModal from "../../components/shared/ErrorModal";
-import ConfirmModal from "../../components/shared/ConfirmModal";
+import SuccessModal from "../../shared/SuccessModal";
+import ErrorModal from "../../shared/ErrorModal";
+import ConfirmModal from "../../shared/ConfirmModal";
 
 function AdminUnitContent() {
   const location = useLocation();
@@ -36,7 +36,10 @@ function AdminUnitContent() {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const [mediaToDelete, setMediaToDelete] = useState({ unit_id: null, media_id: null });
+  const [mediaToDelete, setMediaToDelete] = useState({
+    unit_id: null,
+    media_id: null,
+  });
 
   useEffect(() => {
     if (unit?.unit_id) {
@@ -98,7 +101,7 @@ function AdminUnitContent() {
       setModalMessage("File uploaded successfully!");
       setShowSuccessModal(true);
       closeUploadModal();
-    } catch (error) {
+    } catch {
       setModalMessage("Upload failed. Please try again.");
       setShowErrorModal(true);
     } finally {
@@ -136,7 +139,7 @@ function AdminUnitContent() {
       );
       setModalMessage("Download started!");
       setShowSuccessModal(true);
-    } catch (error) {
+    } catch {
       setModalMessage("Download failed. Please try again.");
       setShowErrorModal(true);
     }
@@ -157,7 +160,8 @@ function AdminUnitContent() {
       setShowSuccessModal(true);
     } catch (error) {
       setModalMessage(
-        error.response?.data?.error || "Failed to delete media. Please try again."
+        error.response?.data?.error ||
+          "Failed to delete media. Please try again."
       );
       setShowErrorModal(true);
     } finally {
