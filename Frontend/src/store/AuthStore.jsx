@@ -13,7 +13,10 @@ export const useAuthStore = create((set) => ({
   adminLogin: async (data) => {
     try {
       set({ isUserLoggingIn: true });
-      const response = await axiosInstance.post("/shared/login/adminLogin", data);
+      const response = await axiosInstance.post(
+        "/shared/login/adminLogin",
+        data
+      );
       set({ authAdmin: response.data.data });
       return response.data;
     } catch (error) {
@@ -27,7 +30,10 @@ export const useAuthStore = create((set) => ({
   teacherLogin: async (data) => {
     try {
       set({ isUserLoggingIn: true });
-      const response = await axiosInstance.post("/shared/login/teacherLogin", data);
+      const response = await axiosInstance.post(
+        "/shared/login/teacherLogin",
+        data
+      );
       set({ authTeacher: response.data.data });
       return response.data;
     } catch (error) {
@@ -41,7 +47,10 @@ export const useAuthStore = create((set) => ({
   studentLogin: async (data) => {
     try {
       set({ isUserLoggingIn: true });
-      const response = await axiosInstance.post("/shared/login/studentLogin", data);
+      const response = await axiosInstance.post(
+        "/shared/login/studentLogin",
+        data
+      );
       set({ authStudent: response.data.data });
       return response.data;
     } catch (error) {
@@ -55,7 +64,10 @@ export const useAuthStore = create((set) => ({
   parentLogin: async (data) => {
     try {
       set({ isUserLoggingIn: true });
-      const response = await axiosInstance.post("/shared/login/parentLogin", data);
+      const response = await axiosInstance.post(
+        "/shared/login/parentLogin",
+        data
+      );
       set({ authParent: response.data.data });
       return response.data;
     } catch (error) {
@@ -118,6 +130,41 @@ export const useAuthStore = create((set) => ({
       throw error;
     } finally {
       set({ isUserLoggingOut: false });
+    }
+  },
+
+  forgotPassword: async (email) => {
+    try {
+      const response = await axiosInstance.post("/shared/forgotpassword", {
+        email,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(
+        "error in forgot pawword: ",
+        error.response.data.error || error.message
+      );
+    }
+  },
+
+  verifyOtpAndResetPassword: async (email, otp, newPassword) => {
+    try {
+      const response = await axiosInstance.patch(
+        "/shared/forgotpassword/check",
+        {
+          email,
+          otp_code: otp,
+          newPassword,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        throw new Error(
+          error.response.data.message || error.response.data.error
+        );
+      }
+      throw error;
     }
   },
 }));
