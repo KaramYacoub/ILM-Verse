@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import AdminNavbar from "../../components/Admin/AdminNavbar";
+import AdminNavbar from "../../../components/admin/adminNavbar";
 import { X } from "lucide-react";
 import { useAdminStore } from "../../store/AdminStore";
 
