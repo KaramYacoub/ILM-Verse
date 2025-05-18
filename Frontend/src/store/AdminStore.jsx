@@ -416,6 +416,18 @@ export const useAdminStore = create((set) => ({
     }
   },
 
+  // delete announcement
+  deleteAnnouncement: async (annoucment_id) => {
+    try {
+      await axiosInstance.delete(`/admin/annoucments/${annoucment_id}`);
+    } catch (error) {
+      console.log(
+        "Error deleting annoucment: ",
+        error.response.data.error || error.message
+      );
+    }
+  },
+
   // change user password
   changeUserPassword: async ({ userType, identifier, newPassword }) => {
     try {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { X, Send, List } from "lucide-react";
 import { useAdminStore } from "../../../store/AdminStore";
+import { useCallback } from "react";
 
 import SendAnnouncement from "./SendAnnouncement";
 import ViewAnnouncements from "./ViewAnnouncements";
@@ -26,44 +27,40 @@ function AnnouncementPanel({ isOpen, onClose }) {
     fetchDepts();
   }, [getAllDepartments]);
 
+  const fetchAnnouncements = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const deptId = selectedGroup || "general";
+      const data = await getAnnoucments(deptId);
+
+      const mapped = data.map((a) => ({
+        id: a.announcmentid,
+        text: a.content,
+        group: a.department_id ?? "general",
+        department_id: a.department_id,
+        sender: a.admin?.full_name ?? "Unknown",
+        date: a.announcmentdate,
+        time: a.sentat,
+      }));
+
+      setAnnouncements(mapped);
+    } catch (error) {
+      console.error("Error fetching announcements:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedGroup, getAnnoucments]);
+
   useEffect(() => {
-    const fetchAnnouncements = async () => {
-      setIsLoading(true);
-      try {
-        const deptId = selectedGroup || "general";
-        const data = await getAnnoucments(deptId);
-        console.log(data);
-
-        const mapped = data.map((a) => ({
-          id: a.announcmentid,
-          text: a.content,
-          group: a.department_id ?? "general",
-          department_id: a.department_id,
-          sender: a.admin?.full_name ?? "Unknown",
-          date: a.announcmentdate,
-          time: a.sentat,
-        }));
-
-        setAnnouncements(mapped);
-      } catch (error) {
-        console.error("Error fetching announcements:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     if (isOpen && activeTab === "view") {
       fetchAnnouncements();
     }
-  }, [getAnnoucments, selectedGroup, activeTab, isOpen]);
+  }, [isOpen, activeTab, selectedGroup, fetchAnnouncements]);
 
   const handleSend = async (newAnnouncement) => {
     try {
       setIsLoading(true);
-      // Send to backend
       await addAnnoucments(newAnnouncement.group, newAnnouncement.text);
-
-      // Update local state with the new announcement
       setAnnouncements((prev) => [...prev, newAnnouncement]);
       setActiveTab("view");
       setSelectedGroup(newAnnouncement.group);
@@ -136,7 +133,7 @@ function AnnouncementPanel({ isOpen, onClose }) {
             selectedGroup={selectedGroup}
             setSelectedGroup={setSelectedGroup}
             setActiveTab={setActiveTab}
-            isLoading={isLoading}
+            fetchAnnouncements={fetchAnnouncements}
           />
         )}
       </div>

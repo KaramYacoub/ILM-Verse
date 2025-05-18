@@ -213,5 +213,9 @@ router.post(
   annoucmentController.sendAnnouncment
 );
 router.get("/annoucments/:department_id", annoucmentController.getAnnoucments);
+router.delete(
+  "/annoucments/:annoucment_id",
+  annoucmentController.deleteAnnoucment
+);
 
 module.exports = router;
