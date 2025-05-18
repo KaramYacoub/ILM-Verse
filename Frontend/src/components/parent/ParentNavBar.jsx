@@ -77,7 +77,7 @@ function ParentNavBar() {
             className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500 text-left w-full"
           >
             <FaComments color="#fff" />
-            <span>Chat</span>
+            <span>Annoncment</span>
           </button>
         </div>
 

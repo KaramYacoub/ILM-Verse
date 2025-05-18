@@ -109,14 +109,7 @@ function StudentLogin() {
                 )}
               </button>
             </div>
-            <div className="text-right mt-1">
-              <Link
-                to="/forgot-password"
-                className="text-blue-600 font-medium hover:underline"
-              >
-                Forgot your password?
-              </Link>
-            </div>
+            <div className="text-right mt-1"></div>
           </div>
 
           {/* Error message */}
