@@ -11,10 +11,10 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/AuthStore";
 import { Loader2 } from "lucide-react";
-import StudentChatPanel from "./ChatThings/StudentChatPanel";
+import StudentAnnouncements from "./StudentAnnouncements";
 
 function StudentNavbar() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isAnnouncementOpen, setIsAnnouncementOpen] = useState(false);
   const { isUserLoggingOut, logout, authStudent } = useAuthStore();
   const navigate = useNavigate();
 
@@ -65,7 +65,7 @@ function StudentNavbar() {
             <span>Events</span>
           </Link>
           <button
-            onClick={() => setIsChatOpen(true)}
+            onClick={() => setIsAnnouncementOpen(!isAnnouncementOpen)}
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500 text-accent text-sm"
           >
             <FaComments color="#fff" />
@@ -118,7 +118,7 @@ function StudentNavbar() {
             <button
               onClick={() => {
                 toggleMenu();
-                setIsChatOpen(true);
+                setIsAnnouncementOpen(!isAnnouncementOpen);
               }}
               className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500 text-left w-full"
             >
@@ -144,9 +144,9 @@ function StudentNavbar() {
       )}
 
       {/* Chat Panel */}
-      <StudentChatPanel
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
+      <StudentAnnouncements
+        isOpen={isAnnouncementOpen}
+        onClose={() => setIsAnnouncementOpen(!isAnnouncementOpen)}
       />
     </div>
   );

@@ -193,6 +193,35 @@ const useStudentStore = create((set) => ({
       throw error;
     }
   },
+
+  
+  getStudentDepartment: async () => {
+    try {
+      const response = await axiosInstance.get("/student/department");
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "error in get departments for the student: ",
+        error.response?.data?.error || error.message
+      );
+      throw error; // Add this to handle errors properly
+    }
+  },
+
+  getAnnoucments: async (department_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/student/annoucments/${department_id || "general"}`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "error in get announcement for the student: ",
+        error.response?.data?.error || error.message
+      );
+      throw error; // Add this to handle errors properly
+    }
+  },
 }));
 
 export default useStudentStore;
