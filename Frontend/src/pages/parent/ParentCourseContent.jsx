@@ -4,6 +4,7 @@ import useParentsStore from "../../store/ParentStore";
 import ParentNavBar from "../../components/parent/ParentNavBar";
 import NavigationTabs from "../../components/parent/ParentNavigationTabs";
 import { Outlet } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 function ParentCourseContent() {
   const { course_id } = useParams();
@@ -22,8 +23,8 @@ function ParentCourseContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin" size={50} />
       </div>
     );
   }

@@ -1,22 +1,23 @@
 const Sequelize = require("sequelize");
+const department = require("./department");
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
     "announcment",
     {
       announcmentid: {
         type: DataTypes.STRING(20),
-        allowNull: false,
+        allowNull: true,
         primaryKey: true,
       },
       announcmentdate: {
-        type: DataTypes.DATEONLY,
+        type: DataTypes.STRING(20),
         allowNull: false,
-        defaultValue: Sequelize.Sequelize.literal("CURRENT_DATE"),
+        defaultValue: new Date().toISOString().split("T")[0],
       },
       sentat: {
-        type: DataTypes.TIME,
+        type: DataTypes.STRING(10),
         allowNull: false,
-        defaultValue: "date_trunc(minute",
+        defaultValue: new Date().toTimeString().split(" ")[0],
       },
       content: {
         type: DataTypes.TEXT,
@@ -30,9 +31,13 @@ module.exports = function (sequelize, DataTypes) {
           key: "gm_id",
         },
       },
-      title: {
-        type: DataTypes.TEXT,
+      department_id: {
+        type: DataTypes.STRING(20),
         allowNull: true,
+        references: {
+          model: "department",
+          key: "department_id",
+        },
       },
     },
     {

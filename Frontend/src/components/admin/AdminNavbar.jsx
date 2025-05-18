@@ -11,7 +11,7 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
-import ChatPanel from "./ChatThings/ChatPannel";
+import AnnouncementPanel from "./announcements/AnnouncementPanel";
 import { useAuthStore } from "../../store/AuthStore";
 
 function AdminNavbar() {
@@ -78,11 +78,11 @@ function AdminNavbar() {
             </Link>
 
             <button
-              onClick={() => setIsChatOpen(true)}
+              onClick={() => setIsChatOpen(!isChatOpen)}
               className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
             >
               <FaComments color="#fff" />
-              <span>Chat</span>
+              <span>Announcment</span>
             </button>
           </div>
 
@@ -149,17 +149,8 @@ function AdminNavbar() {
                   className="flex items-center gap-3 py-2 cursor-pointer hover:text-yellow-500 px-6"
                 >
                   <FaComments color="#fff" />
-                  <span>Chat</span>
+                  <span>Announcment</span>
                 </button>
-
-                <Link
-                  to="#"
-                  className="flex items-center gap-3 py-2 cursor-pointer hover:text-yellow-500 px-6"
-                  onClick={toggleMenu}
-                >
-                  <FaComments color="#fff" />
-                  <span>Chat</span>
-                </Link>
 
                 <div className="divider divider-accent my-0" />
 
@@ -177,7 +168,10 @@ function AdminNavbar() {
         </div>
       </div>
       {/* Chat Panel */}
-      <ChatPanel isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+      <AnnouncementPanel
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(!isChatOpen)}
+      />
     </>
   );
 }

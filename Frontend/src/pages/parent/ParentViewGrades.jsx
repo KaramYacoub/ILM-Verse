@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import ParentNavBar from "../../components/parent/ParentNavBar";
 import { Loader2 } from "lucide-react";
-import useStudentStore from "../../store/ParentStore"; // adjust if needed
+import useStudentStore from "../../store/ParentStore";
 
 function ParentViewGrades() {
   const [searchParams] = useSearchParams();
@@ -14,13 +14,13 @@ function ParentViewGrades() {
     if (studentId) {
       fetchShowGrades(studentId);
     }
-  }, [studentId]);
+  }, [fetchShowGrades, studentId]);
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">
       <ParentNavBar />
       <h1 className="text-4xl font-bold text-primary self-start mt-10 ml-5">
-        My Grades
+        Student Marks
       </h1>
 
       <div className="p-6 space-y-8 w-full max-w-4xl bg-base-100 rounded-lg shadow-md mt-5">

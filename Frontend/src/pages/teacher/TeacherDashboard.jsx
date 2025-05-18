@@ -30,6 +30,8 @@ function TeacherDashboard() {
               key={course.course_id}
               to={`/teacher-course-content/${course.course_id}`}
               title={course.subject_name}
+              section={course.section?.section_name}
+              grade={course.section.grade.grade_name}
             />
           ))}
         </div>

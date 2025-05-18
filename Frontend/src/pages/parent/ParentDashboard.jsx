@@ -5,14 +5,8 @@ import CourseCard from "../../components/shared/CourseCard"; // Assuming this pa
 import useParentsStore from "../../store/ParentStore";
 
 function ParentDashboard() {
-  const {
-    students,
-    fetchStudents,
-    getCoursesForStudent,
-    courses,
-    loading,
-    error,
-  } = useParentsStore();
+  const { students, fetchStudents, getCoursesForStudent, courses, loading } =
+    useParentsStore();
 
   const [selectedStudent, setSelectedStudent] = useState(null);
   const navigate = useNavigate();
@@ -41,7 +35,9 @@ function ParentDashboard() {
   };
 
   const handleCourseClick = (course_id) => {
-    navigate(`/parent-course-content/${course_id}/parent-overview`);
+    navigate(
+      `/parent-course-content/${course_id}/${selectedStudent.student_id}/parent-overview`
+    );
   };
 
   return (
@@ -75,7 +71,7 @@ function ParentDashboard() {
                 to={`/parent-view-grades?student_id=${selectedStudent.student_id}`}
                 className="btn btn-primary rounded-md text-sm font-medium w-[20%] min-w-[120px]"
               >
-                Show Grades
+                Show Marks
               </Link>
 
               <Link
@@ -112,7 +108,8 @@ function ParentDashboard() {
               >
                 <CourseCard
                   title={course.course.subject_name}
-                  // Removed the direct 'to' prop here, navigation is handled by onClick
+                  section={course.course.section?.section_name}
+                  grade={course.course.section.grade.grade_name}
                 />
               </div>
             ))

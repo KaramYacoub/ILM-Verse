@@ -9,6 +9,7 @@ const {
   course_student,
   student,
   course,
+  section,
   grade,
   department,
   student_marks,
@@ -35,6 +36,16 @@ exports.getCoursesForStudent = async (req, res) => {
           model: course,
           as: "course",
           attributes: ["subject_name"],
+          include: {
+            model: section,
+            as: "section",
+            attributes: ["section_name"],
+            include: {
+              model: grade,
+              as: "grade",
+              attributes: ["grade_name"],
+            },
+          },
         },
       ],
     });

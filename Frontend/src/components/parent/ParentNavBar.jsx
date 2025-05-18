@@ -60,14 +60,6 @@ function ParentNavBar() {
             <FaHome color="#fff" />
             <span>Dashboard</span>
           </Link>
-          {/* Quizzes */}
-          <Link
-            to="/parent-quizzes"
-            className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
-          >
-            <FaClipboardList color="#fff" />
-            <span>Quizzes</span>
-          </Link>
           {/* Events */}
           <Link
             to="/events"
@@ -85,7 +77,7 @@ function ParentNavBar() {
             className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500 text-left w-full"
           >
             <FaComments color="#fff" />
-            <span>Chat</span>
+            <span>Annoncment</span>
           </button>
         </div>
 
@@ -125,14 +117,6 @@ function ParentNavBar() {
                 <span>Dashboard</span>
               </Link>
               <Link
-                to="/parent-quizzes"
-                className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
-                onClick={toggleMenu}
-              >
-                <FaClipboardList color="#fff" />
-                <span>Quizzes</span>
-              </Link>
-              <Link
                 to="/events"
                 className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
                 onClick={toggleMenu}
@@ -148,7 +132,7 @@ function ParentNavBar() {
                 className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500 text-left w-full"
               >
                 <FaComments color="#fff" />
-                <span>Chat</span>
+                <span>Announcment</span>
               </button>
 
               <div className="divider divider-accent my-0" />

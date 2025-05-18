@@ -1,9 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import useParentsStore from "../../../store/ParentStore";
 import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 
 function ParentOverview() {
-  const { course_id } = useParams();
+  const { course_id, student_id } = useParams();
   const navigate = useNavigate();
 
   const { fetchCourseAllUnits, courseContent } = useParentsStore();
@@ -26,13 +27,19 @@ function ParentOverview() {
       };
       fetcheUnits();
     }
-  }, [course_id, fetchCourseAllUnits]);
+  }, [courseContent, course_id, fetchCourseAllUnits]);
 
   if (!courseContent) {
     return <div className="text-error">No units available.</div>;
   }
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin" size={50} />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
@@ -53,7 +60,7 @@ function ParentOverview() {
                   className="btn btn-primary text-lg btn-md"
                   onClick={() =>
                     navigate(
-                      `/parent-course-content/${course_id}/${unit.unit_id}/content`,
+                      `/parent-course-content/${course_id}/${student_id}/${unit.unit_id}/content`,
                       {
                         state: { unit: unit },
                       }

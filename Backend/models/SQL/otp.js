@@ -1,35 +1,38 @@
 const Sequelize = require("sequelize");
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
-    "event",
+    "otp",
     {
-      eventid: {
+      id: {
         type: DataTypes.UUIDV4,
-        allowNull: false,
+        allowNull: true,
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
       },
-      eventdate: {
-        type: DataTypes.DATEONLY,
+      otp_code: {
+        type: DataTypes.STRING(6),
         allowNull: false,
-        defaultValue: Sequelize.Sequelize.literal("CURRENT_DATE"),
       },
-      location: {
-        type: DataTypes.STRING(20),
+      email: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+      },
+      type: {
+        type: DataTypes.STRING(50),
         allowNull: false,
       },
     },
     {
       sequelize,
-      tableName: "event",
+      tableName: "otp",
       schema: "public",
       hasTrigger: true,
       timestamps: false,
       indexes: [
         {
-          name: "event_pkey",
+          name: "otp_pkey",
           unique: true,
-          fields: [{ name: "eventid" }],
+          fields: [{ name: "id" }],
         },
       ],
     }

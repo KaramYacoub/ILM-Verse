@@ -10,6 +10,7 @@ const useParentsStore = create((set) => ({
   courseContent: [],
   course: [],
   assignments: [],
+  quizzes: [],
   unitDetails: null,
   unitContent: null,
   count: 0,
@@ -172,6 +173,33 @@ const useParentsStore = create((set) => ({
         error: error.response?.data?.message || "Failed to load reports",
         loading: false,
       });
+    }
+  },
+
+  getQuizzes: async (course_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/parent/course/${course_id}/student/quizes/`
+      );
+      set({ quizzes: response.data.data, loading: false });
+      return response.data.data;
+    } catch (err) {
+      set({ error: err.response.data.message || err.message, loading: false });
+    }
+  },
+
+  getStudentQuizMark: async (course_id, quiz_id, student_id) => {
+    try {
+      const response = await axiosInstance.get(
+        `/parent/course/${course_id}/quizes/${quiz_id}/${student_id}/mark`
+      );
+      return response.data.data;
+    } catch (error) {
+      console.log(
+        "Error getting a student asnwers for a quiz: ",
+        error.response?.data?.error || error.message
+      );
+      throw error;
     }
   },
 }));

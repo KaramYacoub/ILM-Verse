@@ -25,6 +25,10 @@ function CourseContent() {
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [studentCounts, setStudentCounts] = useState({});
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const coursesPerPage = 5;
+
   // Fetch all courses
   useEffect(() => {
     getAllCourses();
@@ -39,6 +43,14 @@ function CourseContent() {
         : true;
     });
   }, [searchTerm, courses]);
+
+  const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+
+  const paginatedCourses = useMemo(() => {
+    const startIndex = (currentPage - 1) * coursesPerPage;
+    const endIndex = startIndex + coursesPerPage;
+    return filteredCourses.slice(startIndex, endIndex);
+  }, [filteredCourses, currentPage]);
 
   // Fetch students in all courses
   const fetchStudentCounts = useCallback(async () => {
@@ -149,7 +161,6 @@ function CourseContent() {
       await updateTeacher(course_id, newTeacher_id);
       await getAllCourses();
 
-      // Only close modal after successful update
       setShowTeacherModal(false);
       setCurrentCourse(null);
       setSelectedTeacher(null);
@@ -179,7 +190,10 @@ function CourseContent() {
               className="input input-bordered w-full"
               placeholder="Search by name or teacher..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
             />
           </div>
           <div className="flex justify-end">
@@ -194,8 +208,8 @@ function CourseContent() {
 
         {/* Courses List */}
         <div className="space-y-4">
-          {filteredCourses.length > 0 ? (
-            filteredCourses.map((course) => (
+          {paginatedCourses.length > 0 ? (
+            paginatedCourses.map((course) => (
               <div
                 key={course.course_id}
                 className="p-4 bg-base-100 rounded-lg shadow hover:shadow-md transition-shadow relative"
@@ -271,6 +285,31 @@ function CourseContent() {
             </div>
           )}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-6 space-x-4">
+            <button
+              className="btn btn-sm"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            >
+              Previous
+            </button>
+            <span className="self-center">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              className="btn btn-sm"
+              disabled={currentPage === totalPages}
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Teacher Modal */}

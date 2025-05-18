@@ -60,12 +60,6 @@ app.use("/student", authenticateUser, checkStudent, studentRouter);
 app.use("/parent", authenticateUser, checkParent, parentRouter);
 app.use("/shared", sharedRouter);
 
-//Routers Imports (Socket)
-const messagingRouter = require("./routers/messagingRouter");
-
-// routing (Socket)
-app.use("/meessages", authenticateUser, messagingRouter);
-
 //--------------------------------------
 // Prevents Data Folder from entry from any user:
 app.use("/Data", (req, res, next) => {

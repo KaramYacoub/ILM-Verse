@@ -13,6 +13,7 @@ var _section = require("./SQL/section");
 var _student = require("./SQL/student");
 var _student_marks = require("./SQL/student_marks");
 var _teacher = require("./SQL/teacher");
+var _otp = require("./SQL/otp");
 //ORM
 function initModels(sequelize) {
   var admin = _admin(sequelize, DataTypes);
@@ -29,6 +30,7 @@ function initModels(sequelize) {
   var student = _student(sequelize, DataTypes);
   var student_marks = _student_marks(sequelize, DataTypes);
   var teacher = _teacher(sequelize, DataTypes);
+  var otp = _otp(sequelize, DataTypes);
 
   course.belongsToMany(student, {
     as: "student_id_students",
@@ -43,9 +45,15 @@ function initModels(sequelize) {
     otherKey: "course_id",
   });
   announcment.belongsTo(admin, { as: "admin", foreignKey: "adminid" });
+  announcment.belongsTo(department, {
+    as: "department",
+    foreignKey: "department_id",
+  });
+  department.hasMany(announcment, {
+    as: "announcment",
+    foreignKey: "announcmentid",
+  });
   admin.hasMany(announcment, { as: "announcments", foreignKey: "adminid" });
-  event.belongsTo(admin, { as: "admin", foreignKey: "adminid" });
-  admin.hasMany(event, { as: "events", foreignKey: "adminid" });
   post.belongsTo(admin, { as: "admin", foreignKey: "adminid" });
   admin.hasMany(post, { as: "posts", foreignKey: "adminid" });
   course_student.belongsTo(course, { as: "course", foreignKey: "course_id" });
@@ -115,6 +123,7 @@ function initModels(sequelize) {
     student,
     student_marks,
     teacher,
+    otp,
   };
 }
 module.exports = initModels;

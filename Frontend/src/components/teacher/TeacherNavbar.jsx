@@ -2,14 +2,13 @@ import { useState } from "react";
 import {
   FaHome,
   FaCalendarAlt,
+  FaUserCheck,
   FaComments,
   FaSignOutAlt,
   FaBars,
   FaTimes,
 } from "react-icons/fa";
-
 import { Loader2 } from "lucide-react";
-
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/AuthStore";
 import TeacherChatPanel from "./ChatThings/TeacherChatPanel";
@@ -18,8 +17,8 @@ function TeacherNavbar() {
   const { isUserLoggingOut, logout, authTeacher } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -70,16 +69,15 @@ function TeacherNavbar() {
             to="/teacher-take-absence"
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
           >
-            <FaCalendarAlt color="#fff" />
+            <FaUserCheck color="#fff" />
             <span>Take Absence</span>
           </Link>
-
           <button
             onClick={() => setIsChatOpen(true)}
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500 text-accent text-sm"
           >
             <FaComments color="#fff" />
-            <span>Chat</span>
+            <span>Announcement</span>
           </button>
         </div>
 
@@ -125,6 +123,14 @@ function TeacherNavbar() {
               >
                 <FaCalendarAlt color="#fff" />
                 <span>Events</span>
+              </Link>
+              <Link
+                to="/teacher-take-absence"
+                className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
+                onClick={toggleMenu}
+              >
+                <FaUserCheck color="#fff" />
+                <span>Take Absence</span>
               </Link>
               <button
                 onClick={() => {

@@ -57,7 +57,8 @@ exports.addAdmin = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 3);
-
+    console.log(hashedPassword);
+    console.log(hashedPassword);
     const newAdmin = await admin.create({
       first_name,
       last_name,
@@ -282,7 +283,6 @@ exports.getTeachersBySection = async (req, res) => {
 exports.addEvent = async (req, res) => {
   try {
     //Getting all the Data required for SQL insert(Event)
-    const gm_id = req.user.gm_id;
     const { description, title, location, date } = req.body;
     const event_date = new Date(date).toISOString().split("T")[0];
 
@@ -295,8 +295,6 @@ exports.addEvent = async (req, res) => {
 
     //SQL Insertion
     const newEvent = await event.create({
-      adminid: gm_id,
-
       eventdate: event_date,
 
       location: location,
@@ -646,24 +644,7 @@ exports.deleteAdmin = async (req, res) => {
     if (!searchedAdmin) {
       return res.status(404).json({ error: "Admin not found" });
     }
-    const adminEvents = await event.findAll({
-      where: {
-        adminid: id,
-      },
-    });
-    const eventIds = adminEvents.map((event) => event.eventid);
-    for (eventToDelete of eventIds) {
-      await event.update(
-        {
-          adminid: null,
-        },
-        {
-          where: {
-            adminid: eventToDelete,
-          },
-        }
-      );
-    }
+
     await admin.destroy({
       where: {
         gm_id: id,

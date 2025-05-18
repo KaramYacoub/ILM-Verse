@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Download } from "lucide-react";
+import { Download, XCircle } from "lucide-react";
 import useParentsStore from "../../../store/ParentStore";
 
 function ParentAssignment() {
@@ -18,8 +18,22 @@ function ParentAssignment() {
     fetchData();
   }, [course_id, student_id, fetchAssignments]);
 
-  const getStatusBadge = (status) => {
-    if (status === "Not exist") {
+  const isPastDue = (dueDateString) => {
+    const dueDate = new Date(dueDateString);
+    const currentDate = new Date();
+    return currentDate > dueDate;
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const getStatusBadge = (assignment) => {
+    if (assignment.submission === "Not exist") {
       return (
         <span className="badge badge-error text-base-100 w-full h-full">
           Not Submitted
@@ -33,10 +47,20 @@ function ParentAssignment() {
     );
   };
 
-  const getGradeButton = (assignment) => {
-    if (assignment.submission === "Not exist") {
-      return <span className="font-bold">0%</span>;
-    } else {
+  const getActionContent = (assignment) => {
+    const hasSubmission = assignment.submission !== "Not exist";
+    const isExpired = isPastDue(assignment.end_at);
+
+    if (!hasSubmission && isExpired) {
+      return (
+        <span className="text-error font-bold flex justify-center items-center gap-1">
+          <XCircle className="h-5 w-5" />
+          Deadline Passed
+        </span>
+      );
+    }
+
+    if (hasSubmission) {
       return (
         <label
           htmlFor="submit-modal"
@@ -47,6 +71,8 @@ function ParentAssignment() {
         </label>
       );
     }
+
+    return <span className="text-warning font-semibold">Pending</span>;
   };
 
   return (
@@ -58,7 +84,7 @@ function ParentAssignment() {
               <th>Assignment</th>
               <th>Due Date</th>
               <th>Status</th>
-              <th>Grade</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -70,9 +96,9 @@ function ParentAssignment() {
                     Published: {assignment.published_at}
                   </div>
                 </td>
-                <td>{assignment.end_at}</td>
-                <td>{getStatusBadge(assignment.submission)}</td>
-                <td>{getGradeButton(assignment)}</td>
+                <td>{formatDate(assignment.end_at)}</td>
+                <td>{getStatusBadge(assignment)}</td>
+                <td>{getActionContent(assignment)}</td>
               </tr>
             ))}
           </tbody>
