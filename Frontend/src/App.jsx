@@ -12,7 +12,7 @@ const StaffLogin = lazy(() => import("./pages/shared/StaffLogin"));
 const AboutUs = lazy(() => import("./pages/shared/AboutUs"));
 const ContactUs = lazy(() => import("./pages/shared/ContactUs"));
 const SharedEvents = lazy(() => import("./pages/shared/SharedEvents"));
-
+const ForgotPassword = lazy(() =>import("./pages/shared/ForgetPassword"));
 // Student Components/Pages
 const StudentDashboard = lazy(() => import("./pages/student/StudentDashboard"));
 const StudentViewGrades = lazy(() =>
@@ -219,6 +219,15 @@ function App() {
                 ) : (
                   <Navigate to={getRedirectPath()} />
                 )
+              }
+            />
+
+            <Route
+              path="/forgot-password"
+              element={
+                 
+                  <ForgotPassword />
+                 
               }
             />
             <Route path="/events" element={<SharedEvents />} />
