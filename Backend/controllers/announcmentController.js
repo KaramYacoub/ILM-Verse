@@ -13,7 +13,7 @@ const {
   parent,
   announcment,
 } = models;
-
+const { Sequelize } = require("sequelize");
 exports.sendAnnouncment = async (req, res) => {
   try {
     const { department_id, content } = req.body;
@@ -250,6 +250,34 @@ exports.getTeacherDepartment = async (req, res) => {
       status: "success",
       data: teacherDepartment,
     });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+exports.deleteAnnoucment = async (req, res) => {
+  try {
+    const { annoucment_id } = req.body;
+    const findAnnoucment = announcment.findOne({
+      where: {
+        annoucment_id: annoucment_id,
+      },
+    });
+    if (!findAnnoucment) {
+      return res.status(400).json({
+        status: "failure",
+        message: "annoucment not found",
+      });
+    } else {
+      await announcment.destroy({
+        where: { annoucment_id: annoucment_id },
+      });
+      return res.status(200).json({
+        status: "sucess",
+        message: "annoucment deleted succesfully",
+      });
+    }
   } catch (error) {
     res.status(500).json({
       error: error.message,
