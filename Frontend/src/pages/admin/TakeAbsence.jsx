@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import AdminNavbar from "../../components/admin/adminNavbar";
-import { useAdminStore } from "../../store/adminStore";
+import { useAdminStore } from "../../store/AdminStore";
 import { useCourseStore } from "../../store/CourseStore";
 
 function TakeAbsence() {

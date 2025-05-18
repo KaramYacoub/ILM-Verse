@@ -1,7 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useCourseStore } from "../../store/CourseStore";
+import ErrorModal from "../shared/ErrorModal";
 
 function StudentMarksModal({ isOpen, onClose, student, course, studentId }) {
+
+    const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
   const { addMark, editMark, getMark } = useCourseStore();
   const [activeTerm, setActiveTerm] = useState("Term 1");
   const [marks, setMarks] = useState({
@@ -100,9 +105,10 @@ function StudentMarksModal({ isOpen, onClose, student, course, studentId }) {
       onClose();
     } catch (error) {
       console.error("Error saving mark:", error);
-      alert(
+      setModalMessage(
         "Failed to save mark: " + (error.response?.data?.error || error.message)
       );
+      setShowErrorModal(true);
     } finally {
       setIsLoading(false);
     }
@@ -189,6 +195,12 @@ function StudentMarksModal({ isOpen, onClose, student, course, studentId }) {
           </button>
         </div>
       </div>
+         {/* Error Modal */}
+            <ErrorModal
+              showErrorModal={showErrorModal}
+              setShowErrorModal={setShowErrorModal}
+              errorMessage={modalMessage}
+            />
     </div>
   );
 }

@@ -5,6 +5,9 @@ import AdminNavbar from "../adminNavbar";
 import { useCourseStore } from "../../../store/CourseStore";
 import MediaPreviewModal from "../../course/MediaPreviewModal";
 import UploadModal from "../../course/UploadModal";
+import SuccessModal from "../../components/shared/SuccessModal";
+import ErrorModal from "../../components/shared/ErrorModal";
+import ConfirmModal from "../../components/shared/ConfirmModal";
 
 function AdminUnitContent() {
   const location = useLocation();
@@ -27,6 +30,13 @@ function AdminUnitContent() {
     isUploading: false,
     uploadProgress: 0,
   });
+
+  // Modal states
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [mediaToDelete, setMediaToDelete] = useState({ unit_id: null, media_id: null });
 
   useEffect(() => {
     if (unit?.unit_id) {
@@ -58,7 +68,8 @@ function AdminUnitContent() {
 
   const handleUpload = async () => {
     if (!uploadState.file || !uploadState.title) {
-      alert("Please provide both a file and a title");
+      setModalMessage("Please provide both a file and a title");
+      setShowErrorModal(true);
       return;
     }
 
@@ -84,10 +95,12 @@ function AdminUnitContent() {
       await getUnitContent(unit.unit_id);
 
       clearInterval(interval);
+      setModalMessage("File uploaded successfully!");
+      setShowSuccessModal(true);
       closeUploadModal();
     } catch (error) {
-      console.error("Upload error:", error);
-      alert("Upload failed. Please try again.");
+      setModalMessage("Upload failed. Please try again.");
+      setShowErrorModal(true);
     } finally {
       setUploadState((prev) => ({ ...prev, isUploading: false }));
     }
@@ -116,25 +129,40 @@ function AdminUnitContent() {
   };
 
   const handleDownload = (media) => {
-    downloadResource(
-      media.path.split("/").pop(),
-      `${media.title}.${getFileType(media.type).toLowerCase()}`
-    );
+    try {
+      downloadResource(
+        media.path.split("/").pop(),
+        `${media.title}.${getFileType(media.type).toLowerCase()}`
+      );
+      setModalMessage("Download started!");
+      setShowSuccessModal(true);
+    } catch (error) {
+      setModalMessage("Download failed. Please try again.");
+      setShowErrorModal(true);
+    }
   };
 
-  const handleDeleteMedia = async (unit_id, media_id) => {
+  const confirmDeleteMedia = (unit_id, media_id) => {
+    setMediaToDelete({ unit_id, media_id });
+    setModalMessage("Are you sure you want to delete this media?");
+    setShowConfirmModal(true);
+  };
+
+  const handleDeleteMedia = async () => {
     try {
-      setDeletingMediaId(media_id);
-      await deleteUnitContent(unit_id, media_id);
-      // Refresh the content
-      await getUnitContent(unit_id);
+      setDeletingMediaId(mediaToDelete.media_id);
+      await deleteUnitContent(mediaToDelete.unit_id, mediaToDelete.media_id);
+      await getUnitContent(mediaToDelete.unit_id);
+      setModalMessage("Media deleted successfully!");
+      setShowSuccessModal(true);
     } catch (error) {
-      console.log(
-        "Error deleting media from a unit (from the page): ",
-        error.response?.data?.error || error.message
+      setModalMessage(
+        error.response?.data?.error || "Failed to delete media. Please try again."
       );
+      setShowErrorModal(true);
     } finally {
       setDeletingMediaId(null);
+      setShowConfirmModal(false);
     }
   };
 
@@ -187,9 +215,7 @@ function AdminUnitContent() {
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => {
-                    handleDeleteMedia(unit.unit_id, media._id);
-                  }}
+                  onClick={() => confirmDeleteMedia(unit.unit_id, media._id)}
                   className="btn btn-sm btn-ghost text-error"
                   disabled={deletingMediaId === media._id}
                 >
@@ -223,6 +249,24 @@ function AdminUnitContent() {
           closeModal={closeMediaModal}
           handleDownload={handleDownload}
           formatDate={formatDate}
+        />
+
+        {/* Modals */}
+        <SuccessModal
+          showSuccessModal={showSuccessModal}
+          setShowSuccessModal={setShowSuccessModal}
+          successMessage={modalMessage}
+        />
+        <ErrorModal
+          showErrorModal={showErrorModal}
+          setShowErrorModal={setShowErrorModal}
+          errorMessage={modalMessage}
+        />
+        <ConfirmModal
+          showConfirmModal={showConfirmModal}
+          setShowConfirmModal={setShowConfirmModal}
+          message={modalMessage}
+          onConfirm={handleDeleteMedia}
         />
       </div>
     </div>

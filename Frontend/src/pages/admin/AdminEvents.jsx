@@ -3,14 +3,24 @@ import AdminNavbar from "../../components/admin/adminNavbar";
 import EventList from "../../components/shared/EventList";
 import { Loader2, Plus } from "lucide-react";
 import EventModal from "../../components/admin/EventModal";
-import { useAdminStore } from "../../store/adminStore";
+import { useAdminStore } from "../../store/AdminStore";
 import { useSharedStore } from "../../store/SharedStore";
+import ErrorModal from "../../components/shared/ErrorModal";
+import SuccessModal from "../../components/shared/SuccessModal";
+import ConfirmModal from "../../components/shared/ConfirmModal";
 
 function AdminEvents() {
   const [currentYear, setCurrentYear] = useState("2025");
   const [showModal, setShowModal] = useState(false);
   const [formError, setFormError] = useState("");
   const [events, setEvents] = useState({});
+
+  // Modal states
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [eventToDelete, setEventToDelete] = useState({ year: "", id: "" });
 
   const [newEvent, setNewEvent] = useState({
     title: "",
@@ -44,7 +54,8 @@ function AdminEvents() {
         }
       }
     } catch (err) {
-      console.error("Failed to fetch events:", err);
+      setModalMessage("Failed to fetch events. Please try again later.");
+      setShowErrorModal(true);
     }
   }, [getAllEvents, currentYear]);
 
@@ -79,6 +90,8 @@ function AdminEvents() {
 
     try {
       await addEvent(formData);
+      setModalMessage("Event added successfully!");
+      setShowSuccessModal(true);
       setNewEvent({
         title: "",
         date: "",
@@ -88,23 +101,34 @@ function AdminEvents() {
       });
       setShowModal(false);
       await fetchEvents(); // Refresh event list after adding
-    } catch {
-      setFormError("Failed to add event. Please try again.");
+    } catch (error) {
+      setModalMessage("Failed to add event. Please try again.");
+      setShowErrorModal(true);
     }
   };
 
-  const handleDeleteEvent = async (year, id) => {
-    if (window.confirm("Are you sure you want to delete this event?")) {
-      try {
-        await deleteEvent(id);
-        setEvents({
-          ...events,
-          [year]: events[year].filter((event) => event.id !== id),
-        });
-      } catch (error) {
-        console.error("Failed to delete event:", error);
-        alert("Failed to delete event. Please try again.");
-      }
+  const confirmDeleteEvent = (year, id) => {
+    setEventToDelete({ year, id });
+    setModalMessage("Are you sure you want to delete this event?");
+    setShowConfirmModal(true);
+  };
+
+  const handleDeleteEvent = async () => {
+    try {
+      await deleteEvent(eventToDelete.id);
+      setEvents({
+        ...events,
+        [eventToDelete.year]: events[eventToDelete.year].filter(
+          (event) => event.id !== eventToDelete.id
+        ),
+      });
+      setModalMessage("Event deleted successfully!");
+      setShowSuccessModal(true);
+    } catch (error) {
+      setModalMessage("Failed to delete event. Please try again.");
+      setShowErrorModal(true);
+    } finally {
+      setShowConfirmModal(false);
     }
   };
 
@@ -163,9 +187,27 @@ function AdminEvents() {
             events={events}
             currentYear={currentYear}
             isManager={true}
-            handleDeleteEvent={handleDeleteEvent}
+            handleDeleteEvent={confirmDeleteEvent}
           />
         </div>
+
+        {/* Modals */}
+        <SuccessModal
+          showSuccessModal={showSuccessModal}
+          setShowSuccessModal={setShowSuccessModal}
+          successMessage={modalMessage}
+        />
+        <ErrorModal
+          showErrorModal={showErrorModal}
+          setShowErrorModal={setShowErrorModal}
+          errorMessage={modalMessage}
+        />
+        <ConfirmModal
+          showConfirmModal={showConfirmModal}
+          setShowConfirmModal={setShowConfirmModal}
+          message={modalMessage}
+          onConfirm={handleDeleteEvent}
+        />
       </div>
     </div>
   );

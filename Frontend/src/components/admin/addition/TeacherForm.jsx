@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAdminStore } from "../../../store/adminStore";
+import { useAdminStore } from "../../../store/AdminStore";
 
 export default function TeacherForm({ formData, handleChange }) {
   const { getAllDepartments, getGradesInDepartment, getAllSections } =
