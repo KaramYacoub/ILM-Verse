@@ -198,7 +198,6 @@ function AdminShowReports() {
                 </thead>
                 <tbody>
                   {reportsData.teacherReports.map((report) => (
-                    console.log(report),
                     <tr
                       key={report.report_id}
                       className="hover"
