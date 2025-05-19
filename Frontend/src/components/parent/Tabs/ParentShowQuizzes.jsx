@@ -110,12 +110,12 @@ function ParentShowQuizzes() {
                     </td>
                     <td>
                       {status === "able to start" ? (
-                        <Link
-                          to={`/student-quiz-details/${course_id}/${quiz.quiz_id}`}
-                          className="btn btn-sm btn-primary"
+                        <button
+                          className="btn btn-sm btn-ghost disabled"
+                          disabled
                         >
-                          Start Quiz
-                        </Link>
+                          Not Available for Parents
+                        </button>
                       ) : status === "finished" && quiz.able_to_view ? (
                         <button
                           onClick={() => handleShowResult(quiz)}
