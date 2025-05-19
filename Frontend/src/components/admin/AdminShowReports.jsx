@@ -144,7 +144,7 @@ function AdminShowReports() {
                 <tbody>
                   {reportsData.adminReports.map((report) => (
                     <tr
-                      key={`admin-${report.title}-${report.date}`}
+                      key={report.report_id}
                       className="hover"
                     >
                       <td>{report.admin}</td>
@@ -186,35 +186,42 @@ function AdminShowReports() {
 
           {reportsData.teacherReports?.length > 0 ? (
             <div className="overflow-x-auto">
-              <table className="table w-full">
+              <table className="table w-full text-center">
                 <thead>
                   <tr className="bg-primary text-base-100">
-                    <th className="text-center">Course</th>
-                    <th className="text-center">Teacher</th>
-                    <th className="text-center">Date</th>
-                    <th className="text-center">Title</th>
-                    <th className="text-center">Actions</th>
+                    <th>Course</th>
+                    <th>Teacher</th>
+                    <th>Date</th>
+                    <th>Title</th>
+                    <th colSpan="2">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {reportsData.teacherReports.map((report) => (
+                    console.log(report),
                     <tr
-                      key={`teacher-${report.course}-${report.date}`}
+                      key={report.report_id}
                       className="hover"
                     >
-                      <td className="text-center">{report.course || "N/A"}</td>
-                      <td className="text-center">{report.teacher}</td>
-                      <td className="text-center">
-                        {new Date(report.date).toLocaleDateString()}
-                      </td>
-                      <td className="text-center">{report.title}</td>
-                      <td className="text-center">
-                        <button
-                          onClick={() => openReportModal(report)}
-                          className="btn btn-primary btn-sm"
-                        >
-                          View
-                        </button>
+                      <td>{report.course || "N/A"}</td>
+                      <td>{report.teacher}</td>
+                      <td>{new Date(report.date).toLocaleDateString()}</td>
+                      <td>{report.title}</td>
+                      <td colSpan="2">
+                        <div className="flex flex-row justify-center gap-2">
+                          <button
+                            onClick={() => openReportModal(report)}
+                            className="btn btn-primary btn-sm"
+                          >
+                            View
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClick(report)}
+                            className="btn btn-outline btn-primary btn-sm"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
