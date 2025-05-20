@@ -56,6 +56,7 @@ exports.getStudentReports = async (req, res) => {
         const teacherReport = {
           teacher: `${teacherName.first_name} ${teacherName.last_name}`,
           course: `${courseName.subject_name}`,
+          report_id: oneReport._id,
           title: oneReport.title,
           description: oneReport.description,
           date: oneReport.date,
@@ -71,6 +72,7 @@ exports.getStudentReports = async (req, res) => {
 
         const adminReport = {
           admin: `${adminName.first_name} ${adminName.last_name}`,
+          report_id: oneReport._id,
           title: oneReport.title,
           description: oneReport.description,
           date: oneReport.date,

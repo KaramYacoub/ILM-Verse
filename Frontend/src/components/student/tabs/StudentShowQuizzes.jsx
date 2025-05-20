@@ -103,6 +103,12 @@ function StudentShowQuizzes() {
                             <span>Available</span>
                           </div>
                         )}
+                        {status === "not submitted" && (
+                          <div className="flex gap-1 badge badge-neutral p-3 text-base-100">
+                            <Clock className="w-5 h-5" />
+                            <span>Not Submitted</span>
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td>
@@ -126,6 +132,13 @@ function StudentShowQuizzes() {
                           disabled
                         >
                           Results Not Available
+                        </button>
+                      ) : status === "not submitted" ? (
+                        <button
+                          className="btn btn-sm btn-outline btn-warning"
+                          disabled
+                        >
+                          Not Submitted
                         </button>
                       ) : (
                         <button

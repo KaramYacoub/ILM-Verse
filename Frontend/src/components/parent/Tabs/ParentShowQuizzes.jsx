@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Loader2, Clock, CheckCircle, PlayCircle } from "lucide-react";
 import useParentsStore from "../../../store/ParentStore";
@@ -106,38 +106,54 @@ function ParentShowQuizzes() {
                             <span>Available</span>
                           </div>
                         )}
+                        {status === "not submitted" && (
+                          <div className="flex gap-1 badge badge-neutral p-3 text-base-100">
+                            <Clock className="w-5 h-5" />
+                            <span>Not Submitted</span>
+                          </div>
+                        )}
                       </div>
                     </td>
+
                     <td>
-                      {status === "able to start" ? (
-                        <Link
-                          to={`/student-quiz-details/${course_id}/${quiz.quiz_id}`}
-                          className="btn btn-sm btn-primary"
-                        >
-                          Start Quiz
-                        </Link>
-                      ) : status === "finished" && quiz.able_to_view ? (
-                        <button
-                          onClick={() => handleShowResult(quiz)}
-                          className="btn btn-sm btn-secondary"
-                        >
-                          View Results
-                        </button>
-                      ) : status === "finished" ? (
-                        <button
-                          className="btn btn-sm btn-ghost disabled"
-                          disabled
-                        >
-                          Results Not Available
-                        </button>
-                      ) : (
-                        <button
-                          className="btn btn-sm btn-ghost disabled"
-                          disabled
-                        >
-                          Not Available
-                        </button>
-                      )}
+                      <td>
+                        {status === "able to start" ? (
+                          <button
+                            className="btn btn-sm btn-ghost disabled"
+                            disabled
+                          >
+                            Not Available for Parents
+                          </button>
+                        ) : status === "finished" && quiz.able_to_view ? (
+                          <button
+                            onClick={() => handleShowResult(quiz)}
+                            className="btn btn-sm btn-secondary"
+                          >
+                            View Results
+                          </button>
+                        ) : status === "finished" ? (
+                          <button
+                            className="btn btn-sm btn-ghost disabled"
+                            disabled
+                          >
+                            Results Not Available
+                          </button>
+                        ) : status === "not submitted" ? (
+                          <button
+                            className="btn btn-sm btn-outline btn-warning"
+                            disabled
+                          >
+                            Not Submitted
+                          </button>
+                        ) : (
+                          <button
+                            className="btn btn-sm btn-ghost disabled"
+                            disabled
+                          >
+                            Not Available
+                          </button>
+                        )}
+                      </td>
                     </td>
                   </tr>
                 );
