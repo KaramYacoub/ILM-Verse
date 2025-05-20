@@ -1154,25 +1154,7 @@ function minutesToTime(minutes) {
   const mins = minutes % 60;
   return `${hours < 10 ? "0" + hours : hours}:${mins < 10 ? "0" + mins : mins}`;
 }
-async function isQuizSubmitted(student_id, quiz_id) {
-  try {
-    const quiz = await Quiz.findById(quiz_id).select("Submissions");
 
-    if (!quiz) {
-      console.error("Quiz not found");
-      return false;
-    }
-
-    const foundSubmission = quiz.Submissions.find(
-      (submission) => submission.student_id === student_id
-    );
-
-    return !!foundSubmission; // true if found, false if not
-  } catch (error) {
-    console.error("Error in isQuizSubmitted:", error.message);
-    return false;
-  }
-}
 exports.getQuizesForCourseForStudent = async (req, res) => {
   try {
     const { course_id } = req.params;
@@ -1186,7 +1168,7 @@ exports.getQuizesForCourseForStudent = async (req, res) => {
         message: "no quizes found",
       });
     }
-
+    const student_id = req.user.id || "";
     const nowDate = new Date().toISOString().split("T")[0]; // YEAR-MONTH-DAY
     const nowTime = getCurrentTime(); // HH:MM
 
@@ -1215,22 +1197,30 @@ exports.getQuizesForCourseForStudent = async (req, res) => {
         able_to_view: oneQuiz.able_to_view,
         status: "", // Start with an empty status
       };
+      const quiz = await Quiz.findById(oneQuiz._id).select("Submissions");
 
+      if (!quiz) {
+        console.error("Quiz not found");
+        return false;
+      }
+
+      const foundSubmission = quiz.Submissions.find(
+        (submission) => submission.student_id === student_id
+      );
+      isQuizSubmitted = !!foundSubmission;
       console.log(nowDate, startDate, nowTime, endTime);
+      console.log(student_id, isQuizSubmitted);
       // Check if the current date and time are past the start and end times of the quiz
-      if (
-        nowDate > startDate ||
-        (nowDate === startDate && nowTime > endTime) ||
-        isQuizSubmitted
-      ) {
-        toPushQuiz.status = "finished"; // If quiz time is finished
+      if (nowDate > startDate || (nowDate === startDate && nowTime > endTime)) {
+        toPushQuiz.status = "finished"; // If quiz time is finished or the student have subbmision
       } else if (
         nowDate === startDate &&
         nowTime >= startTime &&
         nowTime <= endTime
       ) {
         // If current time is between start_time and end_time
-        toPushQuiz.status = "able to start";
+        if (!isQuizSubmitted) toPushQuiz.status = "able to start";
+        else toPushQuiz.status = "finished";
       } else if (
         nowDate < startDate ||
         (nowDate === startDate && nowTime < startTime)

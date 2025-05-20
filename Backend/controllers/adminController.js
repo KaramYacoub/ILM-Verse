@@ -554,41 +554,26 @@ exports.deleteStudent = async (req, res) => {
 exports.deleteParent = async (req, res) => {
   try {
     const { id } = req.params;
-
-    // Find all students with the matching parent_id
     const students = await student.findAll({
       where: {
         parent_id: id,
       },
     });
-
-    // If no students are found, return a message
     if (students.length === 0) {
       return res
         .status(404)
         .json({ error: "No students found for this parent" });
     }
-
-    // Delete all students with the given parent_id
-    await student.destroy({
-      where: {
-        parent_id: id,
-      },
-    });
-
-    // Now delete the parent
-    const parentToDelete = await parent.findOne({
-      where: {
-        parent_id: id,
-      },
-    });
-
+    for (const std of students) {
+      await student_marks.destroy({ where: { student_id: std.student_id } });
+      await course_student.destroy({ where: { student_id: std.student_id } });
+      await student.destroy({ where: { student_id: std.student_id } });
+    }
+    const parentToDelete = await parent.findOne({ where: { parent_id: id } });
     if (!parentToDelete) {
       return res.status(404).json({ error: "Parent not found" });
     }
-
     await parentToDelete.destroy();
-
     res.status(204).json({
       status: "success",
       message: "Parent and their students deleted successfully",
