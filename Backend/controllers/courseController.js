@@ -1168,7 +1168,12 @@ exports.getQuizesForCourseForStudent = async (req, res) => {
         message: "no quizes found",
       });
     }
-    const student_id = req.user.id || "";
+    let student_id;
+    if (req.role === "student") {
+      student_id = req.user.id;
+    } else {
+      student_id = req.params.student_id;
+    }
     const nowDate = new Date().toISOString().split("T")[0]; // YEAR-MONTH-DAY
     const nowTime = getCurrentTime(); // HH:MM
 
@@ -1208,11 +1213,14 @@ exports.getQuizesForCourseForStudent = async (req, res) => {
         (submission) => submission.student_id === student_id
       );
       isQuizSubmitted = !!foundSubmission;
-      console.log(nowDate, startDate, nowTime, endTime);
-      console.log(student_id, isQuizSubmitted);
+      console.log("student_id", student_id);
       // Check if the current date and time are past the start and end times of the quiz
       if (nowDate > startDate || (nowDate === startDate && nowTime > endTime)) {
-        toPushQuiz.status = "finished"; // If quiz time is finished or the student have subbmision
+        if (isQuizSubmitted) {
+          toPushQuiz.status = "finished";
+        } else {
+          toPushQuiz.status = "not submitted";
+        }
       } else if (
         nowDate === startDate &&
         nowTime >= startTime &&
