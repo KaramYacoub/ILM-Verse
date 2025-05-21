@@ -14,7 +14,8 @@ var _student = require("./SQL/student");
 var _student_marks = require("./SQL/student_marks");
 var _teacher = require("./SQL/teacher");
 var _otp = require("./SQL/otp");
-//ORM
+
+// ORM init function
 function initModels(sequelize) {
   var admin = _admin(sequelize, DataTypes);
   var announcment = _announcment(sequelize, DataTypes);
@@ -32,19 +33,28 @@ function initModels(sequelize) {
   var teacher = _teacher(sequelize, DataTypes);
   var otp = _otp(sequelize, DataTypes);
 
+  // Many-to-Many Course <-> Student via course_student with cascade delete
   course.belongsToMany(student, {
     as: "student_id_students",
     through: course_student,
     foreignKey: "course_id",
     otherKey: "student_id",
+    onDelete: "CASCADE",
   });
   student.belongsToMany(course, {
     as: "course_id_courses",
     through: course_student,
     foreignKey: "student_id",
     otherKey: "course_id",
+    onDelete: "CASCADE",
   });
-  announcment.belongsTo(admin, { as: "admin", foreignKey: "adminid" });
+
+  // Announcment associations
+  announcment.belongsTo(admin, {
+    as: "admin",
+    foreignKey: "adminid",
+    onDelete: "CASCADE",
+  });
   announcment.belongsTo(department, {
     as: "department",
     foreignKey: "department_id",
@@ -54,59 +64,110 @@ function initModels(sequelize) {
     foreignKey: "announcmentid",
   });
   admin.hasMany(announcment, { as: "announcments", foreignKey: "adminid" });
-  post.belongsTo(admin, { as: "admin", foreignKey: "adminid" });
-  admin.hasMany(post, { as: "posts", foreignKey: "adminid" });
-  course_student.belongsTo(course, { as: "course", foreignKey: "course_id" });
+
+  // Course_Student belongsTo course and student with cascade delete
+  course_student.belongsTo(course, {
+    as: "course",
+    foreignKey: "course_id",
+    onDelete: "CASCADE",
+  });
   course.hasMany(course_student, {
     as: "course_students",
     foreignKey: "course_id",
+    onDelete: "CASCADE",
   });
-  student_marks.belongsTo(course_student, {
-    as: "course_student",
-    foreignKey: "course_id",
-  });
-
-  course_student.hasMany(student_marks, {
-    as: "student_marks",
-    foreignKey: "course_id",
-  });
-  student_marks.belongsTo(course_student, {
+  course_student.belongsTo(student, {
     as: "student",
     foreignKey: "student_id",
+    onDelete: "CASCADE",
   });
-  course_student.hasMany(student_marks, {
-    as: "student_student_marks",
+  student.hasMany(course_student, {
+    as: "course_students",
     foreignKey: "student_id",
+    onDelete: "CASCADE",
   });
+
+  // Student Marks belongsTo student and course directly (cascade delete)
+  student_marks.belongsTo(student, {
+    as: "student",
+    foreignKey: "student_id",
+    onDelete: "CASCADE",
+  });
+  student.hasMany(student_marks, {
+    as: "student_marks",
+    foreignKey: "student_id",
+    onDelete: "CASCADE",
+  });
+
+  student_marks.belongsTo(course, {
+    as: "course",
+    foreignKey: "course_id",
+    onDelete: "CASCADE",
+  });
+  course.hasMany(student_marks, {
+    as: "student_marks",
+    foreignKey: "course_id",
+    onDelete: "CASCADE",
+  });
+
+  // Student Marks belongsTo mark_type
+  student_marks.belongsTo(mark_type, {
+    as: "type",
+    foreignKey: "type_id",
+    onDelete: "CASCADE",
+  });
+  mark_type.hasMany(student_marks, {
+    as: "student_marks",
+    foreignKey: "type_id",
+    onDelete: "CASCADE",
+  });
+
+  // Department associations
   grade.belongsTo(department, { as: "dept", foreignKey: "dept_id" });
   department.hasMany(grade, { as: "grades", foreignKey: "dept_id" });
   teacher.belongsTo(department, { as: "dept", foreignKey: "dept_id" });
   department.hasMany(teacher, { as: "teachers", foreignKey: "dept_id" });
+
+  // Section associations
   section.belongsTo(grade, { as: "grade", foreignKey: "grade_id" });
   grade.hasMany(section, { as: "sections", foreignKey: "grade_id" });
-  student_marks.belongsTo(mark_type, { as: "type", foreignKey: "type_id" });
-  mark_type.hasMany(student_marks, {
-    as: "student_marks",
-    foreignKey: "type_id",
+  course.belongsTo(section, {
+    as: "section",
+    foreignKey: "section_id",
+    onDelete: "CASCADE",
   });
-  student.belongsTo(parent, { as: "parent", foreignKey: "parent_id" });
-  parent.hasMany(student, { as: "students", foreignKey: "parent_id" });
-  course.belongsTo(section, { as: "section", foreignKey: "section_id" });
   section.hasMany(course, { as: "courses", foreignKey: "section_id" });
   student.belongsTo(section, { as: "section", foreignKey: "section_id" });
   section.hasMany(student, { as: "students", foreignKey: "section_id" });
   teacher.belongsTo(section, { as: "section", foreignKey: "section_id" });
   section.hasMany(teacher, { as: "teachers", foreignKey: "section_id" });
-  course_student.belongsTo(student, {
-    as: "student",
-    foreignKey: "student_id",
+
+  // Parent - Student cascade delete
+  student.belongsTo(parent, {
+    as: "parent",
+    foreignKey: "parent_id",
+    onDelete: "CASCADE",
   });
-  student.hasMany(course_student, {
-    as: "course_students",
-    foreignKey: "student_id",
+  parent.hasMany(student, {
+    as: "students",
+    foreignKey: "parent_id",
+    onDelete: "CASCADE",
   });
-  course.belongsTo(teacher, { as: "teacher", foreignKey: "teacher_id" });
-  teacher.hasMany(course, { as: "courses", foreignKey: "teacher_id" });
+
+  // Teacher - Course cascade delete
+  course.belongsTo(teacher, {
+    as: "teacher",
+    foreignKey: "teacher_id",
+    onDelete: "CASCADE",
+  });
+  teacher.hasMany(course, {
+    as: "courses",
+    foreignKey: "teacher_id",
+    onDelete: "CASCADE",
+  });
+
+  // Event associations (if needed)
+  // otp associations (if needed)
 
   return {
     admin,
@@ -126,6 +187,7 @@ function initModels(sequelize) {
     otp,
   };
 }
+
 module.exports = initModels;
 module.exports.initModels = initModels;
 module.exports.default = initModels;

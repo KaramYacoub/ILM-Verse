@@ -4,7 +4,7 @@ module.exports = function (sequelize, DataTypes) {
     "student_marks",
     {
       mark_id: {
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
         defaultValue: Sequelize.UUIDV4,
@@ -13,17 +13,19 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.STRING(20),
         allowNull: false,
         references: {
-          model: "course_student",
-          key: "student_id",
+          model: "course",
+          key: "course_id",
         },
+        onDelete: "CASCADE",
       },
       student_id: {
         type: DataTypes.STRING(20),
         allowNull: false,
         references: {
-          model: "course_student",
+          model: "student",
           key: "student_id",
         },
+        onDelete: "CASCADE",
       },
       type_id: {
         type: DataTypes.STRING(20),
@@ -46,7 +48,6 @@ module.exports = function (sequelize, DataTypes) {
       sequelize,
       tableName: "student_marks",
       schema: "public",
-      hasTrigger: true,
       timestamps: false,
       indexes: [
         {
