@@ -77,6 +77,7 @@ function ParentAssignment() {
 
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
+      <h2 className="text-3xl text-primary font-bold mb-6">Assignments</h2>
       <div className="overflow-x-auto rounded-lg shadow-lg">
         <table className="table table-zebra w-full text-center">
           <thead className="bg-primary text-base-100">

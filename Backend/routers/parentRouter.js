@@ -47,7 +47,7 @@ router.get("/reports/:student_id", reportController.getStudentReports); //done
 // quiz functionalites
 //getQuizesForCourse
 router.get(
-  "/course/:course_id/student/quizes",
+  "/course/:course_id/student/:student_id/quizes",
   courseController.getQuizesForCourseForStudent
 );
 //show quiz Mark
