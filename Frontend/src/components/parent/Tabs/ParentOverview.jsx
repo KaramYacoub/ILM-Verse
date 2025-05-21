@@ -1,37 +1,29 @@
 import { useNavigate, useParams } from "react-router-dom";
 import useParentsStore from "../../../store/ParentStore";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
 function ParentOverview() {
   const { course_id, student_id } = useParams();
   const navigate = useNavigate();
 
-  const { fetchCourseAllUnits, courseContent } = useParentsStore();
+const { fetchCourseAllUnits, courseContent, loading } = useParentsStore();
 
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const shouldFetch = !courseContent || courseContent.length === 0;
+    const shouldFetch = !courseContent;
 
     if (shouldFetch && course_id) {
       const fetcheUnits = async () => {
         try {
-          setLoading(true);
           await fetchCourseAllUnits(course_id);
         } catch (error) {
           console.error("Failed to load unit content:", error);
-        } finally {
-          setLoading(false);
         }
       };
       fetcheUnits();
     }
   }, [courseContent, course_id, fetchCourseAllUnits]);
-
-  if (!courseContent) {
-    return <div className="text-error">No units available.</div>;
-  }
 
   if (loading) {
     return (
@@ -44,6 +36,9 @@ function ParentOverview() {
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
       <h2 className="text-3xl text-primary font-bold mb-6">Course Units</h2>
+      {Array.isArray(courseContent) && courseContent.length === 0 && (
+        <div className="py-8 text-center text-gray-500">No units available.</div>
+      )}
 
       <div className="space-y-4">
         {courseContent.map((unit) => (

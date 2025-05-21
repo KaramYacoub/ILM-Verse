@@ -268,13 +268,16 @@ exports.getCourseUnits = async (req, res) => {
       unit_description: unit.unit_description,
     }));
 
+    // Always return 200 with empty array if no units
     res.status(200).json({
       status: "success",
-      data: result,
+      data: result || [], // Ensure always array
     });
   } catch (error) {
     res.status(400).json({
+      status: "error",
       error: error.message,
+      data: [], // Return empty array on error
     });
   }
 };
@@ -733,9 +736,9 @@ exports.getAllAssigmentsForCourseForStudent = async (req, res) => {
         data: finalAssigmentsResponse,
       });
     } else {
-      res.status(404).json({
-        status: "failure",
-        message: "No assignments found",
+      res.status(200).json({
+        status: "success",
+        data: [], // Return empty array instead of 404
       });
     }
   } catch (error) {

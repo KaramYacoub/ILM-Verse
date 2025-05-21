@@ -1,18 +1,26 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Download, XCircle } from "lucide-react";
+import { Download, XCircle, Loader2 } from "lucide-react";
 import useParentsStore from "../../../store/ParentStore";
 
 function ParentAssignment() {
   const { course_id, student_id } = useParams();
   const [selectedAssignment, setSelectedAssignment] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { assignments = [], fetchAssignments } = useParentsStore();
 
   useEffect(() => {
     const fetchData = async () => {
-      if (course_id && student_id) {
-        await fetchAssignments(course_id, student_id);
+      setIsLoading(true);
+      try {
+        if (course_id && student_id) {
+          await fetchAssignments(course_id, student_id);
+        }
+      } catch (err) {
+        console.error("Failed to fetch assignments:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -75,6 +83,14 @@ function ParentAssignment() {
     return <span className="text-warning font-semibold">Pending</span>;
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
       <h2 className="text-3xl text-primary font-bold mb-6">Assignments</h2>
@@ -89,19 +105,27 @@ function ParentAssignment() {
             </tr>
           </thead>
           <tbody>
-            {assignments.map((assignment, index) => (
-              <tr key={assignment._id || index}>
-                <td>
-                  <div className="font-semibold">{assignment.title}</div>
-                  <div className="text-sm text-gray-500">
-                    Published: {assignment.published_at}
-                  </div>
+            {assignments.length > 0 ? (
+              assignments.map((assignment, index) => (
+                <tr key={assignment._id || index}>
+                  <td>
+                    <div className="font-semibold">{assignment.title}</div>
+                    <div className="text-sm text-gray-500">
+                      Published: {assignment.published_at}
+                    </div>
+                  </td>
+                  <td>{formatDate(assignment.end_at)}</td>
+                  <td>{getStatusBadge(assignment)}</td>
+                  <td>{getActionContent(assignment)}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className="py-8 text-center text-gray-500">
+                  No assignment available for this course
                 </td>
-                <td>{formatDate(assignment.end_at)}</td>
-                <td>{getStatusBadge(assignment)}</td>
-                <td>{getActionContent(assignment)}</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

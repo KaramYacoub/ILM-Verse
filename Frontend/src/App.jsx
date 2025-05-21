@@ -88,9 +88,6 @@ const ParentOverview = lazy(() =>
 const ParentCourseContent = lazy(() =>
   import("./pages/parent/ParentCourseContent")
 );
-const ParentUnitsTab = lazy(() =>
-  import("./components/parent/Tabs/ParentUnitsTab")
-);
 const ParentUnitDetails = lazy(() =>
   import("./components/parent/Tabs/ParentUnitDetails")
 );

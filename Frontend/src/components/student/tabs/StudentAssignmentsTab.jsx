@@ -9,7 +9,7 @@ function StudentAssignmentsTab() {
   const { course_id } = useParams();
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  
+
   // Modal states
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -80,7 +80,10 @@ function StudentAssignmentsTab() {
       setModalMessage("Download started successfully!");
       setShowSuccessModal(true);
     } catch (error) {
-      setModalMessage("Failed to download file. Please try again.");
+      setModalMessage(
+        error.data.response.error ||
+          "Failed to download file. Please try again."
+      );
       setShowErrorModal(true);
     } finally {
       setIsSubmitting(false);
@@ -162,19 +165,27 @@ function StudentAssignmentsTab() {
             </tr>
           </thead>
           <tbody>
-            {assignments.map((assignment) => (
-              <tr key={assignment._id}>
-                <td className="flex flex-col text-start">
-                  <div className="font-semibold">{assignment.title}</div>
-                  <div className="text-sm text-gray-500">
-                    {assignment.description}
-                  </div>
+            {assignments.length > 0 ? (
+              assignments.map((assignment) => (
+                <tr key={assignment._id}>
+                  <td className="flex flex-col text-start">
+                    <div className="font-semibold">{assignment.title}</div>
+                    <div className="text-sm text-gray-500">
+                      {assignment.description}
+                    </div>
+                  </td>
+                  <td>{formatDate(assignment.end_at)}</td>
+                  <td>{getStatusBadge(assignment)}</td>
+                  <td>{getActionButton(assignment)}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className="py-8 text-center text-gray-500">
+                  No assignment available for this course
                 </td>
-                <td>{formatDate(assignment.end_at)}</td>
-                <td>{getStatusBadge(assignment)}</td>
-                <td>{getActionButton(assignment)}</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
@@ -223,8 +234,8 @@ function StudentAssignmentsTab() {
               </div>
 
               <div className="modal-action mt-4">
-                <label 
-                  htmlFor="submit-modal" 
+                <label
+                  htmlFor="submit-modal"
                   className="btn btn-outline"
                   disabled={isSubmitting}
                 >

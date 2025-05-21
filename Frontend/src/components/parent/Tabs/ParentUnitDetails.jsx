@@ -10,7 +10,7 @@ function ParentUnitDetails() {
   const { fetchUnitContent } = useParentsStore();
   const { downloadResource } = useCourseStore();
 
-  const [unitContent, setUnitContent] = useState(false);
+  const [unitContent, setUnitContent] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,10 +28,8 @@ function ParentUnitDetails() {
       }
     };
 
-    if (!unitContent || unitContent.length === 0) {
-      fetchData();
-    }
-  }, [course_id, fetchUnitContent, unitContent, unit_id]);
+    fetchData();
+  }, [course_id, fetchUnitContent, unit_id]);
 
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
@@ -72,6 +70,11 @@ function ParentUnitDetails() {
 
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
+      {loading && (
+        <div className="flex items-center justify-center h-screen">
+          <Loader2 className="animate-spin" size={50} />
+        </div>
+      )}
       <h2 className="text-2xl text-primary font-bold mb-6">
         {location.state?.unit?.unit_name || "Unit Content"}
       </h2>

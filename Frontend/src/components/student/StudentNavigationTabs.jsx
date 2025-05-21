@@ -32,7 +32,7 @@ function StudentNavigationTabs() {
           isUnitsTabActive ? "bg-accent text-primary" : "text-gray-600"
         }`}
       >
-        Resources
+        Content
       </button>
       <button
         onClick={() =>
