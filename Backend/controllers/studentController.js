@@ -73,6 +73,7 @@ exports.getStudentMarks = async (req, res) => {
     } else {
       student_id = req.user.id;
     }
+
     const studentCourses = await course_student.findAll({
       where: {
         student_id: student_id,
@@ -117,33 +118,25 @@ exports.getStudentMarks = async (req, res) => {
           },
           include: [
             {
-              model: course_student,
-              as: "course_student",
-              include: [
-                {
-                  model: course,
-                  as: "course",
-                  attributes: ["subject_name"], // Get the subject name for the course
-                },
-              ],
+              model: course,
+              as: "course",
+              attributes: ["subject_name"], // course info directly
             },
             {
               model: mark_type,
               as: "type",
-              attributes: ["type_name"], // Include the type name
+              attributes: ["type_name"], // mark type info
             },
           ],
         });
 
-        // If the mark exists, add the actual mark_value
         if (oneMark) {
-          courseMarks.subject_name = oneMark.course_student.course.subject_name;
+          courseMarks.subject_name = oneMark.course.subject_name;
           courseMarks.marks.push({
             type: type,
             mark_value: oneMark.mark_value,
           });
         } else {
-          // If no mark exists for the type, push "Not Marked"
           courseMarks.subject_name = oneCourse.course.subject_name || "Unknown";
           courseMarks.marks.push({
             type: type,
