@@ -11,10 +11,10 @@ function ParentShowQuizzes() {
   // fetch all the quizzes for the student in course
   useEffect(() => {
     const fetchQuizzes = async () => {
-      await getQuizzes(course_id);
+      await getQuizzes(course_id, student_id);
     };
     fetchQuizzes();
-  }, [course_id, getQuizzes]);
+  }, [course_id, getQuizzes, student_id]);
 
   // Function to format date
   const formatDate = (dateString) => {

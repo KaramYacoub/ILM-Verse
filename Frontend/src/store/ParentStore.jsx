@@ -176,10 +176,10 @@ const useParentsStore = create((set) => ({
     }
   },
 
-  getQuizzes: async (course_id) => {
+  getQuizzes: async (course_id, student_id) => {
     try {
       const response = await axiosInstance.get(
-        `/parent/course/${course_id}/student/quizes/`
+        `/parent/course/${course_id}/student/${student_id}/quizes/`
       );
       set({ quizzes: response.data.data, loading: false });
       return response.data.data;
