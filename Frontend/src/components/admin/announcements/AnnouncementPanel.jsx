@@ -7,7 +7,7 @@ import SendAnnouncement from "./SendAnnouncement";
 import ViewAnnouncements from "./ViewAnnouncements";
 
 function AnnouncementPanel({ isOpen, onClose }) {
-  const { getAllDepartments, getAnnoucments, addAnnoucments } = useAdminStore();
+  const { getAllDepartments, getAnnoucments } = useAdminStore();
 
   const [depts, setDepts] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
@@ -60,7 +60,6 @@ function AnnouncementPanel({ isOpen, onClose }) {
   const handleSend = async (newAnnouncement) => {
     try {
       setIsLoading(true);
-      await addAnnoucments(newAnnouncement.group, newAnnouncement.text);
       setAnnouncements((prev) => [...prev, newAnnouncement]);
       setActiveTab("view");
       setSelectedGroup(newAnnouncement.group);

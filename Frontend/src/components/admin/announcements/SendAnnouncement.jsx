@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { useAdminStore } from "../../../store/AdminStore";
 
-function SendAnnouncement({ depts, onSend, isLoading }) {
+function SendAnnouncement({ depts, onSend }) {
   const { addAnnoucments } = useAdminStore();
 
   const [announcementText, setAnnouncementText] = useState("");
   const [selectedGroup, setSelectedGroup] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setIsLoading(true);
     try {
       const response = await addAnnoucments(selectedGroup, announcementText);
       const newAnnouncement = {
@@ -26,6 +28,8 @@ function SendAnnouncement({ depts, onSend, isLoading }) {
       setSelectedGroup("");
     } catch (err) {
       console.error("Failed to send announcement", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 

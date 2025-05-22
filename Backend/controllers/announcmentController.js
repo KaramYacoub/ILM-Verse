@@ -18,7 +18,7 @@ exports.sendAnnouncment = async (req, res) => {
     const { department_id, content } = req.body;
     const admin_id = req.user.id;
     let newAnnouncment;
-    if (department_id === "general") {
+    if (department_id.toLowerCase() === "general") {
       newAnnouncment = await announcment.create({
         content: content,
         adminid: admin_id,
@@ -46,7 +46,7 @@ exports.getAnnoucments = async (req, res) => {
   try {
     const { department_id } = req.params;
     let annoucments;
-    if (department_id === "general") {
+    if (department_id.toLowerCase() === "general") {
       annoucments = await announcment.findAll({
         where: {
           department_id: null,

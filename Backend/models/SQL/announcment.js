@@ -1,5 +1,7 @@
 const Sequelize = require("sequelize");
 const department = require("./department");
+const moment = require("moment-timezone");
+
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
     "announcment",
@@ -12,12 +14,12 @@ module.exports = function (sequelize, DataTypes) {
       announcmentdate: {
         type: DataTypes.STRING(20),
         allowNull: false,
-        defaultValue: new Date().toISOString().split("T")[0],
+        defaultValue: () => moment().tz("Asia/Amman").format("YYYY-MM-DD"), // Jordanian date
       },
       sentat: {
         type: DataTypes.STRING(10),
         allowNull: false,
-        defaultValue: new Date().toTimeString().split(" ")[0],
+        defaultValue: () => moment().tz("Asia/Amman").format("HH:mm:ss"), // Jordanian time
       },
       content: {
         type: DataTypes.TEXT,
