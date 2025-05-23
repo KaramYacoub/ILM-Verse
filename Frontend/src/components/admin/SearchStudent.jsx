@@ -6,35 +6,19 @@ import AdminReportModal from "../admin/adminReportModal";
 
 function SearchStudent() {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [allStudents, setAllStudents] = useState([]);
-  const [filteredStudents, setFilteredStudents] = useState([]);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const studentsPerPage = 5;
 
   const { isFetchingStudents, getAllStudents } = useAdminStore();
 
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [allStudents, setAllStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
-  const handleReportClick = (student) => {
-    setSelectedStudent({
-      ...student,
-      student_name: `${student.first_name} ${student.last_name}`,
-    });
-    setIsReportModalOpen(true);
-  };
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
-  const handleViewReportClick = (student) => {
-    navigate(`/admin/view-report/${student.student_id}`, {
-      state: {
-        student_name: `${student.first_name} ${student.last_name}`,
-        student_id: student.student_id,
-      },
-    });
-  };
+  const [currentPage, setCurrentPage] = useState(1);
 
+  // fetch all students
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -50,6 +34,26 @@ function SearchStudent() {
     fetchStudents();
   }, [getAllStudents]);
 
+  // open add report modal
+  const handleAddReportClick = (student) => {
+    setSelectedStudent({
+      ...student,
+      student_name: `${student.first_name} ${student.last_name}`,
+    });
+    setIsReportModalOpen(true);
+  };
+
+  // open view student reports page
+  const handleViewReportClick = (student) => {
+    navigate(`/admin/view-report/${student.student_id}`, {
+      state: {
+        student_name: `${student.first_name} ${student.last_name}`,
+        student_id: student.student_id,
+      },
+    });
+  };
+
+  // search for a student eiher by his name or his ID
   const handleSearch = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
@@ -68,12 +72,15 @@ function SearchStudent() {
     }
   };
 
+  // navigate to student absence page
   const handleAbsenceClick = (student) => {
     navigate(
       `/admin-show-absences/${student.student_id}/${student.section_id}`
     );
   };
 
+  // pagination logic
+  const studentsPerPage = 5;
   const totalPages = Math.ceil(filteredStudents.length / studentsPerPage);
   const indexOfLastStudent = currentPage * studentsPerPage;
   const indexOfFirstStudent = indexOfLastStudent - studentsPerPage;
@@ -81,14 +88,6 @@ function SearchStudent() {
     indexOfFirstStudent,
     indexOfLastStudent
   );
-
-  const handleNext = () => {
-    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
-  };
-
-  const handlePrevious = () => {
-    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
-  };
 
   if (isFetchingStudents) {
     return (
@@ -122,12 +121,12 @@ function SearchStudent() {
           <div className="overflow-x-auto rounded-lg shadow-md">
             <table className="table w-full text-center">
               <thead>
-                <tr className="bg-primary text-white">
+                <tr className="bg-primary text-base-100">
                   <th>Student ID</th>
                   <th>Student Name</th>
-                  <th>Section</th>
-                  <th>Grade</th>
                   <th>Department</th>
+                  <th>Grade</th>
+                  <th>Section</th>
                   <th>Parent ID</th>
                   <th>Absences</th>
                   <th>Action</th>
@@ -141,9 +140,9 @@ function SearchStudent() {
                     <td>
                       {student.first_name} {student.last_name}
                     </td>
-                    <td>{student.section_name}</td>
-                    <td>{student.grade_name}</td>
                     <td>{student.dept_name}</td>
+                    <td>{student.grade_name}</td>
+                    <td>{student.section_name}</td>
                     <td>{student.parent_id}</td>
                     <td>
                       <button
@@ -155,7 +154,7 @@ function SearchStudent() {
                     </td>
                     <td>
                       <button
-                        onClick={() => handleReportClick(student)}
+                        onClick={() => handleAddReportClick(student)}
                         className="btn btn-primary btn-sm"
                       >
                         add report
@@ -178,7 +177,9 @@ function SearchStudent() {
           {/* Pagination Controls */}
           <div className="flex justify-between items-center mt-4">
             <button
-              onClick={handlePrevious}
+              onClick={() => {
+                if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+              }}
               className="btn btn-sm"
               disabled={currentPage === 1}
             >
@@ -188,7 +189,10 @@ function SearchStudent() {
               Page {currentPage} of {totalPages}
             </span>
             <button
-              onClick={handleNext}
+              onClick={() => {
+                if (currentPage < totalPages)
+                  setCurrentPage((prev) => prev + 1);
+              }}
               className="btn btn-sm"
               disabled={currentPage === totalPages}
             >

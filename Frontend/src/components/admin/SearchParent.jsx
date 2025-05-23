@@ -8,10 +8,10 @@ function SearchParent() {
   const [filteredParents, setFilteredParents] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const parentsPerPage = 5;
 
   const { isFetchingParents, getAllParents } = useAdminStore();
 
+  // fetch all parents
   useEffect(() => {
     const fetchParents = async () => {
       try {
@@ -27,6 +27,7 @@ function SearchParent() {
     fetchParents();
   }, [getAllParents]);
 
+  // search for a parent eiher by his name or his ID
   const handleSearch = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
@@ -37,13 +38,12 @@ function SearchParent() {
         `${parent.first_name} ${parent.last_name}`
           .toLowerCase()
           .includes(term.toLowerCase()) ||
-        parent.parent_id.toString().includes(term) ||
-        parent.phone?.includes(term) ||
-        parent.email?.toLowerCase().includes(term.toLowerCase())
+        parent.parent_id.toString().includes(term)
     );
     setFilteredParents(term.length > 0 ? results : allParents);
   };
 
+  const parentsPerPage = 5;
   const totalPages = Math.ceil(filteredParents.length / parentsPerPage);
   const indexOfLastParent = currentPage * parentsPerPage;
   const indexOfFirstParent = indexOfLastParent - parentsPerPage;
@@ -51,14 +51,6 @@ function SearchParent() {
     indexOfFirstParent,
     indexOfLastParent
   );
-
-  const handleNext = () => {
-    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
-  };
-
-  const handlePrevious = () => {
-    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
-  };
 
   if (isFetchingParents) {
     return (
@@ -73,7 +65,7 @@ function SearchParent() {
       <div className="relative mb-4">
         <input
           type="text"
-          placeholder="Search by parent name, ID, phone, or email"
+          placeholder="Search by parent name or ID"
           className="input input-bordered w-full pl-10"
           value={searchTerm}
           onChange={handleSearch}
@@ -113,7 +105,9 @@ function SearchParent() {
           {/* Pagination */}
           <div className="flex justify-between items-center mt-4">
             <button
-              onClick={handlePrevious}
+              onClick={() => {
+                if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+              }}
               className="btn btn-sm"
               disabled={currentPage === 1}
             >
@@ -123,7 +117,10 @@ function SearchParent() {
               Page {currentPage} of {totalPages}
             </span>
             <button
-              onClick={handleNext}
+              onClick={() => {
+                if (currentPage < totalPages)
+                  setCurrentPage((prev) => prev + 1);
+              }}
               className="btn btn-sm"
               disabled={currentPage === totalPages}
             >

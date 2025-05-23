@@ -4,136 +4,156 @@ import SuccessModal from "../shared/SuccessModal";
 import ErrorModal from "../shared/ErrorModal";
 
 function AdminReportModal({ isOpen, onClose, student }) {
-	const addReport = useAdminStore((state) => state.addReport);
+  const addReport = useAdminStore((state) => state.addReport);
 
-	const [showSuccessModal, setShowSuccessModal] = useState(false);
-	const [showErrorModal, setShowErrorModal] = useState(false);
-	const [errorMessage, setErrorMessage] = useState("");
-	const [successMessage, setSuccessMessage] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
-	const [title, setTitle] = useState("");
-	const [description, setDescription] = useState("");
-	const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-	const handleAddReport = async (student_id, title, date, description) => {
-		try {
-			if (!student_id || !title || !date || !description) {
-				setErrorMessage("All fields are required.");
-				setShowErrorModal(true);
-				return;
-			}
-			await addReport(student_id, title, description, date);
-			setTitle("");
-			setDescription("");
-			setDate(new Date().toISOString().split("T")[0]);
-			setSuccessMessage("Report added successfully!");
-			setShowSuccessModal(true);
-			setTimeout(() => {
-				setShowSuccessModal(false);
-				onClose();
-			}, 1000);
-		} catch (error) {
-			setErrorMessage(
-				error.response?.data?.error || error.message || "Error adding report."
-			);
-			setShowErrorModal(true);
-			setTimeout(() => {
-				setShowErrorModal(false);
-			}, 2000);
-		}
-	};
+  const handleAddReport = async (student_id, title, date, description) => {
+    try {
+      if (!student_id || !title || !date || !description) {
+        setErrorMessage("All fields are required.");
+        setShowErrorModal(true);
+        return;
+      }
 
-	if (!isOpen) return null;
+      await addReport(student_id, title, description, date);
 
-	return (
-		<div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
-			<div className='bg-white p-6 rounded-lg w-[90%] max-w-4xl shadow-xl space-y-4'>
-				<h2 className='text-2xl text-primary font-bold mb-5'>
-					Student Report Form
-				</h2>
+      setTitle("");
+      setDescription("");
+      setDate(new Date().toISOString().split("T")[0]);
+      setSuccessMessage("Report added successfully!");
+      setShowSuccessModal(true);
+      setTimeout(() => {
+        setShowSuccessModal(false);
+        onClose();
+      }, 1000);
+    } catch (error) {
+      setErrorMessage(
+        error.response?.data?.error || error.message || "Error adding report."
+      );
+      setShowErrorModal(true);
+      setTimeout(() => {
+        setShowErrorModal(false);
+      }, 2000);
+    }
+  };
 
-				<div className='grid grid-cols-2 gap-4'>
-					<div>
-						<label className='font-medium'>title:</label>
-						<input
-							className='input input-bordered w-full'
-							value={title}
-							required
-							onChange={(e) => setTitle(e.target.value)}
-						/>
-					</div>
-					<div>
-						<label className='font-medium'>Student Name:</label>
-						<div className='bg-gray-200 p-3 rounded-md text-center'>
-							{student.student_name}
-						</div>
-					</div>
-				</div>
+  if (!isOpen) return null;
 
-				<div className='grid grid-cols-2 gap-4'>
-					<div>
-						<label className='font-medium'>Date (MM/DD/YYYY):</label>
-						<input
-							type='date'
-							className='input input-bordered w-full text-center'
-							value={date}
-							required
-							onChange={(e) => setDate(e.target.value)}
-						/>
-					</div>
-					<div>
-						<label className='font-medium'>Department name: </label>
-						<div className='bg-primary p-3 text-center text-base-100 rounded-md'>
-							{student.dept_name}
-						</div>
-					</div>
-				</div>
+  return (
+    <dialog open={isOpen} className="modal modal-bottom sm:modal-middle">
+      <div className="modal-box max-w-4xl">
+        <h3 className="font-bold text-2xl text-primary mb-4">
+          Student Report Form
+        </h3>
 
-				<div>
-					<label className='font-medium'>Description:</label>
-					<textarea
-						className='textarea textarea-bordered w-full h-32'
-						value={description}
-						required
-						onChange={(e) => setDescription(e.target.value)}
-					/>
-				</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold">Title</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Report title"
+              className="input input-bordered w-full"
+              value={title}
+              required
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
 
-				<div className='flex justify-between gap-10'>
-					<button
-						className='btn flex-1 bg-gray-300 hover:bg-gray-400'
-						onClick={() => {
-							setDescription("");
-							setDate(new Date().toISOString().split("T")[0]);
-						}}>
-						Clear
-					</button>
-					<button
-						onClick={() => {
-							handleAddReport(student.student_id, title, date, description);
-						}}
-						className='btn flex-1 bg-primary text-white'>
-						Generate
-					</button>
-				</div>
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold">Student Name</span>
+            </label>
+            <div className="bg-base-200 p-3 rounded-lg">
+              {student.student_name}
+            </div>
+          </div>
+        </div>
 
-				<div className='text-right'>
-					<button className='text-md text-red-500 mt-2' onClick={onClose}>
-						Close
-					</button>
-				</div>
-			</div>
-			<SuccessModal
-				showSuccessModal={showSuccessModal}
-				setShowSuccessModal={setShowSuccessModal}
-				successMessage={successMessage}
-			/>
-			<ErrorModal
-				showErrorModal={showErrorModal}
-				setShowErrorModal={setShowErrorModal}
-				errorMessage={errorMessage}
-			/>
-		</div>
-	);
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold">Date</span>
+            </label>
+            <input
+              type="date"
+              className="input input-bordered w-full"
+              value={date}
+              required
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text font-semibold">Department</span>
+            </label>
+            <div className="bg-primary text-primary-content p-3 rounded-lg">
+              {student.dept_name}
+            </div>
+          </div>
+        </div>
+
+        <div className="form-control mb-6">
+          <label className="label">
+            <span className="label-text font-semibold">Description</span>
+          </label>
+          <textarea
+            className="textarea textarea-bordered h-32"
+            placeholder="Report details..."
+            value={description}
+            required
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        <div className="modal-action">
+          <button
+            className="btn btn-ghost"
+            onClick={() => {
+              setTitle("");
+              setDescription("");
+              setDate(new Date().toISOString().split("T")[0]);
+            }}
+          >
+            Clear
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={() =>
+              handleAddReport(student.student_id, title, date, description)
+            }
+          >
+            Generate Report
+          </button>
+          <button className="btn btn-outline" onClick={onClose}>
+            Close
+          </button>
+        </div>
+      </div>
+
+      {/* Success and Error Modals */}
+      <SuccessModal
+        showSuccessModal={showSuccessModal}
+        setShowSuccessModal={setShowSuccessModal}
+        successMessage={successMessage}
+      />
+      <ErrorModal
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+        errorMessage={errorMessage}
+      />
+    </dialog>
+  );
 }
+
 export default AdminReportModal;

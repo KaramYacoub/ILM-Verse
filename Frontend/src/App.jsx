@@ -27,9 +27,6 @@ const StudentCourseContent = lazy(() =>
 const StudentOverviewTab = lazy(() =>
   import("./components/student/tabs/StudentOverviewTab")
 );
-const StudentUnitsTab = lazy(() =>
-  import("./components/student/tabs/StudentunitsTab")
-);
 const StudentAssignmentsTab = lazy(() =>
   import("./components/student/tabs/StudentAssignmentsTab")
 );
@@ -426,11 +423,12 @@ function App() {
                 }
               />
             </Route>
+
+            <Route
+              path="/parent/course/:course_id/:student_id/quizes/:quiz_id/mark"
+              element={authParent ? <ParentReviewQuiz /> : <Navigate to="/" />}
+            />
           </>
-          <Route
-            path="/parent/course/:course_id/:student_id/quizes/:quiz_id/mark"
-            element={authParent ? <ParentReviewQuiz /> : <Navigate to="/" />}
-          />
 
           {/* admin Routes */}
           <>

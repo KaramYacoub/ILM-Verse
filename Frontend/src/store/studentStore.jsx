@@ -14,13 +14,13 @@ const useStudentStore = create((set) => ({
   assignments: [],
 
   fetchCourses: async () => {
-    set({ loading: true });
     try {
+      set({ loading: true });
       const response = await axiosInstance.get("/student/courses");
       set({ courses: response.data.data, loading: false });
     } catch (error) {
       set({
-        error: error.response?.data?.message || "Failed to load courses",
+        error: error.response?.data?.error || "Failed to load courses",
         loading: false,
       });
     }
@@ -33,7 +33,7 @@ const useStudentStore = create((set) => ({
       set({ course: response.data.data, loading: false });
     } catch (error) {
       set({
-        error: error.response?.data?.message || "Failed to load course",
+        error: error.response?.data?.error || "Failed to load course",
         loading: false,
       });
     }
@@ -48,7 +48,7 @@ const useStudentStore = create((set) => ({
       set({ courseContent: response.data.data, loading: false });
     } catch (error) {
       set({
-        error: error.response?.data?.message || "Failed to load units",
+        error: error.response?.data?.error || "Failed to load units",
         loading: false,
       });
     }
@@ -66,7 +66,7 @@ const useStudentStore = create((set) => ({
       });
     } catch (error) {
       set({
-        error: error.response?.data?.message || "Failed to load unit",
+        error: error.response?.data?.error || "Failed to load unit",
         loading: false,
       });
     }
@@ -79,7 +79,7 @@ const useStudentStore = create((set) => ({
       set({ grades: response.data.data, loading: false });
     } catch (error) {
       set({
-        error: error.response?.data?.message || "Failed to load grades",
+        error: error.response?.data?.error || "Failed to load grades",
         loading: false,
       });
     }
@@ -194,7 +194,6 @@ const useStudentStore = create((set) => ({
     }
   },
 
-  
   getStudentDepartment: async () => {
     try {
       const response = await axiosInstance.get("/student/department");

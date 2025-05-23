@@ -6,10 +6,20 @@ import useStudentStore from "../../store/studentStore";
 import { Loader2 } from "lucide-react";
 
 function StudentDashboard() {
-  const { courses, loading, error, fetchCourses } = useStudentStore();
+  const { courses, fetchCourses, loading } = useStudentStore();
 
   useEffect(() => {
-    fetchCourses();
+    try {
+      const fetchingCourses = async () => {
+        await fetchCourses();
+      };
+      fetchingCourses();
+    } catch (error) {
+      console.log(
+        "Error fetching courses for student: ",
+        error.response.data.error || error.message
+      );
+    }
   }, [fetchCourses]);
 
   return (
@@ -17,6 +27,13 @@ function StudentDashboard() {
       <StudentNavbar />
 
       <div className="flex flex-col items-start justify-center mt-10 px-4 md:px-8 lg:px-16 w-full max-w-7xl">
+        
+        {loading && (
+          <div className="flex text-primary text-center justify-center">
+            <Loader2 className="animate-spin" size={50} />
+          </div>
+        )}
+        
         <div className="flex w-full items-center justify-between sm:flex-row flex-col">
           <div>
             <h1 className="text-6xl font-bold text-primary">My Courses</h1>
@@ -31,14 +48,6 @@ function StudentDashboard() {
             </Link>
           </div>
         </div>
-
-        {/* Loading or error states */}
-        {loading && (
-          <div className="flex text-primary items-center justify-center">
-            <Loader2 className="animate-spin" size={50} />
-          </div>
-        )}
-        {/* {error && <p className="mt-6 text-red-500">{error}</p>} */}
 
         {/* Courses Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 w-full">
