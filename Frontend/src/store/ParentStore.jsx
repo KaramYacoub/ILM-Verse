@@ -7,7 +7,6 @@ const useParentsStore = create((set) => ({
   grades: [],
   absence: [],
   reports: [],
-  courseContent: [],
   course: [],
   assignments: [],
   quizzes: [],
@@ -60,39 +59,20 @@ const useParentsStore = create((set) => ({
       });
     }
   },
-  
-  fetchCourseAllUnits: async (course_id) => {
-    if (!course_id) {
-      set({
-        error: "Course ID is missing",
-        courseContent: [], // Initialize as empty array
-        loading: false,
-      });
-      return;
-    }
 
+  getAllUnitsInCourse: async (course_id) => {
     try {
-      set({ loading: true, error: null });
       const response = await axiosInstance.get(
         `/parent/course/${course_id}/allunits`
       );
 
-      set({
-        courseContent: response.data.data || [], // Ensure array
-        loading: false,
-      });
-
       return response.data.data;
     } catch (error) {
-      set({
-        courseContent: [], // Reset to empty array
-        error: error.response?.data?.message || "Failed to load units",
-        loading: false,
-      });
+      set({ error: error.response?.data?.message || "Failed to load units" });
       throw error;
     }
   },
-  
+
   fetchUnitContent: async (course_id, unit_id) => {
     if (!course_id || !unit_id) {
       set({ error: "Course ID or Unit ID is missing", loading: false });

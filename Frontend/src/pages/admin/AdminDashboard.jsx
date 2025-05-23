@@ -13,10 +13,10 @@ function AdminDashboard() {
 
       <div className="p-8 max-w-6xl mx-auto">
         {/* Tab Navigation */}
-        <div className="tabs tabs-boxed bg-gray-100 p-1 rounded-lg mb-8">
+        <div className="tabs tabs-boxed bg-gray-100 p-1 mb-8">
           <button
             className={`tab ${
-              activeTab === "students" ? "tab-active bg-primary text-white" : ""
+              activeTab === "students" ? "tab-active bg-primary text-base-100" : ""
             }`}
             onClick={() => setActiveTab("students")}
           >
@@ -24,7 +24,7 @@ function AdminDashboard() {
           </button>
           <button
             className={`tab ${
-              activeTab === "parents" ? "tab-active bg-primary text-white" : ""
+              activeTab === "parents" ? "tab-active bg-primary text-base-100" : ""
             }`}
             onClick={() => setActiveTab("parents")}
           >

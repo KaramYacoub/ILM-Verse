@@ -5,7 +5,7 @@ function TabNavigation({ activeTab, setActiveTab }) {
         <button
           key={tab}
           className={`tab ${
-            activeTab === tab ? "tab-active bg-primary text-white" : ""
+            activeTab === tab ? "bg-primary text-base-100" : ""
           }`}
           onClick={() => setActiveTab(tab)}
           type="button"

@@ -1,29 +1,30 @@
 import { useNavigate, useParams } from "react-router-dom";
 import useParentsStore from "../../../store/ParentStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 
 function ParentOverview() {
   const { course_id, student_id } = useParams();
   const navigate = useNavigate();
 
-const { fetchCourseAllUnits, courseContent, loading } = useParentsStore();
-
+  const { getAllUnitsInCourse } = useParentsStore();
+  const [courseContent, setCourseContent] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const shouldFetch = !courseContent;
-
-    if (shouldFetch && course_id) {
-      const fetcheUnits = async () => {
-        try {
-          await fetchCourseAllUnits(course_id);
-        } catch (error) {
-          console.error("Failed to load unit content:", error);
-        }
-      };
-      fetcheUnits();
-    }
-  }, [courseContent, course_id, fetchCourseAllUnits]);
+    setLoading(true);
+    const fetcheUnits = async () => {
+      try {
+        const units = await getAllUnitsInCourse(course_id);
+        setCourseContent(units);
+      } catch (error) {
+        console.error("Failed to load unit content:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetcheUnits();
+  }, [course_id, getAllUnitsInCourse]);
 
   if (loading) {
     return (
@@ -37,7 +38,9 @@ const { fetchCourseAllUnits, courseContent, loading } = useParentsStore();
     <div className="bg-base-100 rounded-lg shadow-md p-6">
       <h2 className="text-3xl text-primary font-bold mb-6">Course Units</h2>
       {Array.isArray(courseContent) && courseContent.length === 0 && (
-        <div className="py-8 text-center text-gray-500">No units available.</div>
+        <div className="py-8 text-center text-gray-500">
+          No units available.
+        </div>
       )}
 
       <div className="space-y-4">
