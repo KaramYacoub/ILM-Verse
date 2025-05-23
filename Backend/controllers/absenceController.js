@@ -58,7 +58,6 @@ exports.updateAbsence = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-
 exports.getAbsence = async (req, res) => {
   try {
     const { date } = req.params;
@@ -132,7 +131,6 @@ exports.getAbsence = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-
 exports.getStudentAbsences = async (req, res) => {
   try {
     const { student_id, section_id } = req.params;
