@@ -3,6 +3,10 @@ const router = express.Router();
 const courseController = require("../controllers/courseController");
 const studentController = require("../controllers/studentController");
 const annoucmentController = require("../controllers/announcmentController");
+const quizController = require("../controllers/quizController");
+const assigmentController = require("../controllers/assigmentsController");
+const marksController = require("../controllers/marksController");
+
 const uploadSolution = require("../controllers/upload/uploadSolution");
 const authController = require("../controllers/authController");
 const checkFile = require("../Middlewares/checkFileMiddleware");
@@ -43,35 +47,32 @@ router.get(
 router.get(
   "/course/:course_id/assignments/getassignments",
 
-  courseController.getAllAssigmentsForCourseForStudent
+  assigmentController.getAllAssigmentsForCourseForStudent
 );
 //submit assignment based on assignment_id
 router.post(
   "/course/:course_id/assignments/:assignment_id",
   uploadSolution,
   checkFile,
-  courseController.submitAssigment
+  assigmentController.submitAssigment
 );
 //show student Grades  //done
-router.get("/grades", studentController.getStudentMarks);
+router.get("/grades", marksController.getStudentMarks);
 
 // quiz functionalites
 //getQuizesForCourse
 router.get(
   "/course/:course_id/quizes",
-  courseController.getQuizesForCourseForStudent
+  quizController.getQuizesForCourseForStudent
 );
 // getQuizToStart
-router.get(
-  "/course/:course_id/quizes/:quiz_id",
-  courseController.getQuizToStart
-);
+router.get("/course/:course_id/quizes/:quiz_id", quizController.getQuizToStart);
 // submitAnswer
-router.post("/course/:course_id/quizes/:quiz_id", courseController.submitQuiz);
+router.post("/course/:course_id/quizes/:quiz_id", quizController.submitQuiz);
 //show quiz Mark
 router.get(
   "/course/:course_id/quizes/:quiz_id/mark",
-  courseController.showQuizMark
+  quizController.showQuizMark
 );
 // download assignments
 router.get("/download/submissions", downloadController.downloadAssignments);

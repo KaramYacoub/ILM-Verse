@@ -5,6 +5,7 @@ const courseController = require("../controllers/courseController");
 const absenceController = require("../controllers/absenceController");
 const reportController = require("../controllers/reportController");
 const annoucmentController = require("../controllers/announcmentController");
+const marksController = require("../controllers/marksController");
 const authController = require("../controllers/authController");
 const uploadFiles = require("../controllers/upload/uploadEvent"); // Import the upload middleware for events
 const uploadContent = require("../controllers/upload/uploadContentMiddleWare"); //Import the upload middleware for courses
@@ -152,17 +153,17 @@ router.delete(
 router.post(
   "/course/:course_id/mark",
 
-  courseController.addMark
+  marksController.addMark
 );
 router.patch(
   "/course/:course_id/mark",
 
-  courseController.editMark
+  marksController.editMark
 );
 router.get(
   "/course/:course_id/mark/:student_id/:mark_type",
 
-  courseController.getMark
+  marksController.getMark
 );
 // admin settings (change password , change name)
 router.patch(

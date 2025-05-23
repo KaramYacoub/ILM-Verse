@@ -4,8 +4,11 @@ const authController = require("../controllers/authController");
 const parentController = require("../controllers/parentController");
 const courseController = require("../controllers/courseController");
 const absenceController = require("../controllers/absenceController");
-const studentController = require("../controllers/studentController");
 const annoucmentController = require("../controllers/announcmentController");
+const marksController = require("../controllers/marksController");
+const studentController = require("../controllers/studentController");
+const quizController = require("../controllers/quizController");
+const assigmentController = require("../controllers/assigmentsController");
 const downloadController = require("../controllers/download/downloadController");
 const reportController = require("../controllers/reportController");
 
@@ -32,11 +35,11 @@ router.get(
 // get student assignment
 router.get(
   "/coures/:course_id/assignment/:student_id",
-  courseController.getAllAssigmentsForCourseForStudent
+  assigmentController.getAllAssigmentsForCourseForStudent
 );
 
 // get studentMarks(specific one) //done
-router.get("/marks/:student_id", studentController.getStudentMarks);
+router.get("/marks/:student_id", marksController.getStudentMarks);
 // getStudentAbsences (specific one) //done
 router.get(
   "/absence/:student_id/:section_id",
@@ -48,12 +51,12 @@ router.get("/reports/:student_id", reportController.getStudentReports); //done
 //getQuizesForCourse
 router.get(
   "/course/:course_id/student/:student_id/quizes",
-  courseController.getQuizesForCourseForStudent
+  quizController.getQuizesForCourseForStudent
 );
 //show quiz Mark
 router.get(
   "/course/:course_id/quizes/:quiz_id/:student_id/mark",
-  courseController.showQuizMark
+  quizController.showQuizMark
 );
 // Annoucments
 router.get("/departments", annoucmentController.getParentDepartments);

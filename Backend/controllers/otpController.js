@@ -16,7 +16,6 @@ const transporter = nodemailer.createTransport({
     pass: "tfcl toag lrbx zkro",
   },
 });
-
 function generateOTP() {
   const length = 6;
   const characters =
@@ -28,7 +27,6 @@ function generateOTP() {
   }
   return otp;
 }
-
 exports.sendOTP = async (req, res) => {
   try {
     const { email } = req.body;

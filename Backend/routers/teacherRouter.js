@@ -4,7 +4,10 @@ const authController = require("../controllers/authController");
 const teacherController = require("../controllers/teacherController");
 const courseController = require("../controllers/courseController");
 const absenceController = require("../controllers/absenceController");
+const assigmentController = require("../controllers/assigmentsController");
 const reportController = require("../controllers/reportController");
+const quizController = require("../controllers/quizController");
+const marksController = require("../controllers/marksController");
 const annoucmentController = require("../controllers/announcmentController");
 const uploadContent = require("../controllers/upload/uploadContentMiddleWare");
 const uploadAssigment = require("../controllers/upload/uploadAssigment-Description");
@@ -43,42 +46,42 @@ router.post(
   "/course/:course_id/addassigment",
   uploadAssigment,
   checkFile,
-  courseController.addAssigment
+  assigmentController.addAssigment
 );
 //Done
 router.get(
   "/course/:course_id/assigments",
-  courseController.getAllAssigmentsForCourse
+  assigmentController.getAllAssigmentsForCourse
 );
 // delete assignment
 router.delete(
   "/course/:course_id/assigments/delete-assignment/:assignment_id",
-  courseController.deleteAssigment
+  assigmentController.deleteAssigment
 );
 //done except ( real student )
 router.get(
   "/course/:course_id/assigments/:assignment_id",
-  courseController.showAssigmentSubmission
+  assigmentController.showAssigmentSubmission
 );
 router.patch(
   "/course/:course_id/assigments/update/:assignment_id",
-  courseController.updateSubmissionStatus
+  assigmentController.updateSubmissionStatus
 );
 
 // quizes
-router.get("/course/:course_id/allQuizes", courseController.getAllQuizes);
-router.get("/course/quiz/:quiz_id", courseController.getQuiz);
-router.post("/course/:course_id/quiz", courseController.addQuiz);
-router.delete("/course/deletequiz/:quiz_id", courseController.deleteQuiz);
-router.patch("/course/quiz/:quiz_id", courseController.editQuiz);
-router.patch("/course/quiz/:quiz_id/view", courseController.publicQuizMarks);
+router.get("/course/:course_id/allQuizes", quizController.getAllQuizes);
+router.get("/course/quiz/:quiz_id", quizController.getQuiz);
+router.post("/course/:course_id/quiz", quizController.addQuiz);
+router.delete("/course/deletequiz/:quiz_id", quizController.deleteQuiz);
+router.patch("/course/quiz/:quiz_id", quizController.editQuiz);
+router.patch("/course/quiz/:quiz_id/view", quizController.publicQuizMarks);
 router.get(
   "/course/:course_id/:quiz_id/submissions",
-  courseController.showQuizSubmissions
+  quizController.showQuizSubmissions
 );
 router.get(
   "/course/:course_id/:quiz_id/:student_id/submit",
-  courseController.showQuizMark
+  quizController.showQuizMark
 );
 // Absence functionality
 router.get("/students/:section_id", courseController.getStudentInSection);
@@ -101,12 +104,12 @@ router.get("/download/submissions", downloadController.downloadSubmissions);
 router.post(
   "/course/:course_id/mark",
 
-  courseController.addMark
+  marksController.addMark
 );
 router.get(
   "/course/:course_id/mark/:student_id/:mark_type",
 
-  courseController.getMark
+  marksController.getMark
 );
 
 // Annoucments
