@@ -197,28 +197,28 @@ function AboutUs() {
   const teamMembers = [
     {
       name: "Dr. Bushra Al-Matari",
-      role: "General Administrator",
-      imageUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a",
+      role: "General Manager",
+      imageUrl: "img2.jpg",
     },
     {
       name: "Motaz Abudraiea",
-      role: "Academic Director",
-      imageUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2",
+      role: "Head of Finance",
+      imageUrl: "img1.jpg",
     },
     {
       name: "Renad Abudraiea",
-      role: "Academic Director",
-      imageUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2",
+      role: "Head Of Academic Directors",
+      imageUrl: "img5.jpg",
     },
     {
       name: "Mohamad Abudraiea",
-      role: "Academic Director",
-      imageUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2",
+      role: "Operations Manager",
+      imageUrl: "img4.jpg",
     },
     {
       name: "Rahaf Abudraiea",
-      role: "Academic Director",
-      imageUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2",
+      role: "Head Of   Social Media",
+      imageUrl: "img3.jpg",
     },
   ];
 
