@@ -28,7 +28,7 @@ const Carousel = ({ customSlides = [] }) => {
   if (!customSlides.length) return null;
 
   return (
-    <div className="relative w-full h-80 overflow-hidden rounded-lg">
+    <div className="relative w-full h-[600px] overflow-hidden rounded-lg">
       {/* Viewport */}
       <div className="overflow-hidden h-full" ref={emblaRef}>
         <div className="flex h-full">

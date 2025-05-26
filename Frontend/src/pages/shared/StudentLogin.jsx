@@ -41,8 +41,18 @@ function StudentLogin() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-base-100 px-4">
-      <div className="bg-primary text-base-100 rounded-xl shadow-lg p-8 w-full max-w-md border-[3px] border-accent">
+    <div className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
+      {/* Blurred background */}
+      <div
+        className="absolute inset-0 bg-cover bg-center blur-sm scale-105"
+        style={{ backgroundImage: "url('/about5.jpg')" }}
+      ></div>
+
+      {/* Optional overlay for darker blur */}
+      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+      {/* Login box */}
+      <div className="relative z-10 bg-primary text-base-100 rounded-xl shadow-lg p-8 w-full max-w-md border-[3px] border-accent">
         <h1 className="text-3xl font-bold mb-2">Thinking Flares School</h1>
         <h2 className="text-xl font-bold mb-1">
           Welcome to Thinking Flares School
@@ -109,7 +119,6 @@ function StudentLogin() {
                 )}
               </button>
             </div>
-           
           </div>
 
           {/* Error message */}

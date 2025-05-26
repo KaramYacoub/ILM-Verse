@@ -25,7 +25,7 @@ function HomeNav() {
         <div className="flex items-center">
           <Link to="/" className="btn btn-ghost px-0">
             <img
-              src="/Logo-without-bg.png"
+              src="Logo.png"
               alt="Logo"
               className="h-10 w-auto"
             />

@@ -8,69 +8,90 @@ import {
 
 function ContactUs() {
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-gray-50">
-      {/* Header/Navigation */}
-      <HomeNav />
+    <div
+      className="min-h-screen flex flex-col font-sans bg-cover bg-center relative"
+      style={{
+        backgroundImage: "url('/about4.jpg')",
+      }}
+    >
+      {/* Optional dark overlay */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm z-0"></div>
 
-      <div className="flex-grow flex items-center justify-center p-8">
-        <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
-          <h1 className="text-3xl font-bold text-center mb-8">Contact Us</h1>
+      {/* Navigation */}
+      <div className="relative z-10">
+        <HomeNav />
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-grow flex items-center justify-center p-6 relative z-10">
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 text-white p-10 w-full max-w-lg">
+          <h1 className="text-4xl font-bold text-center mb-8 bg-gradient-to-r from-orange-400 via-yellow-400 to-pink-500 bg-clip-text text-transparent">
+            Contact Us
+          </h1>
 
           <div className="space-y-6">
-            {/* Phone Number */}
-            <div className="flex items-center space-x-4">
-              <FaPhone className="text-primary text-2xl" />
-              <div>
-                <h2 className="font-bold">Phone Number</h2>
-                <a
-                  href="tel:0796787084"
-                  className="text-blue-600 hover:underline"
-                >
-                  07 9678 7084
-                </a>
-              </div>
-            </div>
+            {/* Phone */}
+            <ContactItem
+              icon={
+                <FaPhone className="text-green-400 group-hover:scale-110 transition" />
+              }
+              title="Phone Number"
+              content="07 9678 7084"
+              href="tel:0796787084"
+            />
 
             {/* Email */}
-            <div className="flex items-center space-x-4">
-              <FaEnvelope className="text-primary text-2xl" />
-              <div>
-                <h2 className="font-bold">Email</h2>
-                <a
-                  href="mailto:thinkingflares.school@yahoo.com"
-                  className="text-blue-600 hover:underline"
-                >
-                  thinkingflares.school@yahoo.com
-                </a>
-              </div>
-            </div>
+            <ContactItem
+              icon={
+                <FaEnvelope className="text-blue-400 group-hover:scale-110 transition" />
+              }
+              title="Email"
+              content="thinkingflares.school@yahoo.com"
+              href="mailto:thinkingflares.school@yahoo.com"
+            />
 
             {/* Location */}
-            <div className="flex items-center space-x-4">
-              <FaMapMarkerAlt className="text-primary text-2xl" />
-              <div>
-                <h2 className="font-bold">Location</h2>
-                <a
-                  href="https://www.google.com/maps?q=السلط+-+البحيرة+-+خلف+الدفاع+المدني+-+دخلة+جامع+العطيات&hl=ar"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  As-Salt - Jordan
-                </a>
-              </div>
-            </div>
+            <ContactItem
+              icon={
+                <FaMapMarkerAlt className="text-red-400 group-hover:scale-110 transition" />
+              }
+              title="Location"
+              content="As-Salt - Jordan"
+              href="https://www.google.com/maps?q=السلط+-+البحيرة+-+خلف+الدفاع+المدني+-+دخلة+جامع+العطيات&hl=ar"
+            />
 
             {/* Workdays */}
-            <div className="flex items-center space-x-4">
-              <FaCalendarAlt className="text-primary text-2xl" />
+            <div className="flex items-start gap-4 group">
+              <FaCalendarAlt className="text-yellow-300 group-hover:scale-110 transition mt-1" />
               <div>
-                <h2 className="font-bold">Workdays</h2>
-                <p>Saturday to Thursday from 8 AM - 3 PM</p>
+                <h2 className="font-semibold text-white">Workdays</h2>
+                <p className="text-white/90">
+                  Saturday to Thursday from 8 AM - 3 PM
+                </p>
               </div>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// Reusable contact item component
+function ContactItem({ icon, title, content, href }) {
+  return (
+    <div className="flex items-start gap-4 group">
+      <div className="mt-1">{icon}</div>
+      <div>
+        <h2 className="font-semibold text-white">{title}</h2>
+        <a
+          href={href}
+          target={href?.startsWith("http") ? "_blank" : undefined}
+          rel="noopener noreferrer"
+          className="text-white/90 hover:underline hover:text-accent transition"
+        >
+          {content}
+        </a>
       </div>
     </div>
   );
