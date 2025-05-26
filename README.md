@@ -58,7 +58,7 @@ Build ILM-Verse from the source and install dependencies:
 
    ```bash
    git clone https://github.com/MohamadAbudraiea/ILM-Verse
-2. **Install the required Packages**
+2. **Install the required Packages and Dependencies**
    ```bash
    cd Frontend
    npm install
