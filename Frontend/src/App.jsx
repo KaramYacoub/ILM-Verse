@@ -107,7 +107,7 @@ const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AddUser = lazy(() => import("./pages/admin/AddUser"));
 const DeleteUser = lazy(() => import("./pages/admin/DeleteUser"));
 const CourseContent = lazy(() => import("./pages/admin/CourseContent"));
-const ResetPassword = lazy(() => import("./pages/admin/ResetPassword"));
+const ResetUserPassword = lazy(() => import("./pages/admin/ResetUserPassword"));
 const Settings = lazy(() => import("./pages/admin/Settings"));
 const AdminEvents = lazy(() => import("./pages/admin/AdminEvents"));
 const AdminShowReports = lazy(() =>
@@ -450,7 +450,7 @@ function App() {
             />
             <Route
               path="/reset-password"
-              element={authAdmin ? <ResetPassword /> : <Navigate to="/" />}
+              element={authAdmin ? <ResetUserPassword /> : <Navigate to="/" />}
             />
             <Route
               path="/coursecontent"

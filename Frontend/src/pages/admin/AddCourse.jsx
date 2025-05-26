@@ -26,7 +26,6 @@ function AddCourse() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-
   // fetch grades on mount
   useEffect(() => {
     const fetchGrades = async () => {
@@ -105,7 +104,7 @@ function AddCourse() {
         >
           {/* Course Name */}
           <div className="mb-6">
-            <label className="block font-medium mb-2">Course Name*</label>
+            <label className="block font-medium mb-2">Course Name</label>
             <input
               type="text"
               className="input input-bordered w-full"
@@ -118,7 +117,7 @@ function AddCourse() {
 
           {/* Grade Selection */}
           <div className="mb-6">
-            <label className="block font-medium mb-2">Grade*</label>
+            <label className="block font-medium mb-2">Grade</label>
             <div className="flex flex-wrap gap-2">
               {allGrades.map((grade) => (
                 <button
@@ -140,7 +139,7 @@ function AddCourse() {
           {/* Section Selection */}
           {selectedGrade && (
             <div className="mb-6">
-              <label className="block font-medium mb-2">Section*</label>
+              <label className="block font-medium mb-2">Section</label>
               <div className="flex flex-wrap gap-2">
                 {allSectionsInGrade.map((section) => (
                   <button
@@ -163,7 +162,7 @@ function AddCourse() {
           {/* Teacher Selection */}
           {selectedSection && (
             <div className="mb-6">
-              <label className="block font-medium mb-2">Teacher*</label>
+              <label className="block font-medium mb-2">Teacher</label>
               <select
                 className="select select-bordered w-full"
                 value={selectedTeacher}

@@ -40,7 +40,7 @@ export default function StudentForm({ formData, handleChange }) {
           <div className="bg-gray-100 p-2 rounded">Auto-generated</div>
         </div>
         <div>
-          <label className="block font-medium mb-1">First Name*</label>
+          <label className="block font-medium mb-1">First Name</label>
           <input
             type="text"
             name="firstName"
@@ -48,11 +48,12 @@ export default function StudentForm({ formData, handleChange }) {
             onChange={handleChange}
             className="input input-bordered w-full"
             placeholder="Enter first name"
+            autoComplete="off"
             required
           />
         </div>
         <div>
-          <label className="block font-medium mb-1">Last Name*</label>
+          <label className="block font-medium mb-1">Last Name</label>
           <input
             type="text"
             name="lastName"
@@ -60,11 +61,12 @@ export default function StudentForm({ formData, handleChange }) {
             onChange={handleChange}
             className="input input-bordered w-full"
             placeholder="Enter last name"
+            autoComplete="off"
             required
           />
         </div>
         <div>
-          <label className="block font-medium mb-1">Password*</label>
+          <label className="block font-medium mb-1">Password</label>
           <input
             type="password"
             name="password"
@@ -72,12 +74,13 @@ export default function StudentForm({ formData, handleChange }) {
             onChange={handleChange}
             className="input input-bordered w-full"
             placeholder="Enter password"
+            autoComplete="new-password"
             required
           />
         </div>
 
         <div>
-          <label className="block font-medium mb-1">Parent*</label>
+          <label className="block font-medium mb-1">Parent</label>
           <select
             name="parent_id"
             value={formData.parent_id || ""}
@@ -97,7 +100,7 @@ export default function StudentForm({ formData, handleChange }) {
         </div>
 
         <div>
-          <label className="block font-medium mb-1">Grade*</label>
+          <label className="block font-medium mb-1">Grade</label>
           <select
             name="grade_id"
             value={formData.grade_id || ""}
@@ -117,7 +120,7 @@ export default function StudentForm({ formData, handleChange }) {
         </div>
 
         <div>
-          <label className="block font-medium mb-1">Section*</label>
+          <label className="block font-medium mb-1">Section</label>
           <select
             name="section_id"
             value={formData.section_id || ""}

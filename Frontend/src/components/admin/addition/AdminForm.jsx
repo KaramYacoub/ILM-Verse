@@ -8,7 +8,7 @@ export default function AdminForm({ formData, handleChange }) {
           <div className="bg-gray-100 p-2 rounded">Auto-generated</div>
         </div>
         <div>
-          <label className="block font-medium mb-1">First Name*</label>
+          <label className="block font-medium mb-1">First Name</label>
           <input
             type="text"
             name="firstName"
@@ -16,12 +16,13 @@ export default function AdminForm({ formData, handleChange }) {
             onChange={handleChange}
             className="input input-bordered w-full"
             placeholder="Enter first name"
+            autoComplete="off"
             required
             minLength={2}
           />
         </div>
         <div>
-          <label className="block font-medium mb-1">Last Name*</label>
+          <label className="block font-medium mb-1">Last Name</label>
           <input
             type="text"
             name="lastName"
@@ -29,12 +30,13 @@ export default function AdminForm({ formData, handleChange }) {
             onChange={handleChange}
             className="input input-bordered w-full"
             placeholder="Enter last name"
+            autoComplete="off"
             required
             minLength={2}
           />
         </div>
         <div>
-          <label className="block font-medium mb-1">Email*</label>
+          <label className="block font-medium mb-1">Email</label>
           <input
             type="email"
             name="email"
@@ -42,19 +44,20 @@ export default function AdminForm({ formData, handleChange }) {
             onChange={handleChange}
             className="input input-bordered w-full"
             placeholder="Enter email"
+            autoComplete="off"
             required
-            pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
           />
         </div>
         <div>
-          <label className="block font-medium mb-1">Password*</label>
+          <label className="block font-medium mb-1">Password</label>
           <input
             type="password"
             name="password"
             value={formData.password || ""}
             onChange={handleChange}
             className="input input-bordered w-full"
-            placeholder="Enter password (min 8 characters)"
+            placeholder="Enter password"
+            autoComplete="new-password"
             required
             minLength={8}
           />
