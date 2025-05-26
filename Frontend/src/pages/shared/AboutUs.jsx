@@ -1,108 +1,6 @@
-import React, { useState, useEffect } from "react";
 import HomeNav from "../../components/shared/HomeNav";
-import {
-  Book,
-  Users,
-  Building,
-  Award,
-  Globe,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { Book, Users, Globe } from "lucide-react";
 import Carousel from "../../components/shared/Carousel";
-
-const Navbar = () => (
-  <nav className="sticky top-0 z-[100] bg-white shadow-sm">
-    <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-      <div className="flex items-center">
-        <img
-          src="/logo.png"
-          alt="Thinking Flares Logo"
-          className="h-12 w-12 mr-3"
-        />
-        <span className="text-2xl font-bold text-[#8A0E31]">
-          Thinking Flares
-        </span>
-      </div>
-
-      <div className="hidden md:flex items-center space-x-8">
-        <a href="#about" className="text-[#8A0E31] hover:text-[#5D0921]">
-          About
-        </a>
-        <a href="#team" className="text-[#8A0E31] hover:text-[#5D0921]">
-          Team
-        </a>
-        <a href="#values" className="text-[#8A0E31] hover:text-[#5D0921]">
-          Values
-        </a>
-        <button className="bg-[#8A0E31] text-white px-6 py-2 rounded-lg hover:bg-[#5D0921]">
-          Contact
-        </button>
-      </div>
-    </div>
-  </nav>
-);
-
-const ImageCarousel = ({ images }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const handleNavigation = (direction) => {
-    setCurrentIndex(
-      (prev) => (prev + direction + images.length) % images.length
-    );
-  };
-
-  useEffect(() => {
-    const timer = setInterval(() => handleNavigation(1), 5000);
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <div className="relative w-full h-[70vh] min-h-[500px] overflow-hidden rounded-xl">
-      <div className="absolute inset-0">
-        <img
-          src={images[currentIndex].src}
-          alt={images[currentIndex].alt}
-          className="w-full h-full object-cover object-center"
-        />
-        {images[currentIndex].caption && (
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
-            <p className="text-white text-lg md:text-xl font-medium">
-              {images[currentIndex].caption}
-            </p>
-          </div>
-        )}
-      </div>
-
-      <div className="absolute top-1/2 w-full flex justify-between px-4">
-        <button
-          onClick={() => handleNavigation(-1)}
-          className="bg-white/30 hover:bg-white/50 text-white p-2 rounded-full backdrop-blur-sm"
-        >
-          <ChevronLeft size={24} />
-        </button>
-        <button
-          onClick={() => handleNavigation(1)}
-          className="bg-white/30 hover:bg-white/50 text-white p-2 rounded-full backdrop-blur-sm"
-        >
-          <ChevronRight size={24} />
-        </button>
-      </div>
-
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-        {images.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrentIndex(i)}
-            className={`w-2.5 h-2.5 rounded-full transition-colors ${
-              i === currentIndex ? "bg-white" : "bg-white/50"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
 
 const HeroSection = () => (
   <section className="relative bg-gradient-to-r from-[#8A0E31] to-[#8A0E31] text-white py-16 md:py-24">
@@ -224,16 +122,40 @@ function AboutUs() {
 
   const carouselImages = [
     {
-      src: "TFS.jpg",
-      alt: "State-of-the-art Facilities",
-      caption: "State-of-the-art Facilities",
+      src: "about1.jpg",
+      alt: "Facilities",
     },
     {
-      src: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f",
-      alt: "Interactive Learning Environment",
-      caption: "Interactive Learning Environment",
+      src: "about2.jpg",
+      alt: "Facilities",
+    },
+    {
+      src: "about3.jpg",
+      alt: "Facilities",
+    },
+    {
+      src: "about4.jpg",
+      alt: "Facilities",
+    },
+    {
+      src: "about5.jpg",
+      alt: "Facilities",
+    },
+    {
+      src: "about6.jpg",
+      alt: "Facilities",
     },
   ];
+
+  const customSlides = carouselImages.map((img, i) => (
+    <div key={i} className="relative w-full h-full">
+      <img
+        src={img.src}
+        alt={img.alt}
+        className="w-full h-full rounded-lg"
+      />
+    </div>
+  ));
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -242,7 +164,9 @@ function AboutUs() {
 
       {/* Carousel Section */}
       <section className="w-full max-w-screen-2xl mx-auto py-12 px-4">
-        <ImageCarousel images={carouselImages} />
+        {/* Hero Carousel */}
+        <Carousel customSlides={customSlides} />
+        <div className="absolute bottom-0 left-0 right-0 h-16"></div>
       </section>
 
       <TeamSection staff={teamMembers} />

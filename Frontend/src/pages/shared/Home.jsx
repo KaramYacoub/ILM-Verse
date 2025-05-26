@@ -1,5 +1,5 @@
-import Carousel from "../../components/shared/Carousel";
 import HomeNavbar from "../../components/shared/HomeNav";
+import VerticalCarousel from "../../components/shared/VerticalCarousel";
 
 function Home() {
   return (
@@ -7,14 +7,11 @@ function Home() {
       {/* Header/Navigation - Added z-[100] to ensure it stays on top */}
       <HomeNavbar />
 
-      {/* Hero Carousel - Added pointer-events-none to overlay */}
-      <div className="relative">
-        <Carousel />
-        <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"></div>
-      </div>
-
       {/* About Section */}
-      <section id="about" className="bg-primary text-base-100 py-16 md:py-24">
+      <section
+        id="about"
+        className="bg-primary text-base-100 py-16 md:py-24 mb-3"
+      >
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center gap-12">
             {/* Text Content */}
@@ -24,12 +21,10 @@ function Home() {
                 <span className="text-secondary">As-Salt</span>
               </h2>
 
-              <div className="relative">
-                <div className="h-1 w-20 bg-secondary transition-all duration-300 hover:w-96"></div>
-              </div>
+              <div className="h-1 w-full bg-secondary mx-auto"></div>
 
               <p className="text-xl leading-relaxed">
-                At Thinking Flares School (TFS), learning shines bright like a
+                At <span className="font-bold text-secondary">Thinking Flares School (TFS)</span>, learning shines bright like a
                 spark! We use cool modern technology like tablets, smart boards,
                 and fun apps to make every lesson exciting and easy to follow.
                 Here, ideas light up, and students explore, create, and grow
@@ -42,7 +37,7 @@ function Home() {
             {/* Logo Image */}
             <div className="flex-shrink-0 bg-base-100 p-6 rounded-xl shadow-xl">
               <img
-                src="/Logo-without-bg.png"
+                src="Logo.png"
                 alt="School Logo"
                 className="w-48 md:w-64 transition-transform hover:scale-105"
               />
@@ -51,48 +46,65 @@ function Home() {
         </div>
       </section>
 
-      {/* Leadership Section */}
-      <section id="leadership" className="py-16 bg-base-200">
+      {/* Founder Section */}
+      <section id="founder" className="bg-base-200 py-16 text-base-content">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-              Our Leadership
-            </h2>
-            <div className="h-1 w-20 bg-primary mx-auto"></div>
-          </div>
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            {/* Founder Image */}
+            <div className="flex-shrink-0">
+              <img
+                src="founder-photo.jpg"
+                alt="Founder of the School"
+                className="w-96 h-96 object-cover rounded-xl shadow-lg"
+              />
+            </div>
 
-          {/* General Administrator */}
-          <div className="flex flex-col items-center mb-16">
-            <div className="bg-base-100 p-1 rounded-full shadow-lg mb-6">
-              <div className="w-40 h-40 bg-primary/20 rounded-full flex items-center justify-center">
-                <span className="text-primary text-lg font-medium">
-                  Administrator Photo
-                </span>
+            {/* Founder Info */}
+            <div className="flex-1 bg-primary leading-relaxed space-y-4 p-10 rounded-xl shadow-xl">
+              <div className="mb-6">
+                <h2 className="text-3xl md:text-4xl font-bold text-base-100 mb-4">
+                  In Loving Memory of{" "}
+                  <span className="text-secondary">Mr. Ayman</span>
+                </h2>
+                <div className="h-1 w-full bg-secondary mx-auto"></div>
               </div>
+              <p className="text-lg text-base-100 leading-relaxed">
+                With deep respect and gratitude, we remember our beloved Head,
+                <strong>Mr. Ayman</strong>, whose vision and leadership sparked
+                the flame of knowledge at Thinking Flares School. His passion,
+                wisdom, and kindness continue to guide us every day. His legacy
+                shines bright in the hearts of all who knew him.
+              </p>
             </div>
-            <h3 className="text-2xl font-bold text-primary mb-2">
-              General Administrator
-            </h3>
-            <p className="text-lg">Dr. Bushra Al-Matari</p>
           </div>
+        </div>
+      </section>
 
-          {/* Administrators */}
-          <div className="text-center">
-            <h3 className="text-2xl font-bold text-primary mb-8">
-              Academic Directors
-            </h3>
-            <div className="flex flex-wrap justify-center gap-8">
-              {[1, 2, 3, 4].map((item) => (
-                <div key={item} className="flex flex-col items-center">
-                  <div className="bg-base-100 p-1 rounded-full shadow-lg mb-4">
-                    <div className="w-32 h-32 bg-primary/20 rounded-full flex items-center justify-center">
-                      <span className="text-primary">Director Photo</span>
-                    </div>
-                  </div>
-                  <p className="font-medium">Director {item}</p>
-                </div>
-              ))}
+      {/* School Environment Section */}
+      <section id="environment" className="text-base-100">
+        <div className="max-w-6xl mx-auto px-6">
+          {/* Content Grid */}
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            {/* Left: Paragraph */}
+            <div className="flex-1 text-lg bg-primary leading-relaxed space-y-4 p-10 rounded-xl shadow-xl">
+              <div className="mb-6">
+                <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-4">
+                  Our School <span className="text-base-100">Environment</span>
+                </h2>
+                <div className="h-1 w-full bg-secondary mx-auto"></div>
+              </div>
+              <p>
+                At Thinking Flares School, we provide a safe, friendly, and
+                inspiring environment where students feel comfortable to learn
+                and explore. Our classrooms are bright and equipped with modern
+                technology to support interactive lessons. We encourage
+                teamwork, creativity, and respect, making our school a place
+                where every student can thrive and grow happily.
+              </p>
             </div>
+
+            {/* Right: Carousel */}
+            <VerticalCarousel />
           </div>
         </div>
       </section>
