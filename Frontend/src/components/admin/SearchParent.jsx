@@ -95,7 +95,7 @@ function SearchParent() {
                     <td>
                       {parent.first_name} {parent.last_name}
                     </td>
-                    <td>{parent.phone}</td>
+                  <td><a href={`tel:${parent.phone}`}>{parent.phone}</a></td>
                   </tr>
                 ))}
               </tbody>

@@ -4,6 +4,9 @@ const SQL = require("../models/Connections/SQL-Driver"); // your Sequelize insta
 const initModels = require("../models/index"); // path to index.js
 const models = initModels(SQL); // initialize models
 const { student, teacher } = models;
+
+// recives array of students and date if the absenceReport exists the system will update it ,
+// if not exist the system will create another one
 exports.updateAbsence = async (req, res) => {
   try {
     const { students, date } = req.body;
@@ -25,12 +28,9 @@ exports.updateAbsence = async (req, res) => {
     } else {
       section_id = req.body.section_id;
     }
-    console.log(section_id);
     // Check if an AbsenceReport exists for the same section_id and date
     const existingReport = await AbsenceReport.findOne({ section_id, date });
     if (existingReport) {
-      console.log("in existing Report");
-      console.log(existingReport);
       // If the report exists, update the students data
       existingReport.students = students;
       await existingReport.save();
@@ -41,7 +41,6 @@ exports.updateAbsence = async (req, res) => {
       });
     } else {
       // If no report exists, create a new one
-      console.log("in no report exisitng");
       const newAbsenceReport = new AbsenceReport({
         section_id: section_id,
         date: date,
@@ -62,7 +61,6 @@ exports.getAbsence = async (req, res) => {
   try {
     const { date } = req.params;
     let section_id;
-    console.log("in GetAbsence");
     if (req.role === "teacher") {
       const foundedTeacher = await teacher.findOne({
         where: {
@@ -95,7 +93,6 @@ exports.getAbsence = async (req, res) => {
     let responseData;
 
     if (absenceReport) {
-      console.log("absence in controller: ", absenceReport);
       // If the absence report exists, map through absenceReport.students
       responseData = absenceReport.students
         .map((absentStudent) => {

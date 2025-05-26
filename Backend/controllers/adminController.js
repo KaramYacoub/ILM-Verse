@@ -17,23 +17,9 @@ const {
   grade,
   student_marks,
   event,
+  announcment,
 } = models; // extract all the needed models
 const eventMedia = require("../models/NOSQL/Event");
-
-// Getting Admin data By his Id
-exports.getAdmin = async (req, res) => {
-  try {
-    const admins = await admin.findByPk(req.params.id, {
-      attributes: ["gm_id", "first_name", "last_name", "email"],
-    });
-    res.status(200).json({
-      status: "success",
-      data: "admins",
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 
 // Add Admin ✅
 exports.addAdmin = async (req, res) => {
@@ -141,7 +127,7 @@ exports.addTeacher = async (req, res) => {
   }
 };
 
-// Add Parent ✅(need to fix)
+// Add Parent ✅
 exports.addParent = async (req, res) => {
   const { password, first_name, last_name, phone } = req.body;
   const hashedPassword = await bcrypt.hash(password, 3);
@@ -164,6 +150,36 @@ exports.addParent = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+// Get all Grades ✅ (just for the student addition)
+exports.getGrades = async (req, res) => {
+  try {
+    allGrades = await grade.findAll();
+    res.status(200).json({
+      status: "success",
+      data: allGrades,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Get all Sections ✅ (just for the student addition)
+exports.getSections = async (req, res) => {
+  try {
+    const { grade_id } = req.params;
+    const Sections = await section.findAll({
+      where: {
+        grade_id: req.params.grade_id,
+      },
+    });
+    res.status(200).json({
+      status: "success",
+      data: Sections,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -196,7 +212,28 @@ exports.addStudent = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
+// Get Teacher by section(for course addition)
+exports.getTeachersBySection = async (req, res) => {
+  try {
+    const { grade_id } = req.params;
+    const { dept_id } = await grade.findOne({
+      where: {
+        grade_id: grade_id,
+      },
+    });
+    const TeachersFromDepartment = await teacher.findAll({
+      where: {
+        dept_id: dept_id,
+      },
+    });
+    res.status(200).json({
+      status: "success",
+      data: TeachersFromDepartment,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 // Add Course ✅
 exports.addCourse = async (req, res) => {
   const { subject_name, section_id, teacher_id } = req.body;
@@ -218,65 +255,6 @@ exports.addCourse = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
-  }
-};
-
-// Get all Grades ✅ (just for the student addition)
-exports.getGrades = async (req, res) => {
-  try {
-    allGrades = await grade.findAll();
-    res.status(200).json({
-      status: "success",
-      data: allGrades,
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-// Get all Sections ✅ (just for the student addition)
-exports.getSections = async (req, res) => {
-  try {
-    const { grade_id } = req.params;
-    const Sections = await section.findAll({
-      where: {
-        grade_id: req.params.grade_id,
-      },
-    });
-    res.status(200).json({
-      status: "success",
-      data: Sections,
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-// Get Teacher by section
-exports.getTeachersBySection = async (req, res) => {
-  try {
-    const { grade_id } = req.params;
-    const { dept_id } = await grade.findOne({
-      where: {
-        grade_id: grade_id,
-      },
-    });
-    const TeachersFromDepartment = await teacher.findAll({
-      where: {
-        dept_id: dept_id,
-      },
-    });
-    // const Teachers = await teacher.findAll({
-    //   where: {
-    //     section_id: req.params.section_id,
-    //   },
-    // });
-    res.status(200).json({
-      status: "success",
-      data: TeachersFromDepartment,
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
   }
 };
 
@@ -374,17 +352,17 @@ exports.getAllStudents = async (req, res) => {
       include: [
         {
           model: section,
-          as: "section", // Use the alias specified in the association
+          as: "section",
           attributes: ["section_id", "section_name"],
           include: [
             {
               model: grade,
-              as: "grade", // Use the alias specified in the association
+              as: "grade",
               attributes: ["grade_name"],
               include: [
                 {
                   model: department,
-                  as: "dept", // Use the alias specified in the association
+                  as: "dept",
                   attributes: ["name"],
                 },
               ],
@@ -525,16 +503,6 @@ exports.deleteStudent = async (req, res) => {
     if (!searchedStudent) {
       return res.status(404).json({ error: "Student not found" });
     }
-    const findCourse = await course_student.destroy({
-      where: {
-        student_id: id,
-      },
-    });
-    const findMarks = await student_marks.destroy({
-      where: {
-        student_id: id,
-      },
-    });
 
     await student.destroy({
       where: {
@@ -628,7 +596,9 @@ exports.deleteAdmin = async (req, res) => {
     if (!searchedAdmin) {
       return res.status(404).json({ error: "Admin not found" });
     }
-
+    await announcment.destroy({
+      where: { adminid: id },
+    });
     await admin.destroy({
       where: {
         gm_id: id,

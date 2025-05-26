@@ -70,6 +70,48 @@ exports.getAllCourses = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+exports.getCourseByID = async (req, res) => {
+  try {
+    const { course_id } = req.params;
+    const courseData = await course.findOne({
+      where: {
+        course_id: course_id,
+      },
+      include: [
+        {
+          model: section,
+          as: "section",
+          attributes: ["section_name"],
+          include: [
+            {
+              model: grade,
+              as: "grade",
+              attributes: ["grade_name"],
+              include: [
+                {
+                  model: department,
+                  as: "dept",
+                  attributes: ["name"], // Retrieve department's name via grade
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: teacher,
+          as: "teacher",
+          attributes: ["first_name", "last_name"], // Teacher info
+        },
+      ],
+    });
+    res.status(200).json({
+      status: "success",
+      data: courseData,
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
 
 // Involve students in a course ✅
 exports.involveStudents = async (req, res) => {
@@ -601,48 +643,5 @@ exports.getStudentInSection = async (req, res) => {
     res.status(500).json({
       error: error.message,
     });
-  }
-};
-
-exports.getCourseByID = async (req, res) => {
-  try {
-    const { course_id } = req.params;
-    const courseData = await course.findOne({
-      where: {
-        course_id: course_id,
-      },
-      include: [
-        {
-          model: section,
-          as: "section",
-          attributes: ["section_name"],
-          include: [
-            {
-              model: grade,
-              as: "grade",
-              attributes: ["grade_name"],
-              include: [
-                {
-                  model: department,
-                  as: "dept",
-                  attributes: ["name"], // Retrieve department's name via grade
-                },
-              ],
-            },
-          ],
-        },
-        {
-          model: teacher,
-          as: "teacher",
-          attributes: ["first_name", "last_name"], // Teacher info
-        },
-      ],
-    });
-    res.status(200).json({
-      status: "success",
-      data: courseData,
-    });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
   }
 };

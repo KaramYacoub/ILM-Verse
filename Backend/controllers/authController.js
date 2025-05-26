@@ -27,7 +27,9 @@ exports.adminLogin = async (req, res) => {
     }
 
     // Try to find an admin
-    const admintUser = await admin.findOne({ where: { email } });
+    const admintUser = await admin.findOne({
+      where: { email: email.trim().toLowerCase() },
+    });
 
     // check if admin exist
     if (admintUser) {
@@ -97,7 +99,9 @@ exports.TeacherLogin = async (req, res) => {
     }
 
     // Try to find an admin
-    const teacherUser = await teacher.findOne({ where: { email } });
+    const teacherUser = await teacher.findOne({
+      where: { email: email.trim().toLowerCase() },
+    });
 
     // check if admin exist
     if (teacherUser) {
@@ -162,7 +166,9 @@ exports.studentLogin = async (req, res) => {
     }
 
     // Try to find user in students or parents
-    const studentUser = await student.findOne({ where: { student_id } });
+    const studentUser = await student.findOne({
+      where: { student_id: student_id.trim() },
+    });
 
     // check if either the student or the parent exist
     if (studentUser) {
@@ -216,7 +222,6 @@ exports.studentLogin = async (req, res) => {
 // login for the parent
 exports.parentLogin = async (req, res) => {
   const { parent_id, password } = req.body;
-
   try {
     // Make sure password is provided
     if (!parent_id || !password) {
@@ -227,7 +232,9 @@ exports.parentLogin = async (req, res) => {
     }
 
     // Try to find  parents
-    const parentUser = await parent.findOne({ where: { parent_id } });
+    const parentUser = await parent.findOne({
+      where: { parent_id: parent_id.trim() },
+    });
     if (parentUser) {
       // compare the enterd password with the one in the db
       const validPassword = await bcrypt.compare(password, parentUser.password);

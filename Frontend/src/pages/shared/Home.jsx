@@ -20,19 +20,22 @@ function Home() {
             {/* Text Content */}
             <div className="flex-1 space-y-6">
               <h2 className="text-4xl md:text-5xl font-bold leading-tight">
-                 Lightning  Minds in <span className="text-secondary">As-Salt</span>
+                Lightning Minds in{" "}
+                <span className="text-secondary">As-Salt</span>
               </h2>
 
-<div className="relative">
-  <div className="h-1 w-20 bg-secondary transition-all duration-300 hover:w-96"></div>
-</div>
-
+              <div className="relative">
+                <div className="h-1 w-20 bg-secondary transition-all duration-300 hover:w-96"></div>
+              </div>
 
               <p className="text-xl leading-relaxed">
-                At Thinking Flares School in the historic city of As-Salt, we 
-                cultivate lifelong learning and critical thinking. Rooted in 
-                Jordan's UNESCO-recognized legacy, we empower young minds to 
-                thrive in our evolving world.
+                At Thinking Flares School (TFS), learning shines bright like a
+                spark! We use cool modern technology like tablets, smart boards,
+                and fun apps to make every lesson exciting and easy to follow.
+                Here, ideas light up, and students explore, create, and grow
+                with the help of today’s best tools. TFS is where the future of
+                learning begins, and every student’s mind flares with new
+                possibilities!
               </p>
             </div>
 
@@ -62,7 +65,9 @@ function Home() {
           <div className="flex flex-col items-center mb-16">
             <div className="bg-base-100 p-1 rounded-full shadow-lg mb-6">
               <div className="w-40 h-40 bg-primary/20 rounded-full flex items-center justify-center">
-                <span className="text-primary text-lg font-medium">Administrator Photo</span>
+                <span className="text-primary text-lg font-medium">
+                  Administrator Photo
+                </span>
               </div>
             </div>
             <h3 className="text-2xl font-bold text-primary mb-2">

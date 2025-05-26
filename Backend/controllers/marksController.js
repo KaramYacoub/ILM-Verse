@@ -171,22 +171,17 @@ exports.getMark = async (req, res) => {
 };
 exports.getStudentMarks = async (req, res) => {
   try {
-    let student_id;
-    if (req.role === "parent") {
-      student_id = req.params.student_id;
-    } else {
-      student_id = req.user.id;
-    }
+    const student_id =
+      req.role === "parent" ? req.params.student_id : req.user.id;
 
+    // Get all courses the student is enrolled in, including teacher info
     const studentCourses = await course_student.findAll({
-      where: {
-        student_id: student_id,
-      },
+      where: { student_id },
       include: [
         {
           model: course,
           as: "course",
-          attributes: ["subject_name"],
+          attributes: ["course_id", "subject_name"],
           include: [
             {
               model: teacher,
@@ -198,69 +193,63 @@ exports.getStudentMarks = async (req, res) => {
       ],
     });
 
-    let coursesGrades = [];
+    // Extract course IDs
+    const courseIds = studentCourses.map((sc) => sc.course.course_id);
 
-    // Iterate through each course the student is enrolled in
-    for (let oneCourse of studentCourses) {
-      let courseMarks = {
-        course_id: oneCourse.course_id,
-        teacher: `${oneCourse.course.teacher.first_name} ${oneCourse.course.teacher.last_name}`,
-        subject_name: "", // To hold the subject_name of the course
-        marks: [],
-      };
+    // Mark types you want to check
+    const markTypes = ["First", "Second", "Third", "Final"];
+    const typeIds = markTypes.map((type) => getMarkTypeId(type));
 
-      // For each course, check for the marks in the four types: First, Second, Third, Final
-      const markTypes = ["First", "Second", "Third", "Final"];
-
-      // For each type, check if the student has a mark for that type in the current course
-      for (let type of markTypes) {
-        const oneMark = await student_marks.findOne({
-          where: {
-            student_id: student_id,
-            course_id: oneCourse.course_id,
-            type_id: getMarkTypeId(type), // Function to map type to type_id
-          },
-          include: [
-            {
-              model: course,
-              as: "course",
-              attributes: ["subject_name"], // course info directly
-            },
-            {
-              model: mark_type,
-              as: "type",
-              attributes: ["type_name"], // mark type info
-            },
-          ],
-        });
-
-        if (oneMark) {
-          courseMarks.subject_name = oneMark.course.subject_name;
-          courseMarks.marks.push({
-            type: type,
-            mark_value: oneMark.mark_value,
-          });
-        } else {
-          courseMarks.subject_name = oneCourse.course.subject_name || "Unknown";
-          courseMarks.marks.push({
-            type: type,
-            mark_value: "Not Marked",
-          });
-        }
+    // Fetch all marks for this student in these courses and mark types at once
+    const allMarks = await student_marks.findAll({
+      where: {
+        student_id,
+        course_id: courseIds,
+        type_id: typeIds,
+      },
+      include: [
+        {
+          model: mark_type,
+          as: "type",
+          attributes: ["type_name"],
+        },
+      ],
+    });
+    // Organize marks by course_id and type_name for quick lookup
+    const marksMap = {};
+    for (const mark of allMarks) {
+      if (!marksMap[mark.course_id]) {
+        marksMap[mark.course_id] = {};
       }
-
-      // Push the course marks to the result array
-      coursesGrades.push(courseMarks);
+      marksMap[mark.course_id][mark.type.type_name] = mark.mark_value;
     }
+
+    // Build the final response array
+    const coursesGrades = studentCourses.map((oneCourse) => {
+      const courseId = oneCourse.course.course_id;
+      const subjectName = oneCourse.course.subject_name || "Unknown";
+      const teacherName = `${oneCourse.course.teacher.first_name} ${oneCourse.course.teacher.last_name}`;
+
+      // Map marks for each type, default to "Not Marked" if no mark found
+      const marks = markTypes.map((type) => ({
+        type,
+        mark_value: marksMap[courseId]?.[type] ?? "Not Marked",
+      }));
+
+      return {
+        course_id: courseId,
+        subject_name: subjectName,
+        teacher: teacherName,
+        marks,
+      };
+    });
 
     res.status(200).json({
       status: "success",
-      data: coursesGrades, // Send the grades data back as a response
+      data: coursesGrades,
     });
   } catch (error) {
-    res.status(500).json({
-      error: error.message,
-    });
+    res.status(500).json({ error: error.message });
   }
 };
 

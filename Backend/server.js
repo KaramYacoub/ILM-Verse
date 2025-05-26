@@ -10,9 +10,14 @@ const port = process.env.BACKEND_PORT;
 
 // PG SQL Connection
 const sequelize = require("./models/Connections/SQL-Driver");
-sequelize.authenticate().then(() => {
-  console.log("SQL Connection has been established successfully.");
-});
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("SQL Connection has been established successfully.");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 // Mongo (NOSQL) Connection
 const mongoose = require("mongoose");
 mongoose

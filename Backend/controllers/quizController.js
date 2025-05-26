@@ -105,6 +105,7 @@ exports.getAllQuizes = async (req, res) => {
   try {
     const { course_id } = req.params;
     const allQuizes = await Quiz.find({ course_id: course_id });
+
     if (!allQuizes) {
       return res.status(404).json({
         status: "failure",
