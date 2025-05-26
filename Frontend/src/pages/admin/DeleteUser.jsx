@@ -10,6 +10,7 @@ function DeleteUser() {
   const [activeTab, setActiveTab] = useState("students");
   const [searchTerm, setSearchTerm] = useState("");
 
+  // to render a table based on the activeTab
   const renderTable = () => {
     switch (activeTab) {
       case "teachers":

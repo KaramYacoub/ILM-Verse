@@ -130,7 +130,7 @@ function SearchStudent() {
                   <th>Parent ID</th>
                   <th>Absences</th>
                   <th>Action</th>
-                  <th>View Report</th>
+                  <th>View Reports</th>
                 </tr>
               </thead>
               <tbody>
@@ -165,7 +165,7 @@ function SearchStudent() {
                         onClick={() => handleViewReportClick(student)}
                         className="btn btn-outline btn-primary btn-sm"
                       >
-                        view report
+                        view reports
                       </button>
                     </td>
                   </tr>

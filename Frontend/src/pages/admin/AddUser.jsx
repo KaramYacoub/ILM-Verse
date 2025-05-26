@@ -1,5 +1,5 @@
 import AdminNavbar from "../../components/admin/adminNavbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAdminStore } from "../../store/AdminStore";
 import AdminForm from "../../components/admin/addition/adminForm";
 import StudentForm from "../../components/admin/addition/StudentForm";
@@ -13,6 +13,13 @@ function AddUser() {
   const [status, setStatus] = useState({ message: "", type: "" });
   const { addAdmin, addStudent, addParent, addTeacher } = useAdminStore();
 
+  // to reset the form whenever a different tab is rendered
+  useEffect(() => {
+    setFormData({});
+    setStatus({ message: "", type: "" });
+  }, [activeTab]);
+
+  // to handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -21,6 +28,7 @@ function AddUser() {
     }));
   };
 
+  // submit the form
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus({ message: "", type: "" });
@@ -80,7 +88,9 @@ function AddUser() {
 
       <div className="p-8 max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl text-primary font-bold mb-2">Administrator</h1>
+          <h1 className="text-3xl text-primary font-bold mb-2">
+            Administrator
+          </h1>
           <h2 className="text-xl font-semibold">Add New {activeTab}</h2>
         </div>
 
@@ -118,10 +128,7 @@ function AddUser() {
               </div>
             )}
             <button type="submit" className="btn btn-primary ml-auto">
-              {activeTab === "students" && "Add Student"}
-              {activeTab === "parents" && "Add Parent"}
-              {activeTab === "teachers" && "Add Teacher"}
-              {activeTab === "admins" && "Add Admin"}
+              Add {activeTab.slice(0, -1)}
             </button>
           </div>
         </form>

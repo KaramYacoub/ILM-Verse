@@ -5,18 +5,7 @@ import { useAdminStore } from "../../store/AdminStore";
 import ErrorModal from "../../components/shared/ErrorModal";
 import SuccessModal from "../../components/shared/SuccessModal";
 
-function ResetPassword() {
-  const [userType, setUserType] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [selectedUser, setSelectedUser] = useState(null);
-
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-
+function ResetUserPassword() {
   const {
     isChangingPassword,
     changeUserPassword,
@@ -26,7 +15,20 @@ function ResetPassword() {
   } = useAdminStore();
 
   const [allUsers, setAllUsers] = useState([]);
+  const [userType, setUserType] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const [newPassword, setNewPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
+  // fetch all users
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -69,6 +71,7 @@ function ResetPassword() {
     fetchUsers();
   }, [getAllStudents, getAllTeachers, getAllParents]);
 
+  // filter users either by name, user type, or both
   const filteredUsers = allUsers.filter(
     (user) =>
       (userType === "" || user.type === userType) &&
@@ -76,6 +79,7 @@ function ResetPassword() {
         user.name.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  // handle reset password
   const handleReset = async () => {
     if (!newPassword || newPassword !== confirmPassword) return;
 
@@ -106,6 +110,7 @@ function ResetPassword() {
       <AdminNavbar />
 
       <div className="p-6 max-w-6xl mx-auto">
+        {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800">
             Administrator Dashboard
@@ -116,12 +121,13 @@ function ResetPassword() {
         </div>
 
         {/* User Selection Section */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div className="bg-base-100 rounded-lg shadow-md p-6 mb-8">
           <h3 className="text-xl font-semibold mb-4 text-gray-700">
             Select User
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {/* Select user type */}
             <div>
               <label className="block font-medium mb-2 text-gray-700">
                 Filter by User Type
@@ -138,6 +144,7 @@ function ResetPassword() {
               </select>
             </div>
 
+            {/* Search for a user */}
             <div>
               <label className="block font-medium mb-2 text-gray-700">
                 Search Users
@@ -174,10 +181,10 @@ function ResetPassword() {
             <table className="w-full">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="p-3 font-medium text-gray-700">Name</th>
+                  <th className="p-3 font-medium">Name</th>
                   <th className="p-3 font-medium">Identifier</th>
-                  <th className="p-3 font-medium text-gray-700">Role</th>
-                  <th className="p-3 font-medium text-gray-700">Action</th>
+                  <th className="p-3 font-medium">Role</th>
+                  <th className="p-3 font-medium">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -233,7 +240,7 @@ function ResetPassword() {
 
         {/* Password Reset Form */}
         {selectedUser && (
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-base-100 rounded-lg shadow-md p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-gray-700">
                 Reset Password for{" "}
@@ -246,6 +253,8 @@ function ResetPassword() {
                   setSelectedUser(null);
                   setNewPassword("");
                   setConfirmPassword("");
+                  setUserType("");
+                  setSearchQuery("");
                 }}
                 className="btn btn-ghost btn-sm"
               >
@@ -256,7 +265,7 @@ function ResetPassword() {
             <div className="space-y-4 max-w-lg mx-auto">
               <div>
                 <label className="block font-medium mb-1 text-gray-700">
-                  New Password*
+                  New Password
                 </label>
                 <div className="relative">
                   <input
@@ -279,7 +288,7 @@ function ResetPassword() {
 
               <div>
                 <label className="block font-medium mb-1 text-gray-700">
-                  Confirm Password*
+                  Confirm Password
                 </label>
                 <div className="relative">
                   <input
@@ -314,7 +323,8 @@ function ResetPassword() {
                   Cancel
                 </button>
                 <button
-                  className="btn btn-primary"
+                  className
+                  // handle reset password="btn btn-primary"
                   onClick={handleReset}
                   disabled={
                     isChangingPassword ||
@@ -347,4 +357,4 @@ function ResetPassword() {
   );
 }
 
-export default ResetPassword;
+export default ResetUserPassword;

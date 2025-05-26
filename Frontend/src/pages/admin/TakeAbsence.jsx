@@ -73,8 +73,6 @@ function TakeAbsence() {
             setAbsentStudents(absentIds);
           }
         } catch (error) {
-          console.error("Error fetching absence data:", error);
-          // Don't show error if it's just that no record exists yet
           if (error.response?.status !== 404) {
             setMessage({ text: "Failed to load absence data", type: "error" });
           }
@@ -130,7 +128,10 @@ function TakeAbsence() {
       setMessage({ text: "Absence recorded successfully!", type: "success" });
     } catch (error) {
       console.error("Error submitting absence:", error);
-      setMessage({ text: "Failed to record absence", type: "error" });
+      setMessage({
+        text: error.response.data.error || "Failed to record absence",
+        type: "error",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -151,6 +152,7 @@ function TakeAbsence() {
           <div className={`alert alert-error mb-4`}>{message.text}</div>
         )}
 
+        {/* Selection */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
             <label className="font-medium mb-1 block">Select Date</label>
@@ -197,32 +199,37 @@ function TakeAbsence() {
           </div>
         </div>
 
-        {selectedGrade && selectedSection && (
+        {/* Students */}
+        {selectedGrade && selectedSection && selectedDate && (
           <div className="bg-base-100 p-4 rounded-md shadow">
             <h2 className="text-xl font-semibold mb-4">Mark Absence</h2>
-            {isLoading && !studentsInSection.length ? (
+            {isLoading ? (
               <div className="flex justify-center">
                 <span className="loading loading-spinner loading-lg"></span>
               </div>
             ) : (
               <ul className="space-y-2">
-                {studentsInSection.map((student) => (
-                  <li
-                    key={student.student_id}
-                    className="flex items-center gap-4"
-                  >
-                    <input
-                      type="checkbox"
-                      className="checkbox checkbox-primary"
-                      checked={absentStudents.includes(student.student_id)}
-                      onChange={() => toggleAbsence(student.student_id)}
-                      disabled={isLoading}
-                    />
-                    <span>
-                      {student.first_name} {student.last_name}
-                    </span>
-                  </li>
-                ))}
+                {studentsInSection.length > 0 ? (
+                  studentsInSection.map((student) => (
+                    <li
+                      key={student.student_id}
+                      className="flex items-center gap-4"
+                    >
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-primary"
+                        checked={absentStudents.includes(student.student_id)}
+                        onChange={() => toggleAbsence(student.student_id)}
+                        disabled={isLoading}
+                      />
+                      <span>
+                        {student.first_name} {student.last_name}
+                      </span>
+                    </li>
+                  ))
+                ) : (
+                  <div>there is no students in this section!</div>
+                )}
               </ul>
             )}
           </div>
