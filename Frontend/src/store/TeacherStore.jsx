@@ -125,6 +125,20 @@ export const useTeacherStore = create((set) => ({
     }
   },
 
+  deleteUnit: async (course_id, unit_id) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/teacher/course/${course_id}/${unit_id}`
+      );
+      return response.data;
+    } catch (error) {
+      console.log(
+        "Error deleting course unit: ",
+        error.response?.data?.error || error.message
+      );
+    }
+  },
+
   deleteUnitContent: async (unit_id, media_id) => {
     try {
       const response = await axiosInstance.delete(

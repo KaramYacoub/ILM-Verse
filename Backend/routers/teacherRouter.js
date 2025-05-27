@@ -37,6 +37,8 @@ router.post(
   checkFile,
   courseController.addUnitContent
 );
+// delete unit
+router.delete("/course/:course_id/:unit_id", courseController.deleteUnit);
 // delete content
 router.delete("/course/media/:unit_id/:media_id", courseController.deleteMedia);
 

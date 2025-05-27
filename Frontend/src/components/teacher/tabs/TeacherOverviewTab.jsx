@@ -2,11 +2,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTeacherStore } from "../../../store/TeacherStore";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import SuccessModal from "../../../components/shared/SuccessModal";
+import ErrorModal from "../../../components/shared/ErrorModal";
 
 function TeacherOverviewTab() {
   const { course_id } = useParams();
   const navigate = useNavigate();
-  const { getCourseUnits, units, addCourseUnit } = useTeacherStore();
+  const { getCourseUnits, units, addCourseUnit, deleteUnit } =
+    useTeacherStore();
 
   const [loading, setLoading] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
@@ -16,45 +19,74 @@ function TeacherOverviewTab() {
     unit_description: "",
   });
 
+  const [unitToDelete, setUnitToDelete] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // fetch course units
   useEffect(() => {
-    const fetcheUnits = async () => {
+    const fetchUnits = async () => {
       try {
         setLoading(true);
         await getCourseUnits(course_id);
       } catch (error) {
         console.error("Failed to load unit content:", error);
+        setErrorMessage("Failed to fetch units");
+        setShowErrorModal(true);
       } finally {
         setLoading(false);
       }
     };
-    fetcheUnits();
+    fetchUnits();
   }, [course_id, getCourseUnits]);
 
+  // handle add unit
   const handleAddUnit = async () => {
     try {
       setIsAdding(true);
       await addCourseUnit(course_id, newUnit);
-      // Refresh the units list
       await getCourseUnits(course_id);
       setShowAddModal(false);
       setNewUnit({ unit_name: "", unit_description: "" });
     } catch (error) {
-      console.log("Error adding unit:", error);
+      console.error("Error adding unit:", error);
+      setErrorMessage("Failed to add unit");
+      setShowErrorModal(true);
     } finally {
       setIsAdding(false);
     }
   };
 
-  if (loading)
+  // confirm delete unit
+  const confirmDeleteUnit = async () => {
+    if (!unitToDelete) return;
+    try {
+      setShowConfirmModal(false);
+      await deleteUnit(course_id, unitToDelete.unit_id);
+      await getCourseUnits(course_id);
+      setShowSuccessModal(true);
+    } catch (error) {
+      console.error("Error deleting unit:", error);
+      setErrorMessage("Failed to delete unit");
+      setShowErrorModal(true);
+    } finally {
+      setUnitToDelete(null);
+    }
+  };
+
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader2 className="animate-spin" size={50} />
       </div>
     );
+  }
 
   return (
     <div className="bg-base-100 rounded-lg shadow-md p-6">
-      {/* Header with Add Unit Button */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl text-primary font-bold">Course Units</h2>
         <button
@@ -65,6 +97,13 @@ function TeacherOverviewTab() {
         </button>
       </div>
 
+      {units.length === 0 && (
+        <div className="text-center text-gray-500">
+          <p className="text-lg">No units available for this course.</p>
+          <p className="text-sm">Click the button above to add a new unit.</p>
+        </div>
+      )}
+
       <div className="space-y-4">
         {units.map((unit) => (
           <div key={unit.unit_id} className="card bg-base-200 shadow-md">
@@ -74,19 +113,28 @@ function TeacherOverviewTab() {
                   <h3 className="card-title text-xl">{unit.unit_name}</h3>
                   <p>{unit.unit_description}</p>
                 </div>
-                <button
-                  className="btn btn-primary text-lg btn-md"
-                  onClick={() =>
-                    navigate(
-                      `/teacher-course-content/${course_id}/teacher-unit-content/${unit.unit_id}`,
-                      {
-                        state: { unit: unit },
-                      }
-                    )
-                  }
-                >
-                  View Unit
-                </button>
+                <div>
+                  <button
+                    className="btn btn-primary text-lg btn-md"
+                    onClick={() =>
+                      navigate(
+                        `/teacher-course-content/${course_id}/teacher-unit-content/${unit.unit_id}`,
+                        { state: { unit } }
+                      )
+                    }
+                  >
+                    View Unit
+                  </button>
+                  <button
+                    className="btn btn-error text-lg btn-md ml-2"
+                    onClick={() => {
+                      setUnitToDelete(unit);
+                      setShowConfirmModal(true);
+                    }}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -155,6 +203,45 @@ function TeacherOverviewTab() {
           </div>
         </div>
       </div>
+
+      {/* Confirm Delete Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-base-100 rounded-lg p-6 max-w-md w-full">
+            <h3 className="text-xl font-bold mb-4">Confirm Deletion</h3>
+            <p className="mb-6">
+              Are you sure you want to delete unit{" "}
+              <strong>{unitToDelete?.unit_name}</strong>? This action cannot be
+              undone.
+            </p>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="btn btn-outline"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteUnit}
+                className="btn btn-error text-base-100"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <SuccessModal
+        successMessage="Unit deleted successfully."
+        showSuccessModal={showSuccessModal}
+        setShowSuccessModal={setShowSuccessModal}
+      />
+      <ErrorModal
+        errorMessage={errorMessage}
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+      />
     </div>
   );
 }

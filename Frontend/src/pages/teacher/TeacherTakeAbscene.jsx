@@ -103,10 +103,10 @@ function TakeAbsence() {
   }
 
   return (
-    <>
+    <div className="min-h-screen bg-base-200">
       <TeacherNavbar />
 
-      <div className="p-8 max-w-4xl mx-auto">
+      <div className="p-8 max-w-4xl mx-auto felx flex-col items-start">
         <h1 className="text-3xl font-bold mb-6 text-primary">Take Absence</h1>
 
         {message.text && message.type == "success" && (
@@ -173,7 +173,7 @@ function TakeAbsence() {
           )}
         </button>
       </div>
-    </>
+    </div>
   );
 }
 
