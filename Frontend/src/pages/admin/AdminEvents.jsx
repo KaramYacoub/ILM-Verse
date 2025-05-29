@@ -54,7 +54,7 @@ function AdminEvents() {
         }
       }
     } catch (err) {
-      setModalMessage("Failed to fetch events. Please try again later.");
+      setModalMessage(err.response.data.error || "failed to fetch events");
       setShowErrorModal(true);
     }
   }, [getAllEvents, currentYear]);
@@ -102,7 +102,7 @@ function AdminEvents() {
       setShowModal(false);
       await fetchEvents(); // Refresh event list after adding
     } catch (error) {
-      setModalMessage("Failed to add event. Please try again.");
+      setModalMessage(error.response.data.error || "Failed to add event");
       setShowErrorModal(true);
     }
   };
@@ -125,7 +125,7 @@ function AdminEvents() {
       setModalMessage("Event deleted successfully!");
       setShowSuccessModal(true);
     } catch (error) {
-      setModalMessage("Failed to delete event. Please try again.");
+      setModalMessage(error.response.data.error || "Failed to delete event");
       setShowErrorModal(true);
     } finally {
       setShowConfirmModal(false);
