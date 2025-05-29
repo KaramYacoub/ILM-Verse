@@ -62,7 +62,7 @@ function AddCourse() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!courseName || !selectedSection || !selectedTeacher) return;
+    if (!courseName || !selectedSection) return;
 
     setIsSubmitting(true);
 
@@ -70,7 +70,7 @@ function AddCourse() {
       const result = await addCourse({
         subject_name: courseName,
         section_id: selectedSection.section_id,
-        teacher_id: selectedTeacher,
+        teacher_id: selectedTeacher || null,
       });
 
       if (result) {
@@ -167,7 +167,6 @@ function AddCourse() {
                 className="select select-bordered w-full"
                 value={selectedTeacher}
                 onChange={(e) => setSelectedTeacher(e.target.value)}
-                required
                 disabled={!teachersInDepartment.length}
               >
                 <option value="" disabled>
@@ -193,8 +192,7 @@ function AddCourse() {
                 isSubmitting ||
                 !courseName ||
                 !selectedGrade ||
-                !selectedSection ||
-                !selectedTeacher
+                !selectedSection
               }
             >
               {isSubmitting ? (
