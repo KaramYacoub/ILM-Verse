@@ -274,7 +274,10 @@ export const useAdminStore = create((set) => ({
       const response = await axiosInstance.get("/admin/getTeachers");
       return response.data;
     } catch (error) {
-      console.log("error fetching parents:", error.message);
+      console.log(
+        "error fetching Teachers:",
+        error.response.data.error || error.message
+      );
     } finally {
       set({ isFetchingTeachers: false });
     }

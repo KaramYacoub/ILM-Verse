@@ -49,7 +49,7 @@ function ResetUserPassword() {
         const teacherUsers = teachers.data.map((teacher) => ({
           id: teacher.teacher_id,
           name: teacher.first_name + " " + teacher.last_name,
-          identifier: teacher.email,
+          identifier: teacher.teacher_id,
           type: "Teacher",
         }));
 
@@ -62,8 +62,7 @@ function ResetUserPassword() {
 
         setAllUsers([...studentUsers, ...teacherUsers, ...parentUsers]);
       } catch (error) {
-        console.error("Error fetching users:", error);
-        setModalMessage(error.response?.data?.message || "Failed to add unit");
+        setModalMessage(error.response?.data?.message || "Failed to get users");
         setShowErrorModal(true);
       }
     };
@@ -323,8 +322,7 @@ function ResetUserPassword() {
                   Cancel
                 </button>
                 <button
-                  className
-                  // handle reset password="btn btn-primary"
+                  className="btn btn-primary"
                   onClick={handleReset}
                   disabled={
                     isChangingPassword ||

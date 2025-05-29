@@ -461,9 +461,15 @@ exports.getAllTeachers = async (req, res) => {
         first_name: teacher.first_name,
         last_name: teacher.last_name,
         email: teacher.email,
-        section_name: teacher.section.section_name,
-        grade_name: teacher.section.grade.grade_name,
-        dept_name: teacher.section.grade.dept.name, // Direct access without checks
+        section_name: teacher.section
+          ? teacher.section.section_name
+          : "Not Assigned",
+        grade_name: teacher.section
+          ? teacher.section.grade.grade_name
+          : "Not Assigned",
+        dept_name: teacher.section
+          ? teacher.section.grade.dept.name
+          : "Not Assigned",
       };
     });
 
