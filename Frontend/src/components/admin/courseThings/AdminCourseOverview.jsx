@@ -26,13 +26,13 @@ function AdminCourseOverview() {
   });
   const [showStudentsModal, setShowStudentsModal] = useState(false);
 
-  // Modal states
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [unitToDelete, setUnitToDelete] = useState(null);
 
+  // fetch course units
   useEffect(() => {
     const fetchCourseData = async () => {
       setIsLoading(true);
@@ -50,6 +50,7 @@ function AdminCourseOverview() {
     fetchCourseData();
   }, [courseId, getCourseUnits]);
 
+  // handle adding a new unit
   const handleAddUnit = async () => {
     if (!newUnit.unit_name.trim()) {
       setModalMessage("Unit name is required");
@@ -75,15 +76,19 @@ function AdminCourseOverview() {
     }
   };
 
+  // handle open the delete confirmation modal
   const handleDeleteClick = (unit) => {
     setUnitToDelete(unit);
-    setModalMessage(`Are you sure you want to delete the unit "${unit.unit_name}"?`);
+    setModalMessage(
+      `Are you sure you want to delete the unit "${unit.unit_name}"?`
+    );
     setShowConfirmModal(true);
   };
 
+  // handle delete unit
   const confirmDeleteUnit = async () => {
     if (!unitToDelete) return;
-    
+
     try {
       setIsDeleting(true);
       await deleteUnit(courseId, unitToDelete.unit_id);
@@ -207,7 +212,8 @@ function AdminCourseOverview() {
                             className="btn btn-outline"
                             disabled={isDeleting}
                           >
-                            {isDeleting && unitToDelete?.unit_id === unit.unit_id ? (
+                            {isDeleting &&
+                            unitToDelete?.unit_id === unit.unit_id ? (
                               <span className="loading loading-spinner loading-sm"></span>
                             ) : (
                               "Delete unit"
@@ -267,6 +273,7 @@ function AdminCourseOverview() {
                 placeholder="Enter unit name"
                 className="input input-bordered w-full"
                 value={newUnit.unit_name}
+                required
                 onChange={(e) =>
                   setNewUnit({ ...newUnit, unit_name: e.target.value })
                 }
@@ -281,6 +288,7 @@ function AdminCourseOverview() {
                 className="textarea textarea-bordered w-full"
                 rows={3}
                 value={newUnit.unit_description}
+                required
                 onChange={(e) =>
                   setNewUnit({ ...newUnit, unit_description: e.target.value })
                 }
@@ -331,8 +339,6 @@ function AdminCourseOverview() {
         setShowConfirmModal={setShowConfirmModal}
         message={modalMessage}
         onConfirm={confirmDeleteUnit}
-        confirmText="Delete"
-        dangerAction={true}
       />
 
       {/* Success Modal */}
@@ -341,7 +347,7 @@ function AdminCourseOverview() {
         setShowSuccessModal={setShowSuccessModal}
         successMessage={modalMessage}
       />
-    
+
       {/* Error Modal */}
       <ErrorModal
         showErrorModal={showErrorModal}

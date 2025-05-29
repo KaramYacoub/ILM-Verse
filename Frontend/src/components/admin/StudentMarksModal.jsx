@@ -3,8 +3,7 @@ import { useCourseStore } from "../../store/CourseStore";
 import ErrorModal from "../shared/ErrorModal";
 
 function StudentMarksModal({ isOpen, onClose, student, course, studentId }) {
-
-    const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
   const { addMark, editMark, getMark } = useCourseStore();
@@ -27,16 +26,12 @@ function StudentMarksModal({ isOpen, onClose, student, course, studentId }) {
         Final: "MT-004",
       }[activeTerm];
 
-      console.log("mark type: ", markType);
-      
       const maxMark = {
         "Term 1": 20,
         "Term 2": 20,
         "Term 3": 20,
         Final: 40,
       }[activeTerm];
-      
-      console.log("max Mark: ", maxMark);
 
       const markValue = await getMark(course.id, studentId, markType);
 
@@ -104,7 +99,6 @@ function StudentMarksModal({ isOpen, onClose, student, course, studentId }) {
 
       onClose();
     } catch (error) {
-      console.error("Error saving mark:", error);
       setModalMessage(
         "Failed to save mark: " + (error.response?.data?.error || error.message)
       );
@@ -118,7 +112,7 @@ function StudentMarksModal({ isOpen, onClose, student, course, studentId }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-3xl p-6">
+      <div className="bg-base-100 rounded-lg shadow-lg w-full max-w-3xl p-6">
         <h2 className="text-2xl font-bold text-primary mb-4">
           Enter Marks: {student} - {course.name}
         </h2>
@@ -130,8 +124,8 @@ function StudentMarksModal({ isOpen, onClose, student, course, studentId }) {
               key={term}
               className={`px-4 py-2 rounded-md flex flex-auto ${
                 activeTerm === term
-                  ? "bg-primary text-white"
-                  : "bg-white text-gray-700"
+                  ? "bg-primary text-base-100"
+                  : "bg-base-100 text-gray-700"
               }`}
               onClick={() => setActiveTerm(term)}
             >
@@ -162,6 +156,9 @@ function StudentMarksModal({ isOpen, onClose, student, course, studentId }) {
                       min="0"
                       max={item.max}
                       disabled={isLoading}
+                      placeholder="Enter marks"
+                      pattern="\d*"
+                      title={`Please enter a number between 0 and ${item.max}`}
                     />
                   </td>
                 </tr>
@@ -195,12 +192,13 @@ function StudentMarksModal({ isOpen, onClose, student, course, studentId }) {
           </button>
         </div>
       </div>
-         {/* Error Modal */}
-            <ErrorModal
-              showErrorModal={showErrorModal}
-              setShowErrorModal={setShowErrorModal}
-              errorMessage={modalMessage}
-            />
+
+      {/* Error Modal */}
+      <ErrorModal
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+        errorMessage={modalMessage}
+      />
     </div>
   );
 }

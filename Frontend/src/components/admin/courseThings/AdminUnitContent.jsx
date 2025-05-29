@@ -31,22 +31,24 @@ function AdminUnitContent() {
     uploadProgress: 0,
   });
 
-  // Modal states
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+
   const [mediaToDelete, setMediaToDelete] = useState({
     unit_id: null,
     media_id: null,
   });
 
+  // fetch unit content
   useEffect(() => {
     if (unit?.unit_id) {
       getUnitContent(unit.unit_id);
     }
   }, [getUnitContent, unit?.unit_id]);
 
+  // open the upload modal
   const openUploadModal = () => {
     setIsUploadModalOpen(true);
     setUploadState({
@@ -57,10 +59,12 @@ function AdminUnitContent() {
     });
   };
 
+  // close the upload modal
   const closeUploadModal = () => {
     setIsUploadModalOpen(false);
   };
 
+  // handle file input change
   const handleFileChange = (e) => {
     setUploadState({
       ...uploadState,
@@ -69,6 +73,7 @@ function AdminUnitContent() {
     });
   };
 
+  // handle upload click
   const handleUpload = async () => {
     if (!uploadState.file || !uploadState.title) {
       setModalMessage("Please provide both a file and a title");
@@ -83,6 +88,7 @@ function AdminUnitContent() {
       formData.append("media", uploadState.file);
       formData.append("title", uploadState.title);
 
+      // simnulate upload progress
       const interval = setInterval(() => {
         setUploadState((prev) => {
           const newProgress = prev.uploadProgress + 10;
@@ -109,11 +115,13 @@ function AdminUnitContent() {
     }
   };
 
+  // open media modal
   const openMediaModal = (media) => {
     setSelectedMedia(media);
     setIsModalOpen(true);
   };
 
+  // close media modal
   const closeMediaModal = () => {
     setSelectedMedia(null);
     setIsModalOpen(false);
@@ -131,26 +139,27 @@ function AdminUnitContent() {
     return mimeType.split("/")[1]?.toUpperCase() || "File";
   };
 
+  // handle download file
   const handleDownload = (media) => {
     try {
       downloadResource(
         media.path.split("/").pop(),
         `${media.title}.${getFileType(media.type).toLowerCase()}`
       );
-      setModalMessage("Download started!");
-      setShowSuccessModal(true);
     } catch {
       setModalMessage("Download failed. Please try again.");
       setShowErrorModal(true);
     }
   };
 
+  // confirm delete media
   const confirmDeleteMedia = (unit_id, media_id) => {
     setMediaToDelete({ unit_id, media_id });
     setModalMessage("Are you sure you want to delete this media?");
     setShowConfirmModal(true);
   };
 
+  // handle delete media
   const handleDeleteMedia = async () => {
     try {
       setDeletingMediaId(mediaToDelete.media_id);
@@ -255,17 +264,18 @@ function AdminUnitContent() {
           formatDate={formatDate}
         />
 
-        {/* Modals */}
         <SuccessModal
           showSuccessModal={showSuccessModal}
           setShowSuccessModal={setShowSuccessModal}
           successMessage={modalMessage}
         />
+
         <ErrorModal
           showErrorModal={showErrorModal}
           setShowErrorModal={setShowErrorModal}
           errorMessage={modalMessage}
         />
+
         <ConfirmModal
           showConfirmModal={showConfirmModal}
           setShowConfirmModal={setShowConfirmModal}

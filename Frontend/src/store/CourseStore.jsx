@@ -187,6 +187,7 @@ export const useCourseStore = create((set) => ({
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", fileName);
+      link.setAttribute("target", "_blank");
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -259,11 +260,14 @@ export const useCourseStore = create((set) => ({
 
   addMark: async (course_id, { student_id, mark_type, mark_value }) => {
     try {
-      const response = await axiosInstance.post(`/admin/course/${course_id}/mark`, {
-        student_id,
-        mark_type,
-        mark_value,
-      });
+      const response = await axiosInstance.post(
+        `/admin/course/${course_id}/mark`,
+        {
+          student_id,
+          mark_type,
+          mark_value,
+        }
+      );
       return response.data;
     } catch (error) {
       console.log(
@@ -276,11 +280,14 @@ export const useCourseStore = create((set) => ({
 
   editMark: async (course_id, { student_id, mark_type, mark_value }) => {
     try {
-      const response = await axiosInstance.patch(`/admin/course/${course_id}/mark`, {
-        student_id,
-        mark_type,
-        mark_value,
-      });
+      const response = await axiosInstance.patch(
+        `/admin/course/${course_id}/mark`,
+        {
+          student_id,
+          mark_type,
+          mark_value,
+        }
+      );
       return response.data;
     } catch (error) {
       console.log(
