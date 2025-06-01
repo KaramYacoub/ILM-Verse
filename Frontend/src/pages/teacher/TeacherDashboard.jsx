@@ -6,12 +6,14 @@ import { useEffect } from "react";
 function TeacherDashboard() {
   const { coursesForTeacher, getCoursesForTeacher } = useTeacherStore();
 
+  // Fetch courses for the teacher
   useEffect(() => {
     const fetchCourses = async () => {
       await getCoursesForTeacher();
     };
     fetchCourses();
   }, [getCoursesForTeacher]);
+
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">
       <TeacherNavbar />

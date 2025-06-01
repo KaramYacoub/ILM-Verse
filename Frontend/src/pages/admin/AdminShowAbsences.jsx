@@ -13,12 +13,12 @@ function AdminShowAbsences() {
   const [loading, setLoading] = useState(false);
   const [absences, setAbsences] = useState([]);
 
+  // Fetch stuent absences
   useEffect(() => {
     setLoading(true);
     try {
       const fetchAbsence = async () => {
         const allAbsences = await getStudentAbsences(student_id, section_id);
-        console.log(allAbsences);
         setAbsences(allAbsences);
       };
       fetchAbsence();
@@ -58,7 +58,7 @@ function AdminShowAbsences() {
           </div>
         ) : absences?.absenceDates?.length > 0 ? (
           <>
-            <div className="stats bg-base-300 text-base-content shadow">
+            <div className="stats bg-base-300 text-center shadow">
               <div className="stat">
                 <div className="stat-title text-base-content font-semibold">
                   Total Absences
@@ -66,12 +66,11 @@ function AdminShowAbsences() {
                 <div className="stat-value text-4xl font-bold">
                   {absences.absenceCount}
                 </div>
-                <div className="stat-desc text-sm">Current Academic Year</div>
               </div>
             </div>
 
             <div className="overflow-x-auto bg-base-200 rounded-lg shadow">
-              <table className="table w-full">
+              <table className="table w-full text-center">
                 <thead>
                   <tr className="bg-primary text-primary-content">
                     <th>#</th>
@@ -92,7 +91,7 @@ function AdminShowAbsences() {
             </div>
           </>
         ) : (
-          <div className="alert alert-info shadow-lg flex justify-center">
+          <div className="alert alert-info text-center shadow-lg flex justify-center">
             <AlertCircle className="stroke-current flex-shrink-0 h-6 w-6" />
             <span>No absence records found for this student.</span>
           </div>

@@ -437,7 +437,7 @@ export const useTeacherStore = create((set) => ({
   deleteQuiz: async (quiz_id) => {
     try {
       const response = await axiosInstance.delete(
-        `/teacher/course/deletequiz/${quiz_id}`
+        `/teacher/course/delete/quiz/${quiz_id}`
       );
       return response.data;
     } catch (error) {

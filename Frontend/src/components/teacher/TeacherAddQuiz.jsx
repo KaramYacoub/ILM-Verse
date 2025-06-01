@@ -10,18 +10,19 @@ import ErrorModal from "../../components/shared/ErrorModal";
 import ConfirmModal from "../../components/shared/ConfirmModal";
 
 function TeacherAddQuiz() {
-  const { course_id } = useParams();
   const { addQuiz, editQuiz } = useTeacherStore();
+
+  const { course_id } = useParams();
   const location = useLocation();
   const existingQuiz = location.state?.quiz;
 
-  // Modal states
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [actionCallback, setActionCallback] = useState(null);
 
+  // this state holds the quiz data being edited or created
   const [quizData, setQuizData] = useState(
     existingQuiz
       ? {
@@ -54,6 +55,7 @@ function TeacherAddQuiz() {
         }
   );
 
+  // Function to update quiz details like title, description, etc.
   const updateQuizDetails = (field, value) => {
     setQuizData({
       ...quizData,
@@ -61,6 +63,7 @@ function TeacherAddQuiz() {
     });
   };
 
+  // Function to add a new question to the quiz
   const addQuestion = () => {
     const newID = Date.now().toString();
 
@@ -79,12 +82,14 @@ function TeacherAddQuiz() {
     });
   };
 
+  // Handle open confirm modal for removing a question
   const confirmRemoveQuestion = (id) => {
     setModalMessage("Are you sure you want to delete this question?");
     setShowConfirmModal(true);
     setActionCallback(() => () => removeQuestion(id));
   };
 
+  // Function to remove a question by its ID
   const removeQuestion = (id) => {
     try {
       setQuizData({
@@ -94,11 +99,15 @@ function TeacherAddQuiz() {
       setModalMessage("Question deleted successfully!");
       setShowSuccessModal(true);
     } catch (error) {
-      setModalMessage("Failed to delete question. Please try again.");
+      setModalMessage(
+        error.response.data.error ||
+          "Failed to delete question. Please try again."
+      );
       setShowErrorModal(true);
     }
   };
 
+  // Function to update a specific question in the quiz
   const updateQuestion = (updatedQuestion) => {
     try {
       setQuizData({
@@ -110,11 +119,13 @@ function TeacherAddQuiz() {
       setModalMessage("Question updated successfully!");
       setShowSuccessModal(true);
     } catch (error) {
-      setModalMessage("Failed to update question. Please try again.");
+      error.response.data.error ||
+        setModalMessage("Failed to update question. Please try again.");
       setShowErrorModal(true);
     }
   };
 
+  // Function to validate the quiz data before submission
   const validateQuiz = () => {
     if (!quizData.quizTitle.trim()) {
       setModalMessage("Quiz title is required");
@@ -147,7 +158,7 @@ function TeacherAddQuiz() {
         return false;
       }
 
-      if (question.choices.some(choice => !choice.trim())) {
+      if (question.choices.some((choice) => !choice.trim())) {
         setModalMessage("All answer choices must be filled");
         setShowErrorModal(true);
         return false;
@@ -163,9 +174,10 @@ function TeacherAddQuiz() {
     return true;
   };
 
+  // Handle form submission for adding or editing a quiz
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateQuiz()) return;
 
     try {
@@ -177,17 +189,17 @@ function TeacherAddQuiz() {
         setModalMessage("Quiz created successfully!");
       }
       setShowSuccessModal(true);
-      // Wait for modal to show before navigating back
-      setTimeout(() => window.history.back(), 1500);
+      setTimeout(() => window.history.back(), 2000);
     } catch (error) {
-      console.error("Error saving quiz:", error);
       setModalMessage(
-        error.response?.data?.message || "Failed to save quiz. Please try again."
+        error.response?.data?.message ||
+          "Failed to save quiz. Please try again."
       );
       setShowErrorModal(true);
     }
   };
 
+  // Handle confirm action in the confirm modal
   const handleConfirmAction = () => {
     if (actionCallback) {
       actionCallback();
@@ -201,16 +213,19 @@ function TeacherAddQuiz() {
 
       <div className="flex-1 flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-2xl bg-base-100 rounded-lg shadow-md p-6">
+          {/* Header */}
           <h1 className="text-2xl font-bold text-primary mb-6 text-center">
             {existingQuiz ? "Edit Quiz" : "Add New Quiz"}
           </h1>
 
+          {/* Quiz Form */}
           <form onSubmit={handleSubmit}>
             <QuizDetailsForm
               quizData={quizData}
               updateQuizDetails={updateQuizDetails}
             />
 
+            {/* No questions */}
             {quizData.questions.length === 0 ? (
               <div className="py-8">
                 <p className="text-gray-500 mb-4 text-center">
@@ -225,8 +240,10 @@ function TeacherAddQuiz() {
                 </button>
               </div>
             ) : (
+              // Questions list
               <>
                 {quizData.questions.map((question, index) => (
+                  // questions
                   <QuestionItem
                     key={question.id}
                     question={question}
@@ -235,6 +252,7 @@ function TeacherAddQuiz() {
                     removeQuestion={confirmRemoveQuestion}
                   />
                 ))}
+                {/* Add another question button */}
                 <button
                   type="button"
                   className="btn btn-outline mb-6 w-full md:w-auto"
@@ -245,6 +263,7 @@ function TeacherAddQuiz() {
               </>
             )}
 
+            {/* Action Buttons */}
             <div className="flex justify-end mt-6 space-x-2">
               <button
                 onClick={() => {
@@ -263,22 +282,23 @@ function TeacherAddQuiz() {
         </div>
       </div>
 
-      {/* Modals */}
-      <SuccessModal
-        showSuccessModal={showSuccessModal}
-        setShowSuccessModal={setShowSuccessModal}
-        successMessage={modalMessage}
-      />
-      <ErrorModal
-        showErrorModal={showErrorModal}
-        setShowErrorModal={setShowErrorModal}
-        errorMessage={modalMessage}
-      />
       <ConfirmModal
         showConfirmModal={showConfirmModal}
         setShowConfirmModal={setShowConfirmModal}
         message={modalMessage}
         onConfirm={handleConfirmAction}
+      />
+
+      <SuccessModal
+        showSuccessModal={showSuccessModal}
+        setShowSuccessModal={setShowSuccessModal}
+        successMessage={modalMessage}
+      />
+
+      <ErrorModal
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+        errorMessage={modalMessage}
       />
     </div>
   );

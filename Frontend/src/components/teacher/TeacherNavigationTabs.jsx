@@ -53,7 +53,7 @@ function TeacherNavigationTabs() {
             : "text-gray-600"
         }`}
       >
-        Assignments
+        {isTabActive("assignment-detail") ? "Assignment Detail" : "Assignments"}
       </button>
       <button
         onClick={() => navigate(`${basePath}/teacher-quizzes`)}
@@ -63,7 +63,7 @@ function TeacherNavigationTabs() {
             : "text-gray-600"
         }`}
       >
-        Quizzes
+        {isTabActive("quiz-submit-status") ? "Quiz Submit Status" : "Quizzes"}
       </button>
     </div>
   );

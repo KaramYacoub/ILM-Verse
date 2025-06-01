@@ -14,6 +14,7 @@ function TeacherCourseContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch course content
   useEffect(() => {
     const fetchCourseContent = async () => {
       setIsLoading(true);

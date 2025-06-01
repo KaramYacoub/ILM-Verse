@@ -6,6 +6,7 @@ function QuizDetailsForm({ quizData, updateQuizDetails }) {
 
   return (
     <>
+      {/* Quiz Title */}
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-medium mb-2">
           Quiz Title:
@@ -21,6 +22,7 @@ function QuizDetailsForm({ quizData, updateQuizDetails }) {
         />
       </div>
 
+      {/* Quiz description */}
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-medium mb-2">
           Description:
@@ -31,10 +33,13 @@ function QuizDetailsForm({ quizData, updateQuizDetails }) {
           onChange={handleChange}
           className="textarea textarea-bordered w-full h-24"
           placeholder="Enter quiz description"
+          required
         />
       </div>
 
+      {/* Quiz details */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        {/* Start date */}
         <div>
           <label className="block text-gray-700 text-sm font-medium mb-2">
             Start Date:
@@ -46,8 +51,10 @@ function QuizDetailsForm({ quizData, updateQuizDetails }) {
             value={quizData.startDate}
             onChange={handleChange}
             className="input input-bordered w-full"
+            required
           />
         </div>
+        {/* Start time */}
         <div>
           <label className="block text-gray-700 text-sm font-medium mb-2">
             Start Time:
@@ -59,8 +66,10 @@ function QuizDetailsForm({ quizData, updateQuizDetails }) {
             value={quizData.startTime}
             onChange={handleChange}
             className="input input-bordered w-full"
+            required
           />
         </div>
+        {/* Duration */}
         <div>
           <label className="block text-gray-700 text-sm font-medium mb-2">
             Duration:(minutes)
@@ -72,8 +81,10 @@ function QuizDetailsForm({ quizData, updateQuizDetails }) {
             value={quizData.duration}
             onChange={handleChange}
             className="input input-bordered w-full"
+            required
           />
         </div>
+        {/* Total points */}
         <div>
           <label className="block text-gray-700 text-sm font-medium mb-2">
             Total Points:
@@ -85,6 +96,7 @@ function QuizDetailsForm({ quizData, updateQuizDetails }) {
             onChange={handleChange}
             className="input input-bordered w-full"
             min="1"
+            required
           />
         </div>
       </div>

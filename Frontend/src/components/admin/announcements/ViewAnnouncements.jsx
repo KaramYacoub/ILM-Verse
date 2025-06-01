@@ -19,10 +19,17 @@ function ViewAnnouncements({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [announcementToDelete, setAnnouncementToDelete] = useState(null);
 
+  // Handle delete button click
+  const handleDeleteClick = (id) => {
+    setAnnouncementToDelete(id);
+    setConfirmDelete(true);
+  };
+
+  // Confirm delete action
   const confirmDeleteAnnouncement = async () => {
     try {
       await deleteAnnouncement(announcementToDelete);
-      await fetchAnnouncements(); // <--- Fetch fresh list
+      await fetchAnnouncements();
       setShowSuccessModal(true);
     } catch (error) {
       setErrorMessage(
@@ -36,11 +43,7 @@ function ViewAnnouncements({
     }
   };
 
-  const handleDeleteClick = (id) => {
-    setAnnouncementToDelete(id);
-    setConfirmDelete(true);
-  };
-
+  // Filter announcements based on selected group
   const filtered =
     selectedGroup === "" || selectedGroup === "general"
       ? announcements
@@ -94,12 +97,12 @@ function ViewAnnouncements({
                       Sent by: {a.sender}
                     </div>
                   )}
-                    <button
-                      className="btn btn-primary btn-xs"
-                      onClick={() => handleDeleteClick(a.id)}
-                    >
-                      delete
-                    </button>
+                  <button
+                    className="btn btn-primary btn-xs"
+                    onClick={() => handleDeleteClick(a.id)}
+                  >
+                    delete
+                  </button>
                 </div>
 
                 <p className="text-neutral">{a.text}</p>

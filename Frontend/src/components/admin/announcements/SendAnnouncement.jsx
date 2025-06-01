@@ -8,6 +8,7 @@ function SendAnnouncement({ depts, onSend }) {
   const [selectedGroup, setSelectedGroup] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 

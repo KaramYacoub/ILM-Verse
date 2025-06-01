@@ -4,17 +4,19 @@ import { useTeacherStore } from "../../../store/TeacherStore";
 import { Loader2 } from "lucide-react";
 
 export default function QuizSubmitStatus() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { course_id } = useParams();
   const { getStudentsInCourse } = useTeacherStore();
 
+  const navigate = useNavigate();
+  const { course_id } = useParams();
+
+  const location = useLocation();
   const quiz = location.state?.quiz;
   const submissions = quiz?.Submissions || [];
 
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Fetch students in the course
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -32,6 +34,7 @@ export default function QuizSubmitStatus() {
   }, [course_id, getStudentsInCourse]);
 
   // Create a map of submissions by student_id for quick lookup
+  // This allows us to easily check if a student has submitted and get their marks
   const submissionsMap = submissions.reduce((acc, submission) => {
     acc[submission.student_id] = submission;
     return acc;
@@ -57,6 +60,7 @@ export default function QuizSubmitStatus() {
     };
   });
 
+  // Handle review button click
   const handleReview = (student_id) => {
     const submission = submissionsMap[student_id];
     navigate(`/course/${course_id}/quizes/${quiz._id}/review/${student_id}`, {
@@ -82,30 +86,36 @@ export default function QuizSubmitStatus() {
 
   return (
     <div className="p-4 bg-gray-50 rounded-lg shadow-md">
-      {/* Quiz Information Section */}
       <div className="mb-8">
+      {/* Header */}
         <h1 className="text-3xl font-bold text-primary mb-2">{quiz.title}</h1>
         <p className="text-lg mb-2">{quiz.description}</p>
 
+        {/* Quiz details */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          <div className="bg-white p-4 rounded-lg shadow-sm">
+          {/* Quiz date */}
+          <div className="bg-base-100 p-4 rounded-lg shadow-sm">
             <h3 className="font-semibold text-gray-700">Quiz Date</h3>
             <p>{`${quiz.start_date} at ${quiz.start_time}`}</p>
           </div>
 
-          <div className="bg-white p-4 rounded-lg shadow-sm">
+          {/* Quiz duration */}
+          <div className="bg-base-100 p-4 rounded-lg shadow-sm">
             <h3 className="font-semibold text-gray-700">Duration</h3>
             <p>{quiz.duration} minutes</p>
           </div>
 
-          <div className="bg-white p-4 rounded-lg shadow-sm">
+          {/* Total points */}
+          <div className="bg-base-100 p-4 rounded-lg shadow-sm">
             <h3 className="font-semibold text-gray-700">Total Points</h3>
             <p>{quiz.total_points}</p>
           </div>
         </div>
 
+        {/* Submission status and quiz visibility */}
         <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-white p-4 rounded-lg shadow-sm">
+          {/* Submission Status */}
+          <div className="bg-base-100 p-4 rounded-lg shadow-sm">
             <h3 className="font-semibold text-gray-700">Submission Status</h3>
             <div className="flex items-center mt-2">
               <div className="w-full bg-gray-200 rounded-full h-4">
@@ -120,7 +130,8 @@ export default function QuizSubmitStatus() {
             </div>
           </div>
 
-          <div className="bg-white p-4 rounded-lg shadow-sm">
+          {/* Quiz Visibility */}
+          <div className="bg-base-100 p-4 rounded-lg shadow-sm">
             <h3 className="font-semibold text-gray-700">Quiz Visibility</h3>
             <p
               className={quiz.able_to_view ? "text-green-600" : "text-red-600"}
@@ -139,7 +150,7 @@ export default function QuizSubmitStatus() {
       </h2>
       <div className="overflow-x-auto rounded-lg">
         <table className="table table-zebra shadow-sm text-center">
-          <thead className="bg-primary text-base-100 text-base">
+          <thead className="bg-primary text-base-100">
             <tr>
               <th>Student ID</th>
               <th>Student Name</th>

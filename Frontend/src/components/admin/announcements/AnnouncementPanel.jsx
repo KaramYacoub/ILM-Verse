@@ -15,6 +15,7 @@ function AnnouncementPanel({ isOpen, onClose }) {
   const [selectedGroup, setSelectedGroup] = useState("general");
   const [isLoading, setIsLoading] = useState(false);
 
+  // fetch all departments and add "General" department
   useEffect(() => {
     const fetchDepts = async () => {
       const allDepts = await getAllDepartments();
@@ -27,6 +28,7 @@ function AnnouncementPanel({ isOpen, onClose }) {
     fetchDepts();
   }, [getAllDepartments]);
 
+  // Fetch announcements when the panel is opened or when the selected group changes
   const fetchAnnouncements = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -51,12 +53,14 @@ function AnnouncementPanel({ isOpen, onClose }) {
     }
   }, [selectedGroup, getAnnoucments]);
 
+  // Fetch announcements when the panels active tab is"view"
   useEffect(() => {
     if (isOpen && activeTab === "view") {
       fetchAnnouncements();
     }
   }, [isOpen, activeTab, selectedGroup, fetchAnnouncements]);
 
+  // Handle sending a new announcement
   const handleSend = async (newAnnouncement) => {
     try {
       setIsLoading(true);

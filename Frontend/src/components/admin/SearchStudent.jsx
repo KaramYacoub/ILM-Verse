@@ -23,9 +23,15 @@ function SearchStudent() {
     const fetchStudents = async () => {
       try {
         const response = await getAllStudents();
+        const sortedStudents = response.data.sort(
+          (a, b) =>
+            a.student_id.split("-")[1] -
+            b.student_id.split("-")[1]
+        );
+        console.log(sortedStudents);
         if (response && response.data) {
-          setAllStudents(response.data);
-          setFilteredStudents(response.data);
+          setAllStudents(sortedStudents);
+          setFilteredStudents(sortedStudents);
         }
       } catch (error) {
         console.error("Error fetching students:", error);

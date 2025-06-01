@@ -7,17 +7,22 @@ import ErrorModal from "../../shared/ErrorModal";
 import ConfirmModal from "../../shared/ConfirmModal";
 
 export default function TeacherAssignmentsTab() {
+  const {
+    assignments,
+    TeacherGetAssignment,
+    TeacherAddAssignment,
+    TeacherDelteAssignment,
+    downloadAssignments,
+  } = useTeacherStore();
+
   const { course_id } = useParams();
   const navigate = useNavigate();
 
-  // Modal states
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const [actionCallback, setActionCallback] = useState(null);
 
-  // Assignment states
   const [showModal, setShowModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [newAssignment, setNewAssignment] = useState({
@@ -28,21 +33,16 @@ export default function TeacherAssignmentsTab() {
   const [isLoading, setIsLoading] = useState(false);
   const [assignmentToDelete, setAssignmentToDelete] = useState(null);
 
-  const {
-    assignments,
-    TeacherGetAssignment,
-    TeacherAddAssignment,
-    TeacherDelteAssignment,
-    downloadAssignments,
-  } = useTeacherStore();
-
+  // Fetch assignments
   useEffect(() => {
     const fetchAssignments = async () => {
       setIsLoading(true);
       try {
         await TeacherGetAssignment(course_id);
       } catch (error) {
-        setModalMessage("Failed to load assignments. Please try again.");
+        setModalMessage(
+          error.response.data.error || "Failed to load assignments."
+        );
         setShowErrorModal(true);
       } finally {
         setIsLoading(false);
@@ -52,12 +52,14 @@ export default function TeacherAssignmentsTab() {
     fetchAssignments();
   }, [course_id, TeacherGetAssignment]);
 
+  // Open confirm delete modal
   const confirmDeleteAssignment = (assignment_id) => {
     setAssignmentToDelete(assignment_id);
     setModalMessage("Are you sure you want to delete this assignment?");
     setShowConfirmModal(true);
   };
 
+  // Handle delete assignment
   const handleDeleteAssignment = async () => {
     try {
       setIsLoading(true);
@@ -66,7 +68,9 @@ export default function TeacherAssignmentsTab() {
       setModalMessage("Assignment deleted successfully");
       setShowSuccessModal(true);
     } catch (error) {
-      setModalMessage(error.response?.data?.error || "Failed to delete assignment");
+      setModalMessage(
+        error.response?.data?.error || "Failed to delete assignment"
+      );
       setShowErrorModal(true);
     } finally {
       setIsLoading(false);
@@ -75,26 +79,31 @@ export default function TeacherAssignmentsTab() {
     }
   };
 
+  // Open add new assignment modal
   const handleAddAssignment = () => {
     setShowModal(true);
   };
 
+  // Close add new assignment modal
   const handleCloseModal = () => {
     setShowModal(false);
     setNewAssignment({ title: "", description: "", dueDate: "" });
     setSelectedFile(null);
   };
 
+  // Handle input changes for new assignment
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewAssignment((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Handle file selection for new assignment
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setSelectedFile(file);
   };
 
+  // Validate new assignment input
   const validateAssignment = () => {
     if (!newAssignment.title.trim()) {
       setModalMessage("Title is required");
@@ -109,6 +118,7 @@ export default function TeacherAssignmentsTab() {
     return true;
   };
 
+  // Handle save new assignment
   const handleSaveAssignment = async () => {
     if (!validateAssignment()) return;
 
@@ -127,7 +137,8 @@ export default function TeacherAssignmentsTab() {
       handleCloseModal();
     } catch (error) {
       setModalMessage(
-        error.response?.data?.error || "Error saving assignment. Please try again."
+        error.response?.data?.error ||
+          "Error saving assignment. Please try again."
       );
       setShowErrorModal(true);
     } finally {
@@ -142,6 +153,7 @@ export default function TeacherAssignmentsTab() {
     return mimeType.split("/")[1]?.toUpperCase() || "File";
   };
 
+  // Handle download assignment
   const handleDownload = async (assignment) => {
     try {
       setIsLoading(true);
@@ -152,7 +164,7 @@ export default function TeacherAssignmentsTab() {
       setModalMessage("Download started successfully!");
       setShowSuccessModal(true);
     } catch (error) {
-      setModalMessage("Failed to download file. Please try again.");
+      setModalMessage(error.response.data.error || "Failed to download file.");
       setShowErrorModal(true);
     } finally {
       setIsLoading(false);
@@ -161,23 +173,28 @@ export default function TeacherAssignmentsTab() {
 
   return (
     <div className="p-4 bg-gray-50 rounded-lg shadow-md">
+      {/* Loader */}
       {isLoading && assignments.length === 0 ? (
         <div className="flex justify-center py-8">
           <span className="loading loading-spinner loading-lg"></span>
         </div>
-      ) : assignments.length === 0 ? (
+      ) : // No assignments available
+      assignments.length === 0 ? (
         <div className="text-center space-y-4">
-          <p className="text-primary font-bold text-2xl">No assignments available.</p>
+          <p className="text-primary font-bold text-2xl">
+            No assignments available.
+          </p>
           <button onClick={handleAddAssignment} className="btn btn-primary">
             + Add Assignment
           </button>
         </div>
       ) : (
+        // Assignments list
         <div className="grid gap-4 mb-6">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-3xl text-primary font-semibold">Assignments</h2>
-            <button 
-              onClick={handleAddAssignment} 
+            <button
+              onClick={handleAddAssignment}
               className="btn btn-primary"
               disabled={isLoading}
             >
@@ -248,7 +265,7 @@ export default function TeacherAssignmentsTab() {
       {/* Add Assignment Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+          <div className="bg-base-100 rounded-lg shadow-xl w-full max-w-md">
             <div className="flex justify-between items-center p-4 border-b">
               <h3 className="text-lg text-primary font-semibold">
                 Add New Assignment
@@ -275,6 +292,7 @@ export default function TeacherAssignmentsTab() {
                   className="input input-bordered w-full"
                   placeholder="Enter assignment title"
                   disabled={isLoading}
+                  required
                 />
               </div>
 
@@ -290,6 +308,7 @@ export default function TeacherAssignmentsTab() {
                   placeholder="Enter description"
                   rows="3"
                   disabled={isLoading}
+                  required
                 ></textarea>
               </div>
 
@@ -304,6 +323,7 @@ export default function TeacherAssignmentsTab() {
                   onChange={handleInputChange}
                   className="input input-bordered w-full"
                   disabled={isLoading}
+                  required
                 />
               </div>
 
@@ -318,14 +338,16 @@ export default function TeacherAssignmentsTab() {
                     className="file-input file-input-bordered w-full"
                     onChange={handleFileChange}
                     disabled={isLoading}
+                    required
+                    title="Upload assignment file (PDF, DOC, DOCX) only"
                   />
                 </label>
               </div>
             </div>
 
             <div className="flex justify-end gap-2 p-4 border-t">
-              <button 
-                onClick={handleCloseModal} 
+              <button
+                onClick={handleCloseModal}
                 className="btn btn-ghost"
                 disabled={isLoading}
               >
@@ -347,17 +369,6 @@ export default function TeacherAssignmentsTab() {
         </div>
       )}
 
-      {/* Feedback Modals */}
-      <SuccessModal
-        showSuccessModal={showSuccessModal}
-        setShowSuccessModal={setShowSuccessModal}
-        successMessage={modalMessage}
-      />
-      <ErrorModal
-        showErrorModal={showErrorModal}
-        setShowErrorModal={setShowErrorModal}
-        errorMessage={modalMessage}
-      />
       <ConfirmModal
         showConfirmModal={showConfirmModal}
         setShowConfirmModal={setShowConfirmModal}
@@ -367,6 +378,18 @@ export default function TeacherAssignmentsTab() {
           setAssignmentToDelete(null);
           setShowConfirmModal(false);
         }}
+      />
+
+      <SuccessModal
+        showSuccessModal={showSuccessModal}
+        setShowSuccessModal={setShowSuccessModal}
+        successMessage={modalMessage}
+      />
+
+      <ErrorModal
+        showErrorModal={showErrorModal}
+        setShowErrorModal={setShowErrorModal}
+        errorMessage={modalMessage}
       />
     </div>
   );
