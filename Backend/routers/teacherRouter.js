@@ -74,7 +74,7 @@ router.patch(
 router.get("/course/:course_id/allQuizes", quizController.getAllQuizes);
 router.get("/course/quiz/:quiz_id", quizController.getQuiz);
 router.post("/course/:course_id/quiz", quizController.addQuiz);
-router.delete("/course/deletequiz/:quiz_id", quizController.deleteQuiz);
+router.delete("/course/delete/quiz/:quiz_id", quizController.deleteQuiz);
 router.patch("/course/quiz/:quiz_id", quizController.editQuiz);
 router.patch("/course/quiz/:quiz_id/view", quizController.publicQuizMarks);
 router.get(

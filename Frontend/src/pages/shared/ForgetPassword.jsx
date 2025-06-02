@@ -25,6 +25,7 @@ function ForgotPassword() {
     return () => clearTimeout(timer);
   }, [countdown, showOtpForm]);
 
+  // Handle form submmission for sending OTP
   const handleSendOtp = async (e) => {
     e.preventDefault();
     setError("");
@@ -47,6 +48,7 @@ function ForgotPassword() {
     }
   };
 
+  // Handle form submission for resetting password
   const handleResetPassword = async (e) => {
     e.preventDefault();
     setError("");
@@ -69,6 +71,7 @@ function ForgotPassword() {
     }
   };
 
+  // Handle resend OTP
   const handleResendOtp = async () => {
     setError("");
     setSuccess("");

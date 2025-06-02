@@ -2,12 +2,14 @@ import { useState } from "react";
 import { Check, X, Plus, Trash } from "lucide-react";
 
 function QuestionEditForm({ question, onSave, onCancel }) {
+  // State to hold the form data for editing the question
   const [editFormData, setEditFormData] = useState({
     ...question,
     choices: [...question.choices],
     correctAnswerIndex: question.correctAnswerIndex || 0,
   });
 
+  // Handlers for form changes
   const handleEditFormChange = (e) => {
     const { name, value } = e.target;
     setEditFormData({
@@ -16,6 +18,7 @@ function QuestionEditForm({ question, onSave, onCancel }) {
     });
   };
 
+  // Handlers for choices management
   const handleChoiceChange = (index, value) => {
     const updatedChoices = [...editFormData.choices];
     updatedChoices[index] = value;
@@ -25,6 +28,7 @@ function QuestionEditForm({ question, onSave, onCancel }) {
     });
   };
 
+  // Handlers for adding, removing, and changing the correct answer
   const handleAddChoice = () => {
     setEditFormData({
       ...editFormData,
@@ -32,6 +36,7 @@ function QuestionEditForm({ question, onSave, onCancel }) {
     });
   };
 
+  // Handler for changing the correct answer index
   const handleCorrectAnswerChange = (index) => {
     setEditFormData({
       ...editFormData,
@@ -39,6 +44,7 @@ function QuestionEditForm({ question, onSave, onCancel }) {
     });
   };
 
+  // Handler for removing a choice
   const handleRemoveChoice = (index) => {
     const updatedChoices = [...editFormData.choices];
     updatedChoices.splice(index, 1);
@@ -48,15 +54,18 @@ function QuestionEditForm({ question, onSave, onCancel }) {
     });
   };
 
+  // Handler for saving the edited question
   const handleSave = () => {
     onSave(editFormData);
   };
 
   return (
     <div className="space-y-4">
+      {/* Header with Save and Cancel buttons */}
       <div className="flex justify-between items-center">
         <h3 className="font-medium">Editing Question</h3>
         <div className="flex items-center space-x-2">
+          {/* Save button */}
           <button
             type="button"
             className="btn btn-sm btn-primary"
@@ -65,6 +74,7 @@ function QuestionEditForm({ question, onSave, onCancel }) {
             <Check size={16} />
             Save
           </button>
+          {/* Cancel button */}
           <button
             type="button"
             className="btn btn-sm btn-ghost"
@@ -76,6 +86,7 @@ function QuestionEditForm({ question, onSave, onCancel }) {
         </div>
       </div>
 
+      {/* Question Text and points */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="md:col-span-3">
           <label className="block text-gray-700 text-sm font-medium mb-2">
@@ -105,10 +116,12 @@ function QuestionEditForm({ question, onSave, onCancel }) {
         </div>
       </div>
 
+      {/* Choices Section */}
       <div>
         <label className="block text-gray-700 text-sm font-medium mb-2">
           Choices:
         </label>
+        
         {editFormData.choices.map((choice, choiceIndex) => (
           <div key={choiceIndex} className="flex items-center mb-2">
             <input
@@ -135,6 +148,7 @@ function QuestionEditForm({ question, onSave, onCancel }) {
             </button>
           </div>
         ))}
+        {/* Add Choice Button */}
         <button
           type="button"
           className="btn btn-sm btn-outline mt-2"

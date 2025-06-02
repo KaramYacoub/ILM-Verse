@@ -14,7 +14,6 @@ function TeacherCourseStudentsTab() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Modal states
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isMarksModalOpen, setIsMarksModalOpen] = useState(false);
   const [students, setStudents] = useState([]);
@@ -26,7 +25,10 @@ function TeacherCourseStudentsTab() {
       setIsLoading(true);
       try {
         const allStudents = await getStudentsInCourse(course_id);
-        setStudents(allStudents || []);
+        const sortedStudents = allStudents?.sort((a, b) =>
+          a.first_name.localeCompare(b.first_name)
+        );
+        setStudents(sortedStudents || []);
       } catch (error) {
         console.error("Error fetching students:", error);
         setStudents([]);
@@ -50,7 +52,6 @@ function TeacherCourseStudentsTab() {
   };
 
   const studentsPerPage = 5;
-
   const filteredStudents = (students || []).filter((student) =>
     student?.first_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -66,7 +67,7 @@ function TeacherCourseStudentsTab() {
     <div className="bg-base-100 p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold text-primary mb-4">Students</h2>
 
-      {/* Search - keep this always visible */}
+      {/* Search */}
       <div className="w-full flex items-center mb-4">
         <input
           type="text"
@@ -87,7 +88,7 @@ function TeacherCourseStudentsTab() {
         </div>
       ) : (
         <>
-          {/* Show table only if there are students */}
+          {/* Students table */}
           {filteredStudents.length > 0 ? (
             <>
               <div className="rounded border border-base-300 overflow-x-auto">
@@ -190,7 +191,6 @@ function TeacherCourseStudentsTab() {
             </div>
           )}
 
-          {/* Modals (keep outside the conditional) */}
           {isReportModalOpen && (
             <StudentReportModal
               isOpen={isReportModalOpen}

@@ -5,22 +5,25 @@ import TeacherNavbar from "../TeacherNavbar";
 import { Loader2 } from "lucide-react";
 
 export default function QuizReview() {
+  const { getStudentQuizMark } = useTeacherStore();
+
   const { course_id, quiz_id, student_id } = useParams();
   const location = useLocation();
 
-  const { getStudentQuizMark } = useTeacherStore();
 
   const [quiz, setQuiz] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [studentSubmission, setStudentSubmission] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Fetch quiz data from location state
   useEffect(() => {
     if (location.state?.quiz) {
       setQuiz(location.state.quiz);
     }
   }, [location.state]);
 
+  // Fetch student submission data
   useEffect(() => {
     const fetchQuizData = async () => {
       try {
@@ -43,18 +46,21 @@ export default function QuizReview() {
     fetchQuizData();
   }, [course_id, quiz_id, student_id, getStudentQuizMark]);
 
+  // Handlers for navigating through the next question
   const handleNext = () => {
     if (currentQuestionIndex < quiz.questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
     }
   };
 
+  // Handler for going to the previous question
   const handlePrev = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex((prev) => prev - 1);
     }
   };
 
+  // Handler for navigating to a specific question
   const handleNavigateTo = (index) => {
     setCurrentQuestionIndex(index);
   };
@@ -80,6 +86,7 @@ export default function QuizReview() {
       <TeacherNavbar />
 
       <div className="container mx-auto p-6">
+        {/* Header */}
         <div className="flex justify-between items-start mb-4">
           <div>
             <h1 className="text-2xl font-bold text-primary">{quiz.title}</h1>
@@ -87,7 +94,7 @@ export default function QuizReview() {
               Reviewing submission for: {student_id}
             </p>
           </div>
-          <div className="bg-white p-3 rounded-lg shadow-sm">
+          <div className="bg-base-100 p-3 rounded-lg shadow-sm">
             <p className="font-bold">
               Final Mark: {studentSubmission.mark} / {quiz.total_points}
             </p>
@@ -95,17 +102,19 @@ export default function QuizReview() {
         </div>
 
         {/* Student Info */}
-        <div className="bg-white rounded-lg p-4 shadow-md mb-6">
+        <div className="bg-base-100 rounded-lg p-4 shadow-md mb-6">
           <h2 className="text-lg font-semibold mb-2">Student Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <p className="font-medium">Student ID:</p>
               <p>{student_id}</p>
             </div>
+
             <div>
               <p className="font-medium">Submitted At:</p>
-              <p>{new Date(studentSubmission.submited_at).toLocaleString()}</p>
+              <p>{studentSubmission.submited_at}</p>
             </div>
+            
             <div>
               <p className="font-medium">Final Grade:</p>
               <p>
@@ -126,7 +135,7 @@ export default function QuizReview() {
                 onClick={() => handleNavigateTo(index)}
                 className={`w-10 h-10 rounded-full font-bold ${
                   currentQuestionIndex === index
-                    ? "bg-primary text-white"
+                    ? "bg-primary text-base-100"
                     : "bg-gray-300 text-black"
                 }`}
               >
@@ -153,7 +162,7 @@ export default function QuizReview() {
         </div>
 
         {/* Question Review */}
-        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+        <div className="bg-base-100 p-6 rounded-lg shadow-md mb-6">
           <div className="flex items-center gap-4 mb-4">
             <p className="text-lg font-semibold">
               {currentSubmission?.question_text}
@@ -174,7 +183,7 @@ export default function QuizReview() {
                   choice.option_text === currentSubmission.correct_answer;
 
                 let borderColor = "border-gray-300";
-                let bgColor = "bg-white";
+                let bgColor = "bg-base-100";
                 let label = null;
 
                 if (isStudentAnswer && isCorrectAnswer) {

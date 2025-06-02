@@ -14,19 +14,19 @@ function TeacherUnitContentTab() {
   const unit = location.state?.unit;
   const { unit_id } = useParams();
 
-  // Store hooks
   const { getUnitContent, unitContent, addUnitContent, deleteUnitContent } =
     useTeacherStore();
   const { downloadResource } = useCourseStore();
 
-  // Modal states
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const [mediaToDelete, setMediaToDelete] = useState({ unit_id: "", media_id: "" });
+  const [mediaToDelete, setMediaToDelete] = useState({
+    unit_id: "",
+    media_id: "",
+  });
 
-  // Content states
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -38,6 +38,7 @@ function TeacherUnitContentTab() {
     uploadProgress: 0,
   });
 
+  // Fetch unit content
   useEffect(() => {
     const fetchContents = async () => {
       setIsLoading(true);
@@ -54,6 +55,7 @@ function TeacherUnitContentTab() {
     fetchContents();
   }, [unit_id, getUnitContent]);
 
+  // Open upload modal
   const openUploadModal = () => {
     setIsUploadModalOpen(true);
     setUploadState({
@@ -64,10 +66,12 @@ function TeacherUnitContentTab() {
     });
   };
 
+  // Close upload modal
   const closeUploadModal = () => {
     setIsUploadModalOpen(false);
   };
 
+  // Handle file change
   const handleFileChange = (e) => {
     setUploadState({
       ...uploadState,
@@ -76,6 +80,7 @@ function TeacherUnitContentTab() {
     });
   };
 
+  // Handle upload content
   const handleUpload = async () => {
     if (!uploadState.file || !uploadState.title) {
       setModalMessage("Please provide both a file and a title");
@@ -90,6 +95,7 @@ function TeacherUnitContentTab() {
       formData.append("media", uploadState.file);
       formData.append("title", uploadState.title);
 
+      // Simulate upload progress
       const interval = setInterval(() => {
         setUploadState((prev) => {
           const newProgress = prev.uploadProgress + 10;
@@ -109,18 +115,22 @@ function TeacherUnitContentTab() {
       setShowSuccessModal(true);
       closeUploadModal();
     } catch (error) {
-      setModalMessage(error.response?.data?.error || "Upload failed. Please try again.");
+      setModalMessage(
+        error.response?.data?.error || "Upload failed. Please try again."
+      );
       setShowErrorModal(true);
     } finally {
       setUploadState((prev) => ({ ...prev, isUploading: false }));
     }
   };
 
+  // Open media modal for preview
   const openMediaModal = (media) => {
     setSelectedMedia(media);
     setIsModalOpen(true);
   };
 
+  // Close media modal
   const closeMediaModal = () => {
     setSelectedMedia(null);
     setIsModalOpen(false);
@@ -138,6 +148,7 @@ function TeacherUnitContentTab() {
     return mimeType.split("/")[1]?.toUpperCase() || "File";
   };
 
+  // Handle download of media
   const handleDownload = async (media) => {
     try {
       setIsLoading(true);
@@ -155,12 +166,14 @@ function TeacherUnitContentTab() {
     }
   };
 
+  // Open confirmation modal for deletion
   const confirmDeleteMedia = (unit_id, media_id) => {
     setMediaToDelete({ unit_id, media_id });
     setModalMessage("Are you sure you want to delete this content?");
     setShowConfirmModal(true);
   };
 
+  // Handle media deletion
   const handleDeleteMedia = async () => {
     try {
       setIsLoading(true);
@@ -169,7 +182,9 @@ function TeacherUnitContentTab() {
       setModalMessage("Content deleted successfully!");
       setShowSuccessModal(true);
     } catch (error) {
-      setModalMessage(error.response?.data?.error || "Failed to delete content.");
+      setModalMessage(
+        error.response?.data?.error || "Failed to delete content."
+      );
       setShowErrorModal(true);
     } finally {
       setIsLoading(false);
@@ -192,8 +207,8 @@ function TeacherUnitContentTab() {
       <div className="bg-base-200 rounded-md px-4 py-2 flex justify-between items-center font-semibold text-lg mb-4">
         <span>{unit.unit_name}</span>
         <div className="flex gap-2">
-          <button 
-            className="btn btn-sm btn-ghost" 
+          <button
+            className="btn btn-sm btn-ghost"
             onClick={openUploadModal}
             disabled={isLoading}
           >

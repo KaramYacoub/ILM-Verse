@@ -132,7 +132,7 @@ function TeacherStudentMarksModal({ isOpen, onClose, student }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-3xl p-6">
+      <div className="bg-base-100 rounded-lg shadow-lg w-full max-w-3xl p-6">
         <h2 className="text-2xl font-bold text-primary mb-4">
           Enter Marks: {student.name} - {course.subject_name}
         </h2>
@@ -143,8 +143,8 @@ function TeacherStudentMarksModal({ isOpen, onClose, student }) {
               key={term}
               className={`px-4 py-2 rounded-md flex flex-auto ${
                 activeTerm === term
-                  ? "bg-primary text-white"
-                  : "bg-white text-gray-700"
+                  ? "bg-primary text-base-100"
+                  : "bg-base-100 text-gray-700"
               }`}
               onClick={() => setActiveTerm(term)}
             >
@@ -181,6 +181,7 @@ function TeacherStudentMarksModal({ isOpen, onClose, student }) {
                         min="0"
                         max={item.max}
                         disabled={isLoading}
+                        placeholder="0"
                       />
                     )}
                   </td>
