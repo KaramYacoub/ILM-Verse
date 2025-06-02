@@ -18,7 +18,11 @@ function ParentDashboard() {
   // Set the first student as default when students are loaded
   useEffect(() => {
     if (students.length > 0 && !selectedStudent) {
-      const firstStudent = students[0];
+      const sortedStudents = [...students].sort((a, b) =>
+        a.full_name.localeCompare(b.full_name)
+      );
+
+      const firstStudent = sortedStudents[0];
       setSelectedStudent({
         student_id: firstStudent.student_id,
         section_id: firstStudent.section_id,
@@ -64,9 +68,6 @@ function ParentDashboard() {
               onChange={handleStudentChange}
               className="w-full px-6 py-3 text-lg font-medium text-gray-700 bg-white border-2 border-primary/20 rounded-xl shadow-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 appearance-none cursor-pointer transition-all duration-200"
             >
-              <option disabled value="" className="text-gray-400">
-                Choose a Student
-              </option>
               {students.map((student, idx) => (
                 <option key={idx} value={student.student_id}>
                   {student.full_name} ({student.section.grade.grade_name} -{" "}

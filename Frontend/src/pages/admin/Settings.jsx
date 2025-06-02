@@ -157,6 +157,7 @@ function Settings() {
                   className="input input-bordered w-full"
                   placeholder="Enter First Name"
                   value={profileFirstName}
+                  autoComplete="off"
                   onChange={(e) => setProfileFirstName(e.target.value)}
                 />
               </div>
@@ -167,6 +168,7 @@ function Settings() {
                   className="input input-bordered w-full"
                   placeholder="Enter Last Name"
                   value={profileLastName}
+                  autoComplete="off"
                   onChange={(e) => setProfileLastName(e.target.value)}
                 />
               </div>
@@ -177,11 +179,13 @@ function Settings() {
                   className="input input-bordered w-full"
                   placeholder="Enter your current password"
                   value={profileOldPassword}
+                  autoComplete="new-password"
                   onChange={(e) => setProfileOldPassword(e.target.value)}
                 />
               </div>
               <div className="flex justify-end">
-                <button type="submit" className="btn btn-primary">
+                <button
+                 type="submit" className="btn btn-primary">
                   Update Profile
                 </button>
               </div>

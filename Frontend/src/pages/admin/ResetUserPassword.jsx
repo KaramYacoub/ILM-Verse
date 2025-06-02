@@ -24,6 +24,8 @@ function ResetUserPassword() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -104,6 +106,13 @@ function ResetUserPassword() {
     }
   };
 
+  // pagination logic
+  const UsersPerPage = 5;
+  const totalPages = Math.ceil(filteredUsers.length / UsersPerPage);
+  const indexOfLastUser = currentPage * UsersPerPage;
+  const indexOfFirstUser = indexOfLastUser - UsersPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminNavbar />
@@ -134,7 +143,10 @@ function ResetUserPassword() {
               <select
                 className="select select-bordered w-full bg-gray-50"
                 value={userType}
-                onChange={(e) => setUserType(e.target.value)}
+                onChange={(e) => {
+                  setCurrentPage(1);
+                  setUserType(e.target.value);
+                }}
               >
                 <option value="">All User Types</option>
                 <option value="Student">Student</option>
@@ -165,6 +177,7 @@ function ResetUserPassword() {
                     onClick={() => {
                       setSearchQuery("");
                       setSearchQuery("");
+                      setCurrentPage(1);
                     }}
                     className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
                   >
@@ -188,7 +201,7 @@ function ResetUserPassword() {
               </thead>
               <tbody>
                 {filteredUsers.length > 0 ? (
-                  filteredUsers.map((user, index) => (
+                  currentUsers.map((user, index) => (
                     <tr
                       key={index}
                       className={`border-b ${
@@ -212,6 +225,7 @@ function ResetUserPassword() {
                             setSelectedUser(user);
                             setUserType(user.type);
                             setSearchQuery(user.name);
+                            setCurrentPage(1);
                           }}
                           className={`btn btn-sm ${
                             selectedUser?.id === user.id
@@ -235,6 +249,32 @@ function ResetUserPassword() {
               </tbody>
             </table>
           </div>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-between items-center mt-4">
+            <button
+              onClick={() => {
+                if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+              }}
+              className="btn btn-sm"
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span className="text-sm">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => {
+                if (currentPage < totalPages)
+                  setCurrentPage((prev) => prev + 1);
+              }}
+              className="btn btn-sm"
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
         </div>
 
         {/* Password Reset Form */}
@@ -254,6 +294,7 @@ function ResetUserPassword() {
                   setConfirmPassword("");
                   setUserType("");
                   setSearchQuery("");
+                  setCurrentPage(1);
                 }}
                 className="btn btn-ghost btn-sm"
               >
@@ -317,6 +358,7 @@ function ResetUserPassword() {
                     setConfirmPassword("");
                     setUserType("");
                     setSearchQuery("");
+                    setCurrentPage(1);
                   }}
                 >
                   Cancel
