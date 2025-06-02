@@ -109,11 +109,11 @@ function TeacherOverviewTab() {
           <div key={unit.unit_id} className="card bg-base-200 shadow-md">
             <div className="card-body">
               <div className="flex justify-between items-center sm:flex-row flex-col">
-                <div>
+                <div className="flex-1 mb-4 sm:mb-0">
                   <h3 className="card-title text-xl">{unit.unit_name}</h3>
                   <p>{unit.unit_description}</p>
                 </div>
-                <div>
+                <div className="flex flex-1 justify-end items-center">
                   <button
                     className="btn btn-primary text-lg btn-md"
                     onClick={() =>

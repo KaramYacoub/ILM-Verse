@@ -93,14 +93,20 @@ function StudentAssignmentsTab() {
   const getStatusBadge = (assignment) => {
     if (isPastDue(assignment.end_at)) {
       return (
-        <span className="badge badge-error text-base-100">Deadline Passed</span>
+        <span className="badge badge-error text-base-100 w-fit h-fit">
+          Deadline Passed
+        </span>
       );
     }
 
     return assignment.submission === "Not exist" ? (
-      <span className="badge badge-warning text-base-100">Not Submitted</span>
+      <span className="badge badge-warning text-base-100 w-fit h-fit">
+        Not Submitted
+      </span>
     ) : (
-      <span className="badge badge-success text-base-100">Submitted</span>
+      <span className="badge badge-success text-base-100 w-fit h-fit">
+        Submitted
+      </span>
     );
   };
 
