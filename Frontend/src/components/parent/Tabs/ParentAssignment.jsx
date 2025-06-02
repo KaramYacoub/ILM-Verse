@@ -187,7 +187,9 @@ function ParentAssignment() {
               <div className="divider divider-primary m-0"></div>
 
               <div className="mt-4">
-                <h3 className="font-bold text-lg mb-2">Download student submission:</h3>
+                <h3 className="font-bold text-lg mb-2">
+                  Download student submission:
+                </h3>
                 <p className="text-sm text-gray-600">
                   {selectedAssignment.submission === "Not exist" ? (
                     "No submission yet."
