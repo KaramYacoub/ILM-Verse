@@ -8,8 +8,14 @@ function ParentAssignment() {
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const { assignments = [], fetchAssignments } = useParentsStore();
+  const {
+    assignments = [],
+    fetchAssignments,
+    downloadAssignments,
+    downloadRSubmissions,
+  } = useParentsStore();
 
+  // Fetch assignments
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
@@ -26,12 +32,14 @@ function ParentAssignment() {
     fetchData();
   }, [course_id, student_id, fetchAssignments]);
 
+  // function to check if the assignment is past due
   const isPastDue = (dueDateString) => {
     const dueDate = new Date(dueDateString);
     const currentDate = new Date();
     return currentDate > dueDate;
   };
 
+  // function to format date
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -40,6 +48,7 @@ function ParentAssignment() {
     });
   };
 
+  // function to get the status badge based on submission status
   const getStatusBadge = (assignment) => {
     if (assignment.submission === "Not exist") {
       return (
@@ -55,6 +64,7 @@ function ParentAssignment() {
     );
   };
 
+  // function to get the action content based on submission status and due date
   const getActionContent = (assignment) => {
     const hasSubmission = assignment.submission !== "Not exist";
     const isExpired = isPastDue(assignment.end_at);
@@ -81,6 +91,31 @@ function ParentAssignment() {
     }
 
     return <span className="text-warning font-semibold">Pending</span>;
+  };
+
+  const getFileType = (mimeType) => {
+    if (mimeType.includes("video")) return "Video";
+    if (mimeType.includes("pdf")) return "PDF";
+    if (mimeType.includes("word") || mimeType.includes("msword")) return "DOC";
+    return mimeType.split("/")[1]?.toUpperCase() || "File";
+  };
+
+  // Handle download assignments
+  const handleDownloadAssignment = (assignment) => {
+    downloadAssignments(
+      assignment.path.split("/").pop(),
+      `${assignment.title}.${getFileType(assignment.type).toLowerCase()}`
+    );
+  };
+
+  // Handle download assignments
+  const handleDownloadSubmissions = (assignment) => {
+    downloadRSubmissions(
+      assignment.path.split("/").pop(),
+      `${selectedAssignment.title}.${getFileType(
+        assignment.type
+      ).toLowerCase()}`
+    );
   };
 
   if (isLoading) {
@@ -139,27 +174,34 @@ function ParentAssignment() {
               <div className="mb-6 pb-4">
                 <h3 className="font-bold text-lg mb-2">Download assignment:</h3>
                 <div className="flex items-center gap-2">
-                  <a
-                    href={selectedAssignment.path.replace(
-                      "./Data/Assigments",
-                      "/api/static/assignments"
-                    )}
-                    download
+                  <button
+                    onClick={() => handleDownloadAssignment(selectedAssignment)}
                     className="link link-primary font-medium flex gap-2 mt-2"
                   >
                     <Download />
-                    {selectedAssignment.title} (Instructions)
-                  </a>
+                    {selectedAssignment.title}
+                  </button>
                 </div>
               </div>
 
               <div className="divider divider-primary m-0"></div>
 
               <div className="mt-4">
+                <h3 className="font-bold text-lg mb-2">Download student submission:</h3>
                 <p className="text-sm text-gray-600">
-                  {selectedAssignment.submission === "Not exist"
-                    ? "No submission yet."
-                    : "Submission exists."}
+                  {selectedAssignment.submission === "Not exist" ? (
+                    "No submission yet."
+                  ) : (
+                    <button
+                      onClick={() =>
+                        handleDownloadSubmissions(selectedAssignment.submission)
+                      }
+                      className="link link-primary font-medium flex gap-2 mt-2"
+                    >
+                      <Download />
+                      {selectedAssignment.title}
+                    </button>
+                  )}
                 </p>
               </div>
 

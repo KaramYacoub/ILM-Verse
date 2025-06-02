@@ -62,4 +62,10 @@ router.get(
 router.get("/departments", annoucmentController.getParentDepartments);
 router.get("/annoucments/:department_id", annoucmentController.getAnnoucments);
 
+// download assignments
+router.get("/download/assignments", downloadController.downloadAssignments);
+
+// download submissions
+router.get("/download/submissions", downloadController.downloadSubmissions);
+
 module.exports = router;
