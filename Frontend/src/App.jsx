@@ -4,6 +4,7 @@ import { useAuthStore } from "./store/AuthStore";
 import { Loader2 } from "lucide-react";
 
 // Shared Components/Pages
+import ScrollToTop from "./components/shared/ScrollToTop";
 const Error = lazy(() => import("./pages/shared/Error"));
 const Home = lazy(() => import("./pages/shared/Home"));
 const Footer = lazy(() => import("./components/shared/Footer"));
@@ -165,6 +166,7 @@ function App() {
       }
     >
       <div data-theme="mytheme">
+        <ScrollToTop />
         <Routes>
           {/* Shared Routes */}
           <>

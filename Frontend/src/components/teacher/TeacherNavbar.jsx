@@ -65,13 +65,17 @@ function TeacherNavbar() {
             <FaCalendarAlt color="#fff" />
             <span>Events</span>
           </Link>
-          <Link
-            to="/teacher-take-absence"
-            className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
-          >
-            <FaUserCheck color="#fff" />
-            <span>Take Absence</span>
-          </Link>
+
+          {/* Only show Take Absence link if section_id is available */}
+          {authTeacher.section_id && (
+            <Link
+              to="/teacher-take-absence"
+              className="flex items-center gap-1 cursor-pointer hover:text-yellow-500"
+            >
+              <FaUserCheck color="#fff" />
+              <span>Take Absence</span>
+            </Link>
+          )}
           <button
             onClick={() => setIsAnnouncementOpen(true)}
             className="flex items-center gap-1 cursor-pointer hover:text-yellow-500 text-accent text-sm"
@@ -124,14 +128,16 @@ function TeacherNavbar() {
                 <FaCalendarAlt color="#fff" />
                 <span>Events</span>
               </Link>
-              <Link
-                to="/teacher-take-absence"
-                className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
-                onClick={toggleMenu}
-              >
-                <FaUserCheck color="#fff" />
-                <span>Take Absence</span>
-              </Link>
+              {authTeacher.section_id && (
+                <Link
+                  to="/teacher-take-absence"
+                  className="flex items-center gap-3 py-2 px-6 cursor-pointer hover:text-yellow-500"
+                  onClick={toggleMenu}
+                >
+                  <FaUserCheck color="#fff" />
+                  <span>Take Absence</span>
+                </Link>
+              )}
               <button
                 onClick={() => {
                   toggleMenu();
