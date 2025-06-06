@@ -250,7 +250,9 @@ export const useTeacherStore = create((set) => ({
 
   downloadAssignments: async (filePath, fileName) => {
     try {
-      const url = `http://localhost:8001/teacher/download/assignments?path=${encodeURIComponent(
+      const url = `${
+        import.meta.env.VITE_API_URL
+      }/teacher/download/assignments?path=${encodeURIComponent(
         filePath
       )}&filename=${encodeURIComponent(fileName)}`;
 
@@ -271,7 +273,9 @@ export const useTeacherStore = create((set) => ({
 
   downloadRSubmissions: async (filePath, fileName) => {
     try {
-      const url = `http://localhost:8001/teacher/download/submissions?path=${encodeURIComponent(
+      const url = `${
+        import.meta.env.VITE_API_URL
+      }/teacher/download/submissions?path=${encodeURIComponent(
         filePath
       )}&filename=${encodeURIComponent(fileName)}`;
 

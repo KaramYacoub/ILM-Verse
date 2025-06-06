@@ -129,9 +129,9 @@ function StudentOverviewTab() {
                       className="w-full rounded"
                     >
                       <source
-                        src={`http://localhost:8001/resources/${selectedMedia.path
-                          .split("/")
-                          .pop()}`}
+                        src={`${
+                          import.meta.env.VITE_API_URL
+                        }/resources/${selectedMedia.path.split("/").pop()}`}
                         type={selectedMedia.type}
                       />
                       Your browser does not support the video tag.

@@ -221,7 +221,9 @@ const useParentsStore = create((set) => ({
 
   downloadAssignments: async (filePath, fileName) => {
     try {
-      const url = `http://localhost:8001/parent/download/assignments?path=${encodeURIComponent(
+      const url = `${
+        import.meta.env.VITE_API_URL
+      }/parent/download/assignments?path=${encodeURIComponent(
         filePath
       )}&filename=${encodeURIComponent(fileName)}`;
 
@@ -239,10 +241,12 @@ const useParentsStore = create((set) => ({
       );
     }
   },
-  
+
   downloadRSubmissions: async (filePath, fileName) => {
     try {
-      const url = `http://localhost:8001/parent/download/submissions?path=${encodeURIComponent(
+      const url = `${
+        import.meta.env.VITE_API_URL
+      }/parent/download/submissions?path=${encodeURIComponent(
         filePath
       )}&filename=${encodeURIComponent(fileName)}`;
 

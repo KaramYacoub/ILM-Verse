@@ -179,7 +179,9 @@ export const useCourseStore = create((set) => ({
 
   downloadResource: async (filePath, fileName) => {
     try {
-      const url = `http://localhost:8001/shared/download?path=${encodeURIComponent(
+      const url = `${
+        import.meta.env.VITE_API_URL
+      }/shared/download?path=${encodeURIComponent(
         filePath
       )}&filename=${encodeURIComponent(fileName)}`;
 

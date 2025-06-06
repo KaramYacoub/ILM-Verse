@@ -47,7 +47,9 @@ export default function EventList({
               customSlides={event.media.map((img, idx) => (
                 <div key={img._id} className="flex-[0_0_100%] h-64 p-2 md:h-80">
                   <img
-                    src={`http://localhost:8001/media/events/${img.filename}`} // Changed from img.path to img.filename
+                    src={`${import.meta.env.VITE_API_URL}/media/events/${
+                      img.filename
+                    }`}
                     alt={`${event.title}-${idx + 1}`}
                     className="w-full h-full object-fill rounded-lg shadow-md"
                   />

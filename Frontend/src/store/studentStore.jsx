@@ -99,7 +99,9 @@ const useStudentStore = create((set) => ({
 
   downloadAssignments: async (filePath, fileName) => {
     try {
-      const url = `http://localhost:8001/student/download/submissions?path=${encodeURIComponent(
+      const url = `${
+        import.meta.env.VITE_API_URL
+      }/student/download/submissions?path=${encodeURIComponent(
         filePath
       )}&filename=${encodeURIComponent(fileName)}`;
 

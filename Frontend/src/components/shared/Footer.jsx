@@ -5,7 +5,7 @@ function Footer() {
   return (
     <footer className="footer sm:footer-horizontal bg-primary text-neutral-content items-center p-4">
       <aside className="grid-flow-col items-center">
-        <img src="../../../public/Logo.png" className="h-12" />
+        <img src="Logo.png" className="h-12" />
         <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
       </aside>
       <nav className="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
