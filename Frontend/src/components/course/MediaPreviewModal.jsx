@@ -1,11 +1,11 @@
 import { File } from "lucide-react";
+import { formatDate } from "../../utils/utils";
 
 function MediaPreviewModal({
   isOpen,
   selectedMedia,
   closeModal,
   handleDownload,
-  formatDate,
 }) {
   if (!isOpen || !selectedMedia) return null;
 

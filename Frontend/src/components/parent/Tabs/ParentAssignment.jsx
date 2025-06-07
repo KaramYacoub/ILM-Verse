@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Download, XCircle, Loader2 } from "lucide-react";
 import useParentsStore from "../../../store/ParentStore";
+import { formatShortDate, isPastDue, getFileType } from "../../../utils/utils";
 
 function ParentAssignment() {
   const { course_id, student_id } = useParams();
@@ -31,22 +32,6 @@ function ParentAssignment() {
     };
     fetchData();
   }, [course_id, student_id, fetchAssignments]);
-
-  // function to check if the assignment is past due
-  const isPastDue = (dueDateString) => {
-    const dueDate = new Date(dueDateString);
-    const currentDate = new Date();
-    return currentDate > dueDate;
-  };
-
-  // function to format date
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
 
   // function to get the status badge based on submission status
   const getStatusBadge = (assignment) => {
@@ -93,13 +78,6 @@ function ParentAssignment() {
     return <span className="text-warning font-semibold">Pending</span>;
   };
 
-  const getFileType = (mimeType) => {
-    if (mimeType.includes("video")) return "Video";
-    if (mimeType.includes("pdf")) return "PDF";
-    if (mimeType.includes("word") || mimeType.includes("msword")) return "DOC";
-    return mimeType.split("/")[1]?.toUpperCase() || "File";
-  };
-
   // Handle download assignments
   const handleDownloadAssignment = (assignment) => {
     downloadAssignments(
@@ -112,9 +90,7 @@ function ParentAssignment() {
   const handleDownloadSubmissions = (assignment) => {
     downloadRSubmissions(
       assignment.path.split("/").pop(),
-      `${selectedAssignment.title}.${getFileType(
-        assignment.type
-      ).toLowerCase()}`
+      `${selectedAssignment.title}.${getFileType(assignment.type).toLowerCase()}`
     );
   };
 
@@ -149,7 +125,7 @@ function ParentAssignment() {
                       Published: {assignment.published_at}
                     </div>
                   </td>
-                  <td>{formatDate(assignment.end_at)}</td>
+                  <td>{formatShortDate(assignment.end_at)}</td>
                   <td>{getStatusBadge(assignment)}</td>
                   <td>{getActionContent(assignment)}</td>
                 </tr>

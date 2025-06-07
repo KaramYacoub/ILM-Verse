@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { X, Filter } from "lucide-react";
 import useParentsStore from "../../store/ParentStore";
+import { formatDateTime } from "../../utils/utils";
 
 function ParentAnnouncements({ isOpen, onClose }) {
   const { getParentDepartment, getAnnoucments } = useParentsStore();
@@ -102,13 +103,7 @@ function ParentAnnouncements({ isOpen, onClose }) {
             </div>
           ) : filteredAnnouncements.length > 0 ? (
             filteredAnnouncements.map((a) => {
-              const formattedTime = new Date(
-                `${a.date}T${a.time}`
-              ).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true,
-              });
+              const formattedTime = formatDateTime(a.date, a.time);
 
               return (
                 <div

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { X, Filter } from "lucide-react";
 import useStudentStore from "../../store/studentStore";
+import { formatDateTime } from "../../utils/utils";
 
 function StudentAnnouncements({ isOpen, onClose }) {
   const { getStudentDepartment, getAnnoucments } = useStudentStore();
@@ -102,13 +103,7 @@ function StudentAnnouncements({ isOpen, onClose }) {
             </div>
           ) : filtered.length > 0 ? (
             filtered.map((a) => {
-              const formattedTime = new Date(
-                `${a.date}T${a.time}`
-              ).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true,
-              });
+              const formattedTime = formatDateTime(a.date, a.time);
 
               return (
                 <div

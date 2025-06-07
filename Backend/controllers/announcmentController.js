@@ -240,18 +240,28 @@ exports.getTeacherDepartment = async (req, res) => {
         },
       },
     });
+
+    // If teacher doesn't have a section or section data is incomplete
+    if (!teacherData || !teacherData.section || !teacherData.section.grade || !teacherData.section.grade.dept) {
+      return res.status(200).json({
+        status: "success",
+        data: null,
+        message: "Teacher is not assigned to any department"
+      });
+    }
+
     const teacherDepartment = {
       department_id: teacherData.section.grade.dept.department_id,
       name: teacherData.section.grade.dept.name,
     };
-    console.log(teacherData);
+
     res.status(200).json({
       status: "success",
-      data: teacherDepartment,
+      data: teacherDepartment
     });
   } catch (error) {
     res.status(500).json({
-      error: error.message,
+      error: error.message
     });
   }
 };

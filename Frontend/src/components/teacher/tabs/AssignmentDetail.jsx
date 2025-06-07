@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTeacherStore } from "../../../store/TeacherStore";
 import SuccessModal from "../../shared/SuccessModal";
 import ErrorModal from "../../shared/ErrorModal";
+import { getFileType } from "../../../utils/utils";
 
 export default function AssignmentDetail() {
   const { TeacherShowSubmition, TeacherUpdateSubmition, downloadRSubmissions } =
@@ -66,13 +67,6 @@ export default function AssignmentDetail() {
       setModalMessage("Failed to update student submission statuses: ");
       setShowErrorModal(true);
     }
-  };
-
-  const getFileType = (mimeType) => {
-    if (mimeType.includes("video")) return "Video";
-    if (mimeType.includes("pdf")) return "PDF";
-    if (mimeType.includes("word") || mimeType.includes("msword")) return "DOC";
-    return mimeType.split("/")[1]?.toUpperCase() || "File";
   };
 
   // Handle download of student submission

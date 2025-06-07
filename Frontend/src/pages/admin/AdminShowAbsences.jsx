@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AlertCircle, Loader2, XCircle } from "lucide-react";
 import { useAdminStore } from "../../store/AdminStore";
 import AdminNavbar from "../../components/admin/adminNavbar";
+import { formatDate, getDayOfWeek } from "../../utils/utils";
 
 function AdminShowAbsences() {
   const { student_id, section_id } = useParams();
@@ -28,17 +29,6 @@ function AdminShowAbsences() {
       setLoading(false);
     }
   }, [student_id, section_id, getStudentAbsences]);
-
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  const getDayOfWeek = (dateString) => {
-    return new Date(dateString).toLocaleDateString(undefined, {
-      weekday: "long",
-    });
-  };
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">

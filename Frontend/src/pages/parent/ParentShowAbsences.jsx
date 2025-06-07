@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import ParentNavBar from "../../components/parent/ParentNavBar";
 import useParentsStore from "../../store/ParentStore";
 import { AlertCircle, XCircle } from "lucide-react";
+import { formatDate, getDayOfWeek } from "../../utils/utils";
 
 function ParentShowAbsences() {
   const [searchParams] = useSearchParams();
@@ -17,17 +18,6 @@ function ParentShowAbsences() {
       fetchShowAbsences(student_id, section_id);
     }
   }, [student_id, section_id, fetchShowAbsences]);
-
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  const getDayOfWeek = (dateString) => {
-    return new Date(dateString).toLocaleDateString(undefined, {
-      weekday: "long",
-    });
-  };
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center pb-5">

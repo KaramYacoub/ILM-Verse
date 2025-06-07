@@ -4,6 +4,7 @@ import { CheckCircle2, Download, Loader2, XCircle } from "lucide-react";
 import useStudentStore from "../../../store/studentStore";
 import SuccessModal from "../../../components/shared/SuccessModal";
 import ErrorModal from "../../../components/shared/ErrorModal";
+import { formatShortDate, isPastDue, getFileType } from "../../../utils/utils";
 
 function StudentAssignmentsTab() {
   const { course_id } = useParams();
@@ -30,20 +31,6 @@ function StudentAssignmentsTab() {
     }
   }, [course_id, fetchAssignments]);
 
-  const isPastDue = (dueDateString) => {
-    const dueDate = new Date(dueDateString);
-    const currentDate = new Date();
-    return currentDate > dueDate;
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
   const handleSubmit = async () => {
     if (!selectedFile || !selectedAssignment) return;
 
@@ -53,16 +40,14 @@ function StudentAssignmentsTab() {
 
     try {
       await submitAssignment(course_id, selectedAssignment._id, formData);
+      await fetchAssignments(course_id);
       setModalMessage("Assignment submitted successfully!");
       setShowSuccessModal(true);
-      document.getElementById("submit-modal").checked = false;
-      fetchAssignments(course_id);
       setSelectedAssignment(null);
       setSelectedFile(null);
-    } catch (err) {
-      console.error("Submission failed:", err);
+    } catch (error) {
       setModalMessage(
-        err.response?.data?.message || "Upload failed. Please try again."
+        error.response?.data?.error || "Failed to submit assignment."
       );
       setShowErrorModal(true);
     } finally {
@@ -80,10 +65,7 @@ function StudentAssignmentsTab() {
       setModalMessage("Download started successfully!");
       setShowSuccessModal(true);
     } catch (error) {
-      setModalMessage(
-        error.data.response.error ||
-          "Failed to download file. Please try again."
-      );
+      setModalMessage(error.data.response.error || "Failed to download file.");
       setShowErrorModal(true);
     } finally {
       setIsSubmitting(false);
@@ -143,13 +125,6 @@ function StudentAssignmentsTab() {
     );
   };
 
-  const getFileType = (mimeType) => {
-    if (mimeType.includes("video")) return "Video";
-    if (mimeType.includes("pdf")) return "PDF";
-    if (mimeType.includes("word") || mimeType.includes("msword")) return "DOC";
-    return mimeType.split("/")[1]?.toUpperCase() || "File";
-  };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -180,7 +155,7 @@ function StudentAssignmentsTab() {
                       {assignment.description}
                     </div>
                   </td>
-                  <td>{formatDate(assignment.end_at)}</td>
+                  <td>{formatShortDate(assignment.end_at)}</td>
                   <td>{getStatusBadge(assignment)}</td>
                   <td>{getActionButton(assignment)}</td>
                 </tr>
@@ -270,6 +245,7 @@ function StudentAssignmentsTab() {
         setShowSuccessModal={setShowSuccessModal}
         successMessage={modalMessage}
       />
+
       <ErrorModal
         showErrorModal={showErrorModal}
         setShowErrorModal={setShowErrorModal}

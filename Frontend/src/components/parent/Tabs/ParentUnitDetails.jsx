@@ -3,6 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import useParentsStore from "../../../store/ParentStore";
 import { useCourseStore } from "../../../store/CourseStore";
 import { Video, File, X, Loader2 } from "lucide-react";
+import { formatDate, getFileType } from "../../../utils/utils";
 
 function ParentUnitDetails() {
   const { course_id, unit_id } = useParams();
@@ -30,18 +31,6 @@ function ParentUnitDetails() {
 
     fetchData();
   }, [course_id, fetchUnitContent, unit_id]);
-
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  const getFileType = (mimeType) => {
-    if (mimeType.includes("video")) return "Video";
-    if (mimeType.includes("pdf")) return "PDF";
-    if (mimeType.includes("word") || mimeType.includes("msword")) return "DOC";
-    return mimeType.split("/")[1]?.toUpperCase() || "File";
-  };
 
   const handleDownload = (media) => {
     downloadResource(

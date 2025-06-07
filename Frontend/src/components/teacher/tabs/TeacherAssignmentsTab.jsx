@@ -5,6 +5,7 @@ import { useTeacherStore } from "../../../store/TeacherStore";
 import SuccessModal from "../../shared/SuccessModal";
 import ErrorModal from "../../shared/ErrorModal";
 import ConfirmModal from "../../shared/ConfirmModal";
+import { getFileType, formatDate } from "../../../utils/utils";
 
 export default function TeacherAssignmentsTab() {
   const {
@@ -146,13 +147,6 @@ export default function TeacherAssignmentsTab() {
     }
   };
 
-  const getFileType = (mimeType) => {
-    if (mimeType.includes("video")) return "Video";
-    if (mimeType.includes("pdf")) return "PDF";
-    if (mimeType.includes("word") || mimeType.includes("msword")) return "DOC";
-    return mimeType.split("/")[1]?.toUpperCase() || "File";
-  };
-
   // Handle download assignment
   const handleDownload = async (assignment) => {
     try {
@@ -225,7 +219,7 @@ export default function TeacherAssignmentsTab() {
                 <div className="text-sm text-gray-500 mt-1">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    Due: {assignment.end_at || "No due date"}
+                    Due: {formatDate(assignment.end_at) || "No due date"}
                   </span>
                 </div>
               </div>

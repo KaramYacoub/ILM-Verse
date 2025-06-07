@@ -8,6 +8,7 @@ import UploadModal from "../../course/UploadModal";
 import SuccessModal from "../../shared/SuccessModal";
 import ErrorModal from "../../shared/ErrorModal";
 import ConfirmModal from "../../shared/ConfirmModal";
+import { formatDate, getFileType } from "../../../utils/utils";
 
 function AdminUnitContent() {
   const location = useLocation();
@@ -125,18 +126,6 @@ function AdminUnitContent() {
   const closeMediaModal = () => {
     setSelectedMedia(null);
     setIsModalOpen(false);
-  };
-
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  const getFileType = (mimeType) => {
-    if (mimeType.includes("video")) return "Video";
-    if (mimeType.includes("pdf")) return "PDF";
-    if (mimeType.includes("word") || mimeType.includes("msword")) return "DOC";
-    return mimeType.split("/")[1]?.toUpperCase() || "File";
   };
 
   // handle download file
@@ -261,7 +250,6 @@ function AdminUnitContent() {
           selectedMedia={selectedMedia}
           closeModal={closeMediaModal}
           handleDownload={handleDownload}
-          formatDate={formatDate}
         />
 
         <SuccessModal

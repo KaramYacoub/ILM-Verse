@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { useEffect } from "react";
 import { useTeacherStore } from "../../../store/TeacherStore";
+import { formatDate } from "../../../utils/utils";
 
 function TeacherQuizzesTab() {
   const navigate = useNavigate();
@@ -151,14 +152,11 @@ function TeacherQuizzesTab() {
                   <span>Total Marks: {quiz.total_points} points</span>
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    Due: {new Date(quiz.start_date).toLocaleDateString()}
+                    Due: {formatDate(quiz.start_date)}
                   </span>
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    Available: {new Date(
-                      quiz.start_date
-                    ).toLocaleDateString()}{" "}
-                    at {quiz.start_time}
+                    Available: {formatDate(quiz.start_date)} at {quiz.start_time}
                   </span>
                   <span>Questions: {quiz.questions.length}</span>
                 </div>

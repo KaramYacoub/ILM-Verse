@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Filter } from "lucide-react";
 import { useAdminStore } from "../../../store/AdminStore";
+import { formatDateTime } from "../../../utils/utils";
 import SuccessModal from "../../shared/SuccessModal";
 import ErrorModal from "../../shared/ErrorModal";
 
@@ -78,14 +79,7 @@ function ViewAnnouncements({
       <div className="space-y-4">
         {filtered.length > 0 ? (
           filtered.map((a) => {
-            const formattedTime = new Date(
-              `${a.date}T${a.time}`
-            ).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-              hour12: true,
-            });
-
+            const formattedTime = formatDateTime(a.date, a.time);
             return (
               <div
                 key={a.id}

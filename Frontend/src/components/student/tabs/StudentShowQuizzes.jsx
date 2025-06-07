@@ -2,6 +2,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import useStudentStore from "../../../store/studentStore";
 import { useEffect } from "react";
 import { Loader2, Clock, CheckCircle, PlayCircle } from "lucide-react";
+import { formatShortDate, formatTime } from "../../../utils/utils";
 
 function StudentShowQuizzes() {
   const { course_id } = useParams();
@@ -15,20 +16,6 @@ function StudentShowQuizzes() {
     };
     fetchQuizzes();
   }, [course_id, getQuizzes]);
-
-  // Function to format date
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  // Function to convert 24-hour time to 12-hour format with AM/PM
-  const formatTime = (time24) => {
-    const [hours, minutes] = time24.split(":");
-    const period = +hours >= 12 ? "PM" : "AM"; // +hours to change the hours to number
-    const hours12 = +hours % 12 || 12; // Convert 0 to 12 for 12 AM
-    return `${hours12}:${minutes} ${period}`;
-  };
 
   const handleShowResult = (quiz) => {
     console.log(quiz);
@@ -76,10 +63,9 @@ function StudentShowQuizzes() {
                 return (
                   <tr key={quiz.quiz_id}>
                     <td className="font-semibold">{quiz.title}</td>
-                    <td>{formatDate(quiz.start_date)}</td>
+                    <td>{formatShortDate(quiz.start_date)}</td>
                     <td>
-                      {formatTime(quiz.start_time)} -{" "}
-                      {formatTime(quiz.end_time)}
+                      {formatTime(quiz.start_time)} - {formatTime(quiz.end_time)}
                     </td>
                     <td>{quiz.duration} minutes</td>
                     <td>{quiz.total_points} pts</td>
